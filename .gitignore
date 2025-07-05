@@ -1,0 +1,4 @@
+# ignorer les fichiers de dépendances
+node_modules
+# ignorer les fichiers systèmes
+.DS_Store
