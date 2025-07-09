@@ -1,0 +1,102 @@
+// CUSTOM
+  // RESET 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+a{
+  text-decoration: none;
+}
+
+  // HEADINGS
+h1,
+h2,
+h5 {
+  font-family: $header-font-family;
+  text-transform: uppercase;
+}
+
+h1 {
+  text-shadow: 4px 1px 10px $greenFluo;
+  color: $clair2;
+}
+
+  // TEXTES
+.text-description {
+  text-align: justify;
+  font-weight: 500;
+  font-family: $font-family;
+
+}
+
+  // LOGO ESPORTIFY
+.navbar-brand {
+  font-family: $header-font-family;
+  text-shadow: 4px 1px 10px $greenFluo;
+  font-weight: 500;
+}
+
+  // BOUTONS ET LIENS 
+@mixin bouton-lg-green {
+  width: 230px;
+  border: none;
+  border-radius: 50px;
+  font-family: $header-font-family;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: $lightBlue;
+}
+
+@mixin bouton-lg-clair {
+  width: 230px;
+  border: none;
+  border-radius: 50px;
+  font-family: $header-font-family;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: $lightBlue;
+  box-shadow: 1px 1px 10px $darkBlue;
+}
+
+@mixin bouton-sm {
+  width: 150px;
+  border: none;
+  border-radius: 50px;
+  font-family: $header-font-family;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: $lightBlue;
+}
+
+@mixin bouton-close {
+  width: 15px;
+  height: 15px;
+  border: none;
+  border-radius: 50%;
+  box-shadow: 1px 1px 10px $lightBlue;
+}
+
+  // FORM
+label {
+  color: $lightBlue !important;
+  opacity: 70%;
+}
+
+.input-filter {
+  background-color: $clair2;
+  border: 3px solid $beige;
+  color: $greenFluo !important;
+  border-radius: 10px;
+
+  &:active,
+  &:focus {
+    border: 3px solid $greenFluo;
+    box-shadow: 1px 1px 10px $greenFluo;
+  }
+}
