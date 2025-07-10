@@ -25,9 +25,16 @@
                                 <i class="fa-solid fa-bars "></i>
                         </button>
                     </div>
-                    <!-- Avatar géré en js -->
+                    <!-- Avatar à gérer en js 
+                    1/ Appel à la BDD et récupération de l'avatar, nom et score
+                    2/ Injection dans la nav avec le JS 
+                        1/ fonction en JS
+                        2/ appel de la fonction
+                        3/ gestion en local Storage -->
+                        
                     <div class="player-info mx-1">
                         <a href="#"><img src="./assets/icones/avatarNonConnecte.png" alt="avatar" class="rounded-circle">
+                            <!-- Connexion Utilisateur avec affichage du nom à la connexion et nombre de points -->
                             <span class="text-greenFluo player-name">Non connecté 🏆0</span>
                         </a>
                     </div>
@@ -42,7 +49,7 @@
                                 <a href="/events" class="nav-link text-uppercase mx-1">Les Evénements</a>
                             </li>
                             <li class="nav-item text-center">
-                                <a href="#" class="nav-link text-uppercase mx-1">Contact</a>
+                                <a href="/contact" class="nav-link text-uppercase mx-1">Contact</a>
                             </li>
                             <ul class="dropdown nav-item text-center p-0">
                                 <a 
@@ -52,13 +59,14 @@
                                     Connexion
                                 </a>
                                 <!-- Dropdown Connexion -->
-                                <ul class="dropdown-menu dropdown-center mt-2">
+                                <ul class="dropdown-menu dropdown-menu-center dropdown-menu-lg-start mt-2">
                                     <li class="text-center">
-                                        <a class="dropdown-item" href="#">Connexion</a>
+                                        <a class="dropdown-item" href="/signin">Connexion</a>
                                     </li>
                                     <li class="text-center">
-                                        <a class="dropdown-item" href="#">Inscription</a>
+                                        <a class="dropdown-item" href="/signup">Inscription</a>
                                     </li>
+                                    <li><hr class="dropdown divider"></li>
                                     <li class="text-center">
                                         <a class="dropdown-item" href="#">Déconnexion</a>
                                     </li>

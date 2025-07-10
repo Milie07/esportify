@@ -12445,9 +12445,17 @@ label {
   box-shadow: none;
   background-color: rgb(8, 85, 107);
 }
+.dropdown-menu.show {
+  display: inline-block;
+}
 
 .dropdown-item {
   color: rgb(3, 196, 144);
+}
+.dropdown-item:hover, .dropdown-item:focus {
+  background-color: rgb(4, 54, 68);
+  text-shadow: 4px 1px 10px rgb(3, 196, 144);
+  color: #DADACA;
 }
 
 .nav-link.dropdown-toggle {
@@ -12521,11 +12529,10 @@ label {
   }
 }
 
-.img-hero {
-  margin-top: 50px;
-  width: 200px;
-  transform: scale(150%);
-  z-index: 0;
+.img-logo {
+  width: 300px;
+  border: solid 1px rgb(4, 54, 68);
+  border-radius: 10px;
 }
 
 .img-presentation {

@@ -59,16 +59,20 @@
   border: 1px solid $greenFluo;
   box-shadow: none;
   background-color: $lightBlue;
+
+  &.show {
+    display: inline-block;
+  }
 }
 .dropdown-item {
   color: $greenFluo;
 
-  // &:hover,
-  // &:focus {
-  //   background-color: transparent;
-  //   text-shadow: 4px 1px 10px $greenFluo;
-  //   color: $beige;
-  // }
+  &:hover,
+  &:focus {
+    background-color: $darkBlue;
+    text-shadow: 4px 1px 10px $greenFluo;
+    color: $beige;
+  }
 }
 .nav-link.dropdown-toggle {
   color: $greenFluo !important;
@@ -161,11 +165,11 @@
 // MAIN - PAGE HOME
 
   // SECTION HERO
-.img-hero {
-  margin-top: 50px;
-  width: 200px; 
-  transform: scale(150%); 
-  z-index:0;
+.img-logo {
+  width: 300px;
+  border: solid 1px $darkBlue;
+  border-radius: 10px;
+
 }
 
 // SECTION PRESENTATION
