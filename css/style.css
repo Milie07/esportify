@@ -12341,8 +12341,8 @@ a {
 h1, .h1,
 h2,
 .h2,
-h5,
-.h5 {
+h3,
+.h3 {
   font-family: "Tektur", sans-serif;
   text-transform: uppercase;
 }
@@ -12350,6 +12350,15 @@ h5,
 h1, .h1 {
   text-shadow: 4px 1px 10px rgb(3, 196, 144);
   color: rgb(252, 253, 242);
+}
+
+h3, .h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.modal-title {
+  font-size: 1.875rem;
 }
 
 .text-description {
@@ -12370,10 +12379,10 @@ label {
 }
 
 .input-filter {
-  background-color: rgb(252, 253, 242);
-  border: 3px solid #DADACA;
+  background-color: white;
+  border: 3px solid rgb(8, 85, 107);
   color: rgb(3, 196, 144) !important;
-  border-radius: 10px;
+  border-radius: 30px;
 }
 .input-filter:active, .input-filter:focus {
   border: 3px solid rgb(3, 196, 144);
@@ -12408,34 +12417,6 @@ label {
 }
 .btn-custom-lg-clair:hover {
   color: rgb(8, 85, 107);
-  box-shadow: 1px 1px 10px rgb(3, 196, 144);
-}
-
-.btn-custom-sm {
-  width: 150px;
-  border: none;
-  border-radius: 50px;
-  font-family: "Tektur", sans-serif;
-  font-weight: 500;
-  text-transform: uppercase;
-  color: rgb(8, 85, 107);
-  transition: all 0.3s ease-in-out;
-}
-.btn-custom-sm:hover {
-  color: rgb(8, 85, 107);
-  box-shadow: 1px 1px 10px rgb(3, 196, 144);
-}
-
-.btn-custom-close {
-  width: 15px;
-  height: 15px;
-  border: none;
-  border-radius: 50%;
-  box-shadow: 1px 1px 10px rgb(8, 85, 107);
-  transition: all 0.3s ease-in-out;
-}
-.btn-custom-close:hover {
-  color: rgb(252, 253, 242);
   box-shadow: 1px 1px 10px rgb(3, 196, 144);
 }
 

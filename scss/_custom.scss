@@ -17,7 +17,8 @@ a{
   // HEADINGS
 h1,
 h2,
-h5 {
+h3
+  {
   font-family: $header-font-family;
   text-transform: uppercase;
 }
@@ -25,6 +26,15 @@ h5 {
 h1 {
   text-shadow: 4px 1px 10px $greenFluo;
   color: $clair2;
+}
+
+h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.modal-title {
+  font-size: 1.875rem;
 }
 
   // TEXTES
@@ -74,14 +84,6 @@ h1 {
   color: $lightBlue;
 }
 
-@mixin bouton-close {
-  width: 15px;
-  height: 15px;
-  border: none;
-  border-radius: 50%;
-  box-shadow: 1px 1px 10px $lightBlue;
-}
-
   // FORM
 label {
   color: $lightBlue !important;
@@ -89,10 +91,10 @@ label {
 }
 
 .input-filter {
-  background-color: $clair2;
-  border: 3px solid $beige;
+  background-color: white;
+  border: 3px solid $lightBlue;
   color: $greenFluo !important;
-  border-radius: 10px;
+  border-radius: 30px;
 
   &:active,
   &:focus {

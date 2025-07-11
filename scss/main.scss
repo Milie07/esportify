@@ -32,26 +32,6 @@
   }
 }
 
-.btn-custom-sm {
-  @include bouton-sm;
-  transition: all 0.3s ease-in-out; 
-
-  &:hover {
-    color: $lightBlue;
-    box-shadow: 1px 1px 10px $greenFluo;
-  }
-}
-
-.btn-custom-close {
-  @include bouton-close;
-  transition: all 0.3s ease-in-out;
-
-  &:hover {
-    color: $clair2;
-    box-shadow: 1px 1px 10px $greenFluo;
-  }
-}
-
 // HEADER
   // MENU DROPDOWN CONNEXION
 .dropdown-menu {
