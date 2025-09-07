@@ -1,3 +1,19 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
+home:
+  path: /
+  controller: App\Controller\HomeController::index
+
+events:
+  path: /events
+  controller: App\Controller\EventsController::index
+
+contact:
+  path: /contact
+  controller: App\Controller\ContactController::index
+
+signin:
+  path: /signin
+  controller: App\Controller\AuthController::signin
+
+signup:
+  path: /signup
+  controller: App\Controller\AuthController::signup

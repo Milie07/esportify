@@ -1,0 +1,139 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil — Esportify{% endblock %}
+
+{% block body %}
+	<div class="container-fluid mx-auto">
+    <!-- Section Hero  -->
+    <div class="container-lg text-center">
+        <img class="img-logo img-fluid" src="{{ asset('img/logo/logo-modifie.png') }}" alt="logo esportify">
+        <h1 class="display-5 text-clair2 pt-2">Bienvenue dans l'arène !</h1>
+    </div>
+    <!-- Section présentation -->
+    <section class="container-fluid bg-clair2 rounded-2 my-3 my-lg-5 py-2 py-lg-3">
+        <div class="row justify-content-between">
+            <div class="col-lg-6 d-flex flex-column justify-content-center">
+                <h2 class="fs-2 text-center text-lightBlue mt-2 mt-lg-3 align-self-center align-self-lg-start">Deviens une légende</h2>
+                <p class="text-description text-lightBlue mt-2 mt-lg-4">Découvre Esportify, la plateforme dédiée à l'e-Sport où passion, compétition et communauté ne font qu'un. Rejoins des tournois palpitants créés par des passionnés pour des passionnés, avec un écosystème pensé pour toi. Inscris-toi, connecte-toi et explore ton espace personnalisé. Gère tes Evénements, suis tes favoris, et plonge dans l'arène.
+                </p>
+                <div class="align-self-center align-self-lg-start">
+                    <a class="btn-custom-lg-green btn btn-greenFluo mt-2 mt-lg-4 mb-4" href="{{ path('signin') }}">Rejoins le combat</a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <img class="img-presentation w-100 object-fit-cover rounded-2 mx-auto" src="{{ asset('img/jpg/joueurs1.jpg') }}" alt="joueurs">
+            </div>
+        </div>
+    </section>
+    
+    <!-- Section évenements -->
+    <section class="container-fluid my-3 my-lg-5 py-2 py-lg-3">
+        <div class="row justify-content-between">    
+        <!-- carrousel -->
+            <div id="carouselEvents" class="col-lg-6 carousel slide" data-bs-ride="carousel">
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                </div>
+                <div class="carousel-inner img-slide rounded mx-auto">
+                    <div class="carousel-item active" data-bs-interval="10000">
+                        <img    src="{{ asset('img/jpg/ironArena1-freepik-ia_resultat.jpg') }}"
+                                class=" w-100 d-block"
+                                alt="Image de l'event Iron Arena">
+                        <div class="carousel-caption d-sm-block">
+                            <h3 class="fs-6">Iron Arena</h3>
+                            <p>Du 03/06/2025 au 10/06/2025</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item" data-bs-interval="10000">
+                        <img    src="{{ asset('img/jpg/neonRift1-bert-b-b6f7WaA-NZk-unsplash_resultat.jpg') }}"
+                                class="w-100 d-block"
+                                alt="Image de l'event Neon Rift">
+                        <div class="carousel-caption d-md-block">
+                            <h3 class="fs-6">Neon Rift</h3>
+                            <p>Du 04/06/2025 au 09/06/2025</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item" data-bs-interval="10000">
+                        <img    src="{{ asset('img/jpg/pixelPanic4-freepik_resultat.jpg') }}"
+                                class="w-100 d-block"
+                                alt="Image de l'event Pixel Panic">
+                        <div class="carousel-caption d-md-block">
+                            <h3 class="fs-6">Pixel Panic</h3>
+                            <p>Du 15/06/2025 au 25/06/2025</p>
+                        </div>
+                    </div>
+                <button class="carousel-control-prev"
+                        type="button"
+                        data-bs-target="#carouselEvents"
+                        data-bs-slide="prev">
+                        <span class="btn-carousel carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next"
+                        type="button"
+                        data-bs-target="#carouselEvents"
+                        data-bs-slide="next">
+                        <span class="btn-carousel carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                </button>
+            </div>            
+        </div>
+        <div class="col-lg-6 d-flex flex-column justify-content-center">
+            <h2 class="fs-2 text-clair2 text-center mt-3 mt-lg-5 align-self-lg-start">Les Evénements du mois</h2>
+            <p class="text-description text-clair2 mt-2">Ne rate pas le prochain round. Tournois ouverts, compétitions en préparation, formats
+            classiques ou inédits ; Fais ton choix et réserve ta place avant le coup d'envoi. Il y a toujours un challenge taillé pour toi.
+            Consulte les détails, inscrivez-vous, et entre dans l'arène.</p>
+            <div class="align-self-center align-self-lg-start">
+                <a class="btn-custom-lg-clair btn btn-clair1 mt-2 mt-lg-4 mb-4" href="{{ path('events') }}">Tous les événements</a>
+            </div>                
+        </div>        
+    </section>
+
+    <!-- Section Connexion -->
+    <section class="connexion container-fluid bg-clair2 text-clair2 rounded-2 mb-3 my-lg-5 py-2 py-lg-3">
+        <div class="d-flex flex-column justify-content-center align-items-center">
+            <h2 class="fs-2 text-center mt-2 mt-lg-3">Qui somme-nous ?</h2>
+            <p class="text-description text-clair2 mt-2">Esportify est une startup innovante dans le domaine du e-sport qui a été fondée le 17 mars 2021 en France. <br>Elle s'est rapidement fait un nom en organisant divers évènements dédiés aux compétitions de jeux vidéo et fort de son succés nous avons décidé de pousser plus loin dans les possibilités en développant cette plateforme en ligne dédiée.</p>
+            <h2 class="fs-2 text-center mt-2 mt-lg-3">Prêt à rentrer dans le game ?</h2>
+            <a class="btn-custom-lg-green btn btn-greenFluo mt-2 mt-lg-4 mb-4" href="{{ path('signup') }}">Inscription</a>
+        </div>
+    </section>
+    
+    <!-- Section aide / contact -->
+    <section class="container-fluid bg-clair2 d-flex flex-column rounded-2 my-3 my-lg-5 py-2 py-lg-3">
+        <h2 class="fs-2 text-lightBlue text-center m-2 mt-lg-3">Besoin d'aide ?</h2>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 justify-content-center pt-4 pb-5 mt-md-5 mt-0">
+            <div class="d-flex flex-column align-items-center">
+                <div class="row justify-content-center">
+                    <img    class="col-3 w-50" 
+                            src="{{ asset('img/jpg/image-connexion-1.png') }}" 
+                            alt="image représenatnt un problème en jeu">
+                </div>
+                <h3 class="fs-4 text-center">Problème en jeu ou sur la plateforme ?</h3>
+                <p class="text-description text-center">Nous identifions rapidement le souci pour t'aider à le résoudre efficacement.</p>
+            </div>
+            <div class="d-flex flex-column align-items-center">
+                <div class="row justify-content-center">
+                    <img    class="col-3 w-50" 
+                            src="{{ asset('img/jpg/image-connexion-2.png') }}" 
+                            alt="image représentant un souci technique">
+                </div>
+                <h3 class="fs-4 text-center">Un souci technique ? Un compte bloqué ?</h3>
+                <p class="text-description text-center">Notre équipe t'accompagne pour retrouver un accés complet et sécurisé.</p>
+            </div>
+            <div class="d-flex flex-column align-items-center">
+                <div class="row justify-content-center">
+                    <img    class="col-3 w-50" 
+                            src="{{ asset('img/jpg/image-connexion-3.png') }}" 
+                            alt="image représentant un nouveau joueur sur plusieurs plateforme">
+                </div>
+                <h3 class="fs-4 text-center">Tu es nouveau / nouvelle sur Esportify ?</h3>
+                <p class="text-description text-center">N'hésite pas à nous contacter pour ton premier tournoi en toute confiance.</p>
+            </div>
+        </div>
+    <a class="btn-custom-lg-green btn btn-greenFluo mb-4 mx-auto" href="{{ path('contact') }}">Contact</a>
+    </section>
+    </div>
+{% endblock %}

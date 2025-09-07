@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contact — Esportify{% endblock %}
+
+{% block body %}
+	<div class="container-fluid mx-auto">
+        <!-- Section Hero  -->
+        <div class="container text-center mb-4">
+            <img class="img-logo img-fluid" src="{{ asset('img/logo/logo-modifie.png') }}" alt="logo esportify">
+        </div>
+
+        <!-- Formulaire de Contact -->
+        <section class="section_contact my-4 d-flex justify-content-center mt-4"> 
+            <form action="#" method="POST" class="form_contact bg-clair1 rounded-4 text-lightBlue px-5 py-4">
+                <h1 class="title_contact text-center text-darkBlue pt-2 mb-3">Formulaire de contact</h1>
+                <input id="name" name="name" type="text" class="form-control input-filter mb-3" required placeholder="Votre nom">
+                <input id="surname" name="surname" type="text" class="form-control input-filter mb-3" required placeholder="Votre prénom">
+                <input id="mail" name="mail" type="email" class="form-control input-filter mb-3" required placeholder="example@example.fr">
+
+                <div class="role-user-form d-flex flex-column align-items-center">
+                    <p class="m-0 text-decoration-underline mb-2">Qui êtes-vous ? :</p>
+                    <div class="align-self-start">
+                        <input type="radio" id="visiteur" name="role" value="visiteur">
+                        <label for="visiteur">Un visiteur</label>
+                    </div>
+                    <div class="align-self-start">
+                        <input type="radio" id="joueur" name="role" value="joueur">
+                        <label for="joueur">Un joueur</label>
+                    </div>
+                    <div class="align-self-start mb-3">
+                        <input type="radio" id="organisateur" name="role" value="organisateur">
+                        <label for="organisateur">Un organisateur</label>
+                    </div>
+                </div>
+
+                <div class="question-type-form d-flex flex-column align-items-center">
+                    <p class="m-0 text-decoration-underline mb-2">Votre message concerne :</p>
+                    <div class="align-self-start">
+                        <input type="radio" id="probTechnique" name="questions" value="Problème Technique">
+                        <label for="probTechnique">Un problème technique</label>
+                    </div>
+                    <div class="align-self-start">
+                        <input type="radio" id="account" name="questions" value="Compte Utilisateur">
+                        <label for="account">Un compte utilisateur</label>
+                    </div>
+                    <div class="align-self-start">
+                        <input type="radio" id="events" name="questions" value="Inscription aux évènements">
+                        <label for="events">L'inscription à un ou des évènements</label>
+                    </div>
+                    <div class="align-self-start">
+                        <input type="radio" id="signal" name="questions" value="Signaler un comportement ou un abus">
+                        <label for="signal">Signaler un comportement ou un abus</label>
+                    </div>
+                    <div class="align-self-start">
+                        <input type="radio" id="otherQuestion" name="questions" value="Autre question">
+                        <label for="otherQuestion">Un autre question ?</label>
+                    </div>
+                </div>
+
+                <textarea type="text" class="form-control input-filter mt-3" required placeholder="Votre message..."></textarea>
+
+
+                <div class="d-flex justify-content-center mt-4 mb-2">
+                    <input type="button" value="Envoyer le message" class="btn-custom-lg-green btn btn-greenFluo">
+                </div>
+            </form>
+        </section>
+    </div>
+{% endblock %}
