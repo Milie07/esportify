@@ -14,4 +14,12 @@ class AuthController extends AbstractController
 	{
 		return $this->render('auth/signup.html.twig');
 	}
+	public function forgotPassword(): Response
+	{
+		return $this->render('auth/password.html.twig');
+	}
+	public function modifProfile(): Response
+	{
+		return $this->render('auth/modifProfile.html.twig');
+	}
 }

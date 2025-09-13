@@ -17,3 +17,23 @@ signin:
 signup:
   path: /signup
   controller: App\Controller\AuthController::signup
+
+forgot_password:
+  path: /forgot-password
+  controller: App\Controller\AuthController::forgotPassword
+
+modifProfile:
+  path: /modifProfile
+  controller: App\Controller\AuthController::modifProfile
+
+player_space:
+  path: /player-space
+  controller: App\Controller\SpaceController::playerSpace
+
+organizer_space:
+  path: /organizer-space
+  controller: App\Controller\SpaceController::organizerSpace
+
+admin_dashboard:
+  path: /admin-dashboard
+  controller: App\Controller\SpaceController::adminDashboard

@@ -3,5 +3,40 @@
 {% block title %}Connexion — Esportify{% endblock %}
 
 {% block body %}
-	<!-- Colle ici le HTML de ta page -->
+	<div class="container-fluid mx-auto">  
+        <!-- Logo Esportify  -->
+        <div class="container-lg text-center">
+            <img class="img-logo img-fluid" src="{{ asset('build/images/logo/logo-modifie.png') }}" alt="logo esportify">
+        </div>
+        <!-- Titre de la page -->
+        <h1 class="text-clair2 text-center pt-2">Connexion</h1>
+        <!-- Formulaire de Connexion -->
+        <section class="container-lg section_contact d-flex text_description    justify-content-center my-4 mt-4"> 
+            <form action="#" method="POST" class="form_contact bg-clair1 rounded-4  text-lightBlue px-5 py-4" id="searchForm">
+
+                <!-- Informations personnelles -->
+                <div class="w-100 mx-auto">
+                <input id="pseudo" name="pseudo" type="text" class="form-control    input_filter mb-3" minlength="2" maxlength="50" placeholder="Votre     pseudo" required>
+                </div>
+                <div class="w-100 mx-auto">
+                <input id="mail" name="mail" type="email" class="form-control   input_filter mb-3" placeholder="example@example.fr" required>
+                </div>
+                <div class="w-100 mx-auto">
+                <input id="password" name="password" type="password" class="form-control    input_filter mb-3" placeholder="Votre mot de passe" required>
+                </div>
+
+                <!-- Bouton d'envoi -->
+                <div class="d-flex justify-content-center mt-4 mb-2">
+                    <input class="btn-custom-md-green btn btn-greenFluo" type="submit"  value="Se connecter">
+                </div>
+
+                <div class="forget_password text_description text-center">
+                    <a class="text-lightBlue" href="{{ path('forgot_password') }}">Mot  de passe oublié ?</a>
+                </div>
+            </form>
+
+
+        </section>
+    </div>
+
 {% endblock %}

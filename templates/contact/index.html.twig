@@ -4,21 +4,25 @@
 
 {% block body %}
 	<div class="container-fluid mx-auto">
-        <!-- Section Hero  -->
-        <div class="container text-center mb-4">
-            <img class="img-logo img-fluid" src="{{ asset('img/logo/logo-modifie.png') }}" alt="logo esportify">
+        <!-- Logo Esportify  -->
+        <div class="container-lg text-center">
+            <img class="img-logo img-fluid" src="{{ asset('build/images/logo/logo-modifie.png') }}" alt="logo esportify">
         </div>
+        <!-- Titre de la page -->
+        <h1 class="text-clair2 text-center pt-2">Contactez-nous !</h1>
 
         <!-- Formulaire de Contact -->
-        <section class="section_contact my-4 d-flex justify-content-center mt-4"> 
-            <form action="#" method="POST" class="form_contact bg-clair1 rounded-4 text-lightBlue px-5 py-4">
-                <h1 class="title_contact text-center text-darkBlue pt-2 mb-3">Formulaire de contact</h1>
-                <input id="name" name="name" type="text" class="form-control input-filter mb-3" required placeholder="Votre nom">
-                <input id="surname" name="surname" type="text" class="form-control input-filter mb-3" required placeholder="Votre prénom">
-                <input id="mail" name="mail" type="email" class="form-control input-filter mb-3" required placeholder="example@example.fr">
+        <section class="section_contact d-flex text_description justify-content-center my-4 mt-4"> 
+            <form action="#" method="POST" class="form_contact bg-clair1 rounded-4 text-lightBlue px-5 py-4" id="searchForm">
 
-                <div class="role-user-form d-flex flex-column align-items-center">
-                    <p class="m-0 text-decoration-underline mb-2">Qui êtes-vous ? :</p>
+                <!-- Informations personnelles -->
+                <input id="name" name="name" type="text" class="form-control input_filter mb-3" minlength="2" maxlength="50" placeholder="Votre nom" required>
+                <input id="surname" name="surname" type="text" class="form-control input_filter mb-3" minlength="2" maxlength="50" placeholder="Votre prénom" required>
+                <input id="mail" name="mail" type="email" class="form-control input_filter mb-3" placeholder="example@example.fr" required>
+
+                <!-- Rôle de l'utilisateur -->
+                <div class="role_user d-flex flex-column">
+                    <p class="text-center text-decoration-underline mb-2">Qui êtes-vous ? :</p>
                     <div class="align-self-start">
                         <input type="radio" id="visiteur" name="role" value="visiteur">
                         <label for="visiteur">Un visiteur</label>
@@ -33,8 +37,9 @@
                     </div>
                 </div>
 
-                <div class="question-type-form d-flex flex-column align-items-center">
-                    <p class="m-0 text-decoration-underline mb-2">Votre message concerne :</p>
+                <!-- Type de question -->
+                <div class="question_type d-flex flex-column">
+                    <p class="text-center text-decoration-underline mb-2">Votre message concerne :</p>
                     <div class="align-self-start">
                         <input type="radio" id="probTechnique" name="questions" value="Problème Technique">
                         <label for="probTechnique">Un problème technique</label>
@@ -57,11 +62,12 @@
                     </div>
                 </div>
 
-                <textarea type="text" class="form-control input-filter mt-3" required placeholder="Votre message..."></textarea>
+                <!-- Message -->
+                <textarea class="form-control input_filter mt-3" type="text" maxlength="500" placeholder="Votre message..." required></textarea>
 
-
+                <!-- Bouton d'envoi -->
                 <div class="d-flex justify-content-center mt-4 mb-2">
-                    <input type="button" value="Envoyer le message" class="btn-custom-lg-green btn btn-greenFluo">
+                    <input class="btn-custom-lg-green btn btn-greenFluo" type="submit" value="Envoyer le message">
                 </div>
             </form>
         </section>

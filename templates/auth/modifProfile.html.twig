@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Inscription — Esportify{% endblock %}
+{% block title %}Connexion — Esportify{% endblock %}
 
 {% block body %}
     <div class="container-fluid mx-auto"> 
@@ -9,41 +9,37 @@
             <img class="img-logo img-fluid" src="{{ asset('build/images/logo/logo-modifie.png') }}" alt="logo esportify">
         </div>
         <!-- Titre de la page -->
-        <h1 class="text-clair2 text-center pt-2">Inscription</h1>
+        <h1 class="text-clair2 text-center pt-2">Modifier son Profil</h1>
 
         <!-- Formulaire d'Inscription -->
         <section class="container-lg section_contact d-flex text_description justify-content-center my-4 mt-4"> 
-            <form class="form_contact bg-clair1 rounded-4 text-lightBlue px-5 py-4" id="searchForm" action="#" method="POST" >
+            <form action="#" method="POST" class="form_contact bg-clair1 rounded-4 text-lightBlue px-5 py-4" id="searchForm">
 
                 <!-- Informations personnelles -->
                 <div class="w-75 mx-auto">
-                    <input class="form-control input_filter mb-3" id="name" name="name" type="text"  minlength="2" maxlength="50" placeholder="Votre nom" required>
+                <input id="name" name="name" type="text" class="form-control input_filter mb-3" minlength="2" maxlength="50" placeholder="Votre nom" required>
                 </div>
                 <div class="w-75 mx-auto">
-                    <input class="form-control input_filter mb-3" id="surname" name="surname" type="text"  minlength="2" maxlength="50" placeholder="Votre prénom" required>
+                <input id="surname" name="surname" type="text" class="form-control input_filter mb-3" minlength="2" maxlength="50" placeholder="Votre prénom" required>
                 </div>
                 <div class="w-75 mx-auto">
-                    <input class="form-control input_filter mb-3" id="pseudo" name="pseudo" type="text"  minlength="2" maxlength="50" placeholder="Votre pseudo" required>
+                <input id="pseudo" name="pseudo" type="text" class="form-control input_filter mb-3" minlength="2" maxlength="50" placeholder="Votre pseudo" disabled required>
                 </div>
                 <div class="w-75 mx-auto">
-                    <input class="form-control input_filter mb-1" id="mail" name="mail" type="email"  placeholder="example@example.fr" required>
-                    <div class="invalid-feedback mb-3">Veuillez entrer une adresse email valide.</div>
+                <input id="mail" name="mail" type="email" class="form-control input_filter mb-3" placeholder="example@example.fr" disabled required>
                 </div>
                 <div class="w-75 mx-auto">
-                    <input class="form-control input_filter mb-1" id="password" name="password" type="password"  placeholder="Votre mot de passe" required>
-                    <div class="invalid-feedback mb-3">Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.
-                    </div>
+                <input id="password" name="password" type="password" class="form-control input_filter mb-3" placeholder="Votre mot de passe" required>
                 </div>
                 <div class="w-75 mx-auto">
-                    <input class="form-control input_filter mb-3" id="confirmPassword" name="confirm_password" type="password"  placeholder="Confirmer votre mot de passe" required>
-                    <div class="invalid-feedback">Les mots de passe ne correspondent pas.</div>
+                <input id="confirm_password" name="confirmPassword" type="password" class="form-control input_filter mb-3" placeholder="Confirmer votre mot de passe" required>
                 </div>
 
                 <!-- Choix de l'avatar -->
                 <p class="text-center text-decoration-underline mb-2">Choisissez votre avatar :</p>
                 <div class="d-flex flex-wrap justify-content-center">
                     <div class="align-self-start mx-1">
-                        <input type="radio" id="avatar1" name="avatar" value="avatar1" checked>
+                        <input type="radio" id="avatar1" name="avatar" value="avatar1">
                         <img class="avatar_icone" src="{{ asset('build/images/icones/avatar1.jpg') }}" alt="choix d'avatar">
                     </div>
                     <div class="align-self-start mx-1 my-1">
@@ -83,9 +79,14 @@
 
                 <!-- Bouton d'envoi -->
                 <div class="d-flex justify-content-center mt-4 mb-2">
-                    <input class="btn-custom-lg-green btn btn-greenFluo" type="submit" value="Valider l'inscription">
+                    <input class="btn-custom-lg-green btn btn-greenFluo" type="submit" value="Modifier le profil">
                 </div>
             </form>
         </section>
     </div>
+
+
+
 {% endblock %}
+
+

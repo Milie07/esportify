@@ -1,0 +1,99 @@
+// CUSTOM
+  // RESET 
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 1rem;
+}
+
+ul, ol {
+    list-style: none;
+}
+
+a{
+    text-decoration: none;
+}
+
+  // HEADINGS
+h1,
+h2,
+h3 {
+    font-family: $header-font-family;
+}
+
+h1 {
+    font-size: 3rem; //48px
+}
+
+h3 {
+    font-size: 1.5rem; //24px
+}
+
+.modal-title {
+    font-size: 1.875rem; //30px
+}
+
+  // TEXTES
+.text_description {
+    text-align: justify;
+    font-family: $font-family;
+}
+
+  // BOUTONS ET LIENS 
+
+@mixin bouton($size: lg, $txt-color: $lightBlue) {
+    @if $size == lg {
+        width: 210px;
+    } @else if $size == md {
+        width: 130px;
+    } @else if $size == sm{
+        width: 100px;
+    } @else {
+        width: auto;
+    }
+
+    border: none;
+    border-radius: 50px;
+    font-family: $header-font-family;
+    font-weight: 500;
+    color: $txt-color;
+}
+
+@mixin btn-hover($hover-color: $lightBlue, $shadow-color: $beige) {
+    transition: all 0.3s ease-in-out;
+    &:hover {
+        color: $hover-color !important;
+        box-shadow: 1px 1px 10px $shadow-color;
+    }
+}
+
+  // FORM
+.input_filter { // input généraux
+    background-color: white;
+    border: 3px solid $beige;
+    border-radius: 10px;
+    display: inline-block;
+    color: $lightBlue !important;
+    font-size: 1rem;
+
+    &:active,
+    &:focus {
+    border: 3px solid $greenFluo;
+    box-shadow: 1px 1px 10px $greenFluo;
+    }
+    &:-webkit-autofill { // pour outrepasser le style par défaut
+    box-shadow: 0 0 0 1000px white inset !important;
+    -webkit-box-shadow: 0 0 0 1000px white inset !important;
+    -webkit-text-fill-color: $lightBlue !important;
+    transition: background-color 9999s ease-in-out 0s;
+    font-family: 'Roboto Flex', sans-serif !important;
+    }
+}
+.input_filter::placeholder {
+    color: $lightBlue;
+    opacity: 0.5;
+}
