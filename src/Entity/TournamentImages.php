@@ -34,4 +34,27 @@ class TournamentImages
         
         return $this;
     }
+
+    public function getImagePath(): ?string
+    {
+        if (!$this->imageUrl) {
+            return null;
+        }
+    
+        // normalisation : backslashes -> slash
+        $value = str_replace('\\', '/', trim($this->imageUrl));
+    
+        // supprimer un éventuel préfixe "public/"
+        $value = preg_replace('#^/?public/#i', '', $value);
+    
+        // supprimer slash initial s'il reste
+        $value = ltrim($value, '/');
+    
+        // si ce n'est pas déjà un chemin commençant par uploads/ ou build/, on préfixe
+        if (!preg_match('#^(uploads/|build/)#i', $value)) {
+            $value = 'uploads/tournaments/' . $value;
+        }
+    
+        return $value;
+    }
 }

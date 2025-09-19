@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Enum\CurrentStatus;
 use App\Entity\Tournament;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -24,17 +25,15 @@ class TournamentRepository extends ServiceEntityRepository
 //    /**
 //     * @return Tournament[] Returns an array of Tournament objects
 //     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('t')
-//            ->andWhere('t.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('t.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function findValidatedForCarousel(int $limit = 6): array
+    {
+        $statusValue = CurrentStatus::VALIDE->value;
+        return $this->findBy(
+            ['currentStatus' => $statusValue],
+            ['startAt' => 'ASC'],
+            $limit
+        );
+    }
 
 //    public function findOneBySomeField($value): ?Tournament
 //    {

@@ -39,8 +39,8 @@ class Tournament
     private ?\DateTimeImmutable $createdAt = null;
 
     // ENUM('En Attente', 'Validé', 'En Cours', 'Terminé', 'Refusé')
-    #[ORM\Column(name: "current_status", enumType: CurrentStatus::class, type: TYPES:: STRING, length: 20, options: ['default' => 'En Attente'])]
-    private string $currentStatus = 'En Attente';
+    #[ORM\Column(name: "current_status", type: Types::STRING, enumType: CurrentStatus::class, length: 20, options: ['default' => CurrentStatus::EN_ATTENTE->value])]
+    private CurrentStatus $currentStatus = CurrentStatus::EN_ATTENTE;
 
     //RELATIONS    
         // MEMBER_REGISTER_TOURNAMENT
@@ -109,7 +109,7 @@ class Tournament
         return $this->startAt;
     }
         
-    public function setstartAt(\DateTimeImmutable $startAt): static
+    public function setStartAt(\DateTimeImmutable $startAt): static
     {
         $this->startAt = $startAt;
 
@@ -164,11 +164,11 @@ class Tournament
         return $this;
     }
 
-    public function getCurrentStatus(): ?string
+    public function getCurrentStatus(): ?CurrentStatus
     {
         return $this->currentStatus;
     }
-    public function setCurrentStatus(?string $currentStatus): static
+    public function setCurrentStatus(?CurrentStatus $currentStatus): static
     {
         $this->currentStatus = $currentStatus;
 
@@ -185,5 +185,18 @@ class Tournament
         $this->tournamentImage = $tournamentImage;
 
         return $this;
+    }
+
+    public function getImagePath(): ?string
+    {
+        if (!$this->tournamentImage) {
+            return null;
+    }
+        return $this->tournamentImage->getImagePath();
+    }
+
+    public function isValidated(): bool
+    {
+        return $this->currentStatus->isValide();
     }
 }

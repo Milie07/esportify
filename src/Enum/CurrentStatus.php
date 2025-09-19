@@ -9,4 +9,14 @@ enum CurrentStatus: string
     case EN_COURS = 'En Cours';
     case REFUSE = 'Refusé';
     case TERMINE = 'Terminé';
+
+    public function isValide(): bool
+    {
+        return $this === self::VALIDE;
+    }
+
+    public function label(): string
+    {
+        return $this->value;
+    }
 }
