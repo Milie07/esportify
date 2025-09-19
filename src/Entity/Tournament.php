@@ -42,23 +42,23 @@ class Tournament
     #[ORM\Column(name: "current_status", enumType: CurrentStatus::class, type: TYPES:: STRING, length: 20, options: ['default' => 'En Attente'])]
     private string $currentStatus = 'En Attente';
 
-    
-    // MEMBER_REGISTER_TOURNAMENT
+    //RELATIONS    
+        // MEMBER_REGISTER_TOURNAMENT
     #[ORM\OneToMany(mappedBy: "tournament", targetEntity: MemberRegisterTournament::class, orphanRemoval: true)]
     private Collection $tournamentRegister;
     public function getTournamentRegister(): Collection { return $this->tournamentRegister; }
     
-    // MEMBER_PARTICIPATE_TOURNAMENT
+        // MEMBER_PARTICIPATE_TOURNAMENT
     #[ORM\OneToMany(mappedBy: "tournament", targetEntity: MemberParticipateTournament::class, orphanRemoval: true)]
     private Collection $participateTournament;
     public function getParticipateTournament(): Collection { return $this->participateTournament; }
     
-    // ADD_FAVORITES
+        // ADD_FAVORITES
     #[ORM\OneToMany(mappedBy: "tournament", targetEntity: MemberAddFavoritesTournament::class, orphanRemoval: true)]
     private Collection $addFavoritestournament;
     public function getAddFavoritestournament(): Collection { return $this->addFavoritestournament; }
 
-    // CONCERN
+        // CONCERN
     #[ORM\OneToMany(mappedBy: 'tournament', targetEntity: TournamentHistory::class, orphanRemoval: true)]
     private Collection $tournamentHistory;
     public function getTournamentHistory(): Collection { return $this->tournamentHistory; }

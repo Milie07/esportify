@@ -4,10 +4,12 @@
 {% block body %}
     <div class="container-fluid mx-auto">
         <!-- Avatar Joueur -->
-        <img class="avatar_player d-block mx-auto" src="{{ asset('build/images/icones/avatar2.jpg') }}" alt="Avatar">
+        {% block img %}
+            <img class="avatar avatar_player d-block mx-auto" src="{{ asset(avatarUrl) }}" alt="avatar">
+        {% endblock %}
         
         <!-- Titre de la page -->
-        <h1 class="text-center text-beige">Bienvenue Machin</h1>
+        <h1 class="text-center text-beige">Bienvenue <span>{{ app.user.pseudo ?: app.user.username }}</span></h1>
 
         <!-- statistiques organisateur -->
         <section class="container-lg rounded-2 w-lg-75 w-75 my-3 my-lg-3 py-2 py-lg-3">
@@ -270,7 +272,7 @@
         </section>
 
         <div class="text-center mt-4">
-            <a class="btn-custom-lg-clair btn btn-clair2 mb-4" href="{{ path('home') }}">Retour à l'accueil</a>
+            <a class="btn-custom-lg-clair btn btn-clair2 mb-4" href="{{ path('app_home') }}">Retour à l'accueil</a>
         </div>
         </section>
     </div>

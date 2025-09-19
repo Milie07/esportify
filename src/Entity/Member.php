@@ -7,13 +7,15 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: MemberRepository::class)]
 #[ORM\Table(name: 'member')]
 #[ORM\UniqueConstraint(name: "uq_member_pseudo", columns: ["pseudo"])]
 #[ORM\UniqueConstraint(name: "uq_member_email", columns: ["email"])]
 
-class Member
+class Member implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -32,12 +34,13 @@ class Member
     #[ORM\Column(name: 'email', type: Types::STRING, length: 100, unique: true)]
     private ?string $email = null;
 
-    #[ORM\Column(name: 'password_hash', type: Types::STRING, length: 60)]
+    #[ORM\Column(name: 'password_hash', type: Types::STRING, length: 255)]
     private ?string $passwordHash = null;
 
     #[ORM\Column(name: 'member_score', type: Types::INTEGER, options: ['default' => 0])]
     private ?int $memberScore = 0;
 
+    // RELATIONS 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(name: "member_avatar_id", referencedColumnName: "member_avatar_id", nullable: true, onDelete: "SET NULL")]
     private ?MemberAvatars $memberAvatarId = null;
@@ -46,7 +49,7 @@ class Member
     #[ORM\JoinColumn(name: "member_role_id", referencedColumnName: "member_role_id")]
     private ?MemberRoles $memberRole = null;
 
-    // MEMBER_MODERATE_ROLES
+        // MEMBER_MODERATE_ROLES
     #[ORM\OneToMany(mappedBy: "member", targetEntity: MemberModerateRoles::class, orphanRemoval: true)]
     private Collection $memberModerate;
     public function getMemberModerate(): Collection
@@ -54,7 +57,7 @@ class Member
         return $this->memberModerate;
     }
 
-    // MEMBER_REGISTER_TOURNAMENT
+        // MEMBER_REGISTER_TOURNAMENT
     #[ORM\OneToMany(mappedBy: "member", targetEntity: MemberRegisterTournament::class, orphanRemoval: true)]
     private Collection $memberRegister;
     public function getMemberRegister(): Collection
@@ -62,7 +65,7 @@ class Member
         return $this->memberRegister;
     }
 
-    // MEMBER_PARTICIPATE_TOURNAMENT
+        // MEMBER_PARTICIPATE_TOURNAMENT
     #[ORM\OneToMany(mappedBy: "member", targetEntity: MemberParticipateTournament::class, orphanRemoval: true)]
     private Collection $memberParticipate;
     public function getMemberParticipate(): Collection
@@ -70,7 +73,7 @@ class Member
         return $this->memberParticipate;
     }
 
-    // ADD_FAVORITES
+        // ADD_FAVORITES
     #[ORM\OneToMany(mappedBy: "member", targetEntity: MemberAddFavoritesTournament::class, orphanRemoval: true)]
     private Collection $memberAddFavorites;
     public function getMemberAddFavorites(): Collection
@@ -78,7 +81,7 @@ class Member
         return $this->memberAddFavorites;
     }
 
-    // HISTORIQUE: côté inverse (un membre -> plusieurs historisations)
+        // HISTORIQUE: côté inverse (un membre -> plusieurs historisations)
     #[ORM\OneToMany(mappedBy: 'member', targetEntity: TournamentHistory::class, orphanRemoval: true)]
     private Collection $tournamentHistories;
 
@@ -89,6 +92,49 @@ class Member
         $this->memberParticipate = new ArrayCollection();
         $this->memberAddFavorites = new ArrayCollection();
         $this->tournamentHistories = new ArrayCollection();
+    }
+
+    /**
+     * Interface pour se Connecter.
+     */
+    public function getUserIdentifier(): string
+    {
+        return (string) ($this->getPseudo() ?? '');
+    }
+
+    /**
+     * Rôles de sécurité exposés à Symfony.
+     * Base: ROLE_USER.
+     * + rôle principal mappé depuis MemberRoles (admin/organizer/player).
+     */
+    
+    public function getRoles(): array
+    {
+        $roles = ['ROLE_USER'];
+
+        if ($this->memberRole) {
+        $roles[] = $this->memberRole->getSymfonyRole();
+        }
+        return array_values(array_unique($roles));
+    }
+
+    public function getPassword(): string
+    {
+        return $this->passwordHash ?? '';
+    }
+
+    public function setPassword(string $hashed): static
+    {
+        $this->passwordHash = $hashed;
+        return $this;
+    }
+
+    /**
+     * Pas de données sensibles temporaires à purger.
+     */
+    public function eraseCredentials(): void
+    {
+        // no-op
     }
 
     public function getId(): ?int
@@ -140,18 +186,6 @@ class Member
     public function setEmail(?string $email): static
     {
         $this->email = $email;
-
-        return $this;
-    }
-
-    public function getPasswordHash(): ?string
-    {
-        return $this->passwordHash;
-    }
-
-    public function setPasswordHash(?string $passwordHash): static
-    {
-        $this->passwordHash = $passwordHash;
 
         return $this;
     }
@@ -219,4 +253,46 @@ class Member
         }
         return $this;
     }
+
+    public function getUsername(): string
+    {
+        return $this->getUserIdentifier(); 
+    }
+    public function getSalt(): ?string
+    {   
+        return null; 
+    }
+    
+    public function getAvatarPath(): ?string
+{
+    if (!$this->memberAvatarId) {
+        return null;
+    }
+
+    $avatar = $this->memberAvatarId;
+    $value = null;
+
+    // On n'utilise que des getters (sécurité IDE + Doctrine proxy)
+    if (method_exists($avatar, 'getAvatarUrl')) {
+        $value = $avatar->getAvatarUrl();
+    } else {
+        // Aucun getter connu -> on ne tente pas d'accéder à des propriétés privées
+        return null;
+    }
+
+    if (!$value) {
+        return null;
+    }
+
+    // Normalisation simple pour usage avec asset():
+    $value = trim(str_replace('\\', '/', $value));
+    $value = preg_replace('#^/?public/#i', '', $value);
+    $value = ltrim($value, '/');
+
+    if (!preg_match('#^uploads/#i', $value)) {
+        $value = 'uploads/avatars/' . $value;
+    }
+
+    return $value;
+}
 }

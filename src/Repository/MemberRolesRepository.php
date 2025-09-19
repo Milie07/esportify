@@ -36,13 +36,13 @@ class MemberRolesRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?MemberRole
-//    {
-//        return $this->createQueryBuilder('m')
-//            ->andWhere('m.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function findOneBySomeField($code): ?MemberRoles
+    {
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.code = :code')
+            ->setParameter('code', strtoupper($code))
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }    
 }

@@ -1,4 +1,4 @@
-home:
+app_home:
   path: /
   controller: App\Controller\HomeController::index
 
@@ -9,10 +9,6 @@ events:
 contact:
   path: /contact
   controller: App\Controller\ContactController::index
-
-signin:
-  path: /signin
-  controller: App\Controller\AuthController::signin
 
 signup:
   path: /signup
@@ -37,3 +33,12 @@ organizer_space:
 admin_dashboard:
   path: /admin-dashboard
   controller: App\Controller\SpaceController::adminDashboard
+
+app_login:
+  path: /login
+  controller: App\Controller\SecurityController::login
+
+app_logout:
+  path: /logout
+  controller: App\Controller\SecurityController::logout
+  

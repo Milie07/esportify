@@ -95,6 +95,9 @@ $theme-colors: map.merge($theme-colors, $custom-theme-colors);
     display: inline-flex;
     align-items: center;
 }
+.navbar-nav .dropdown-menu{
+    position: relative;
+}
 
 .dropdown-menu {
     min-width: 8rem;
@@ -105,11 +108,6 @@ $theme-colors: map.merge($theme-colors, $custom-theme-colors);
 
 .nav-item.dropdown { 
     position: relative; 
-}
-
-.dropdown-menu-end {
-    right: 0;
-    left: auto;
 }
 
 .dropdown-item {
@@ -223,7 +221,7 @@ textarea {
     min-height: 150px !important;
 }
 
-// MAIN - PLAYER SPACE
+// MAIN - USER SPACE
 .avatar_player  {
     width: 150px;
     height: 150px;
