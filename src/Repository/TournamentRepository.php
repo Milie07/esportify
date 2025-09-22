@@ -23,9 +23,9 @@ class TournamentRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return Tournament[] Returns an array of Tournament objects
+//     * @return Tournament[] Retourne un tableau de tournois validés pour le carousel
 //     */
-    public function findValidatedForCarousel(int $limit = 6): array
+    public function findValidatedForCarousel(int $limit = 10): array
     {
         $statusValue = CurrentStatus::VALIDE->value;
         return $this->findBy(
@@ -35,13 +35,84 @@ class TournamentRepository extends ServiceEntityRepository
         );
     }
 
-//    public function findOneBySomeField($value): ?Tournament
-//    {
-//        return $this->createQueryBuilder('t')
-//            ->andWhere('t.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function findValidated(int $limit = 10): array
+    {
+        $statusValue = CurrentStatus::VALIDE->value;
+        $qb = $this->createQueryBuilder('t')
+            ->andWhere('t.currentStatus = :status')
+            ->setParameter('status', $statusValue)
+            ->orderBy('t.startAt', 'ASC');
+
+        if ($limit) {
+            $qb->setMaxResults($limit);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+/**
+     * Retourne les événements validés, filtrés si nécessaire.
+     *
+     * @param string|null $organizerPseudo
+     * @param string|null $dateAtIso        // format attendu: "YYYY-MM-DDTHH:MM" ou ISO
+     * @param int|null    $playersCountMin  // capacité minimale (capacityGauge)
+     * @return Tournament[]
+     */
+    public function findValidatedFiltered(?string $organizerPseudo, ?string $dateAtIso, ?int $playersCountMin): array
+    {
+        $statusValue = \App\Enum\CurrentStatus::VALIDE->value;
+
+        $qb = $this->createQueryBuilder('t')
+            ->leftJoin('t.tournamentImage', 'img')
+            ->leftJoin('t.tournamentRegister', 'reg') // Pour plus tard
+            ->leftJoin('t.tournamentHistory', 'h')   // Pour plus tard
+            ->leftJoin('t.organizer', 'o') 
+            ->andWhere('t.currentStatus = :status')
+            ->setParameter('status', $statusValue)
+            ->orderBy('t.startAt', 'ASC');
+
+        if ($organizerPseudo) {
+            $qb->andWhere('o.pseudo = :organizerPseudo')
+            ->setParameter('organizerPseudo', $organizerPseudo);
+        }
+
+        if ($dateAtIso) {
+            try {
+                // DateTimeImmutable accepte "YYYY-MM-DDTHH:MM"
+                $dateAtObj = new \DateTimeImmutable($dateAtIso);
+                $qb->andWhere('t.startAt >= :dateAt')
+                ->setParameter('dateAt', $dateAtObj);
+            } catch (\Throwable $e) {
+                // si la date ne se parse pas, on ignore le filtre
+            }
+        }
+
+        if (is_int($playersCountMin)) {
+            // filtre sur capacityGauge (capacité totale autorisée)
+            $qb->andWhere('t.capacityGauge >= :playersCountMin')
+            ->setParameter('playersCountMin', $playersCountMin);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * Retourne la liste distincte des pseudos d'organisateur pour les events validés.
+     *
+     * @return string[] tableau de pseudos triés
+     */
+    public function findOrganizersForValidated(): array
+    {
+        $statusValue = \App\Enum\CurrentStatus::VALIDE->value;
+
+        $qb = $this->createQueryBuilder('t')
+            ->select('DISTINCT o.pseudo AS pseudo')
+            ->leftJoin('t.organizer', 'o')
+            ->andWhere('t.currentStatus = :status')
+            ->setParameter('status', $statusValue)
+            ->orderBy('o.pseudo', 'ASC');
+
+        $rows = $qb->getQuery()->getScalarResult();
+        // getScalarResult renvoie un tableau de ['pseudo' => '...']
+        return array_map(fn($r) => $r['pseudo'], $rows);
+    }
 }

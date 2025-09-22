@@ -11,7 +11,7 @@ class HomeController extends AbstractController
 {
 	public function index(TournamentRepository $tournamentRepository): Response
 	{
-		$carouselTournaments = $tournamentRepository->findValidatedForCarousel(6);
+		$carouselTournaments = $tournamentRepository->findValidatedForCarousel(10);
 
         return $this->render('home/index.html.twig', [
             'carouselTournaments' => $carouselTournaments,

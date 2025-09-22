@@ -81,7 +81,7 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->memberAddFavorites;
     }
 
-        // HISTORIQUE: côté inverse (un membre -> plusieurs historisations)
+        // HISTORIQUE: côté inverse (un membre -> plusieurs mise en historique)
     #[ORM\OneToMany(mappedBy: 'member', targetEntity: TournamentHistory::class, orphanRemoval: true)]
     private Collection $tournamentHistories;
 
@@ -103,7 +103,6 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * Rôles de sécurité exposés à Symfony.
      * Base: ROLE_USER.
      * + rôle principal mappé depuis MemberRoles (admin/organizer/player).
      */
@@ -263,8 +262,11 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
         return null; 
     }
     
+    /* Affichage de l'avatar 
+    * en fonction de la personne connectée 
+    */
     public function getAvatarPath(): ?string
-{
+    {
     if (!$this->memberAvatarId) {
         return null;
     }
@@ -272,11 +274,9 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     $avatar = $this->memberAvatarId;
     $value = null;
 
-    // On n'utilise que des getters (sécurité IDE + Doctrine proxy)
     if (method_exists($avatar, 'getAvatarUrl')) {
         $value = $avatar->getAvatarUrl();
     } else {
-        // Aucun getter connu -> on ne tente pas d'accéder à des propriétés privées
         return null;
     }
 
@@ -294,5 +294,20 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     return $value;
-}
+    }
+
+/**
+ * Affichage du pseudo 
+ */
+    public function getOrganizer(): string
+    {
+        if (!empty($this->pseudo)) {
+            return $this->pseudo;
+        }
+
+        $parts = array_filter([$this->firstName, $this->lastName]);
+        $full = trim(implode(' ', $parts));
+
+        return $full !== '' ? $full : 'Utilisateur';
+    }
 }

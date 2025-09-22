@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: MemberRolesRepository::class)]
 #[ORM\Table(name: 'member_roles')]
 #[ORM\UniqueConstraint(name: 'uq_member_roles_code', columns: ['code'])]
-#[ORM\HasLifecycleCallbacks]
+
 
 class MemberRoles
 {
@@ -37,38 +37,11 @@ class MemberRoles
     // RELATIONS
     #[ORM\OneToMany(mappedBy: "memberRole", targetEntity: MemberModerateRoles::class, orphanRemoval: true)]
     private Collection $moderateMemberRole;
-    public function getModerateMemberRole(): Collection
-    {
-        return $this->moderateMemberRole;
-    }
 
     public function __construct()
     {
         $this->moderateMemberRole = new ArrayCollection();
-        $this->createdAt = new \DateTimeImmutable();
     }
-
-    #region Lifecycle
-    #[ORM\PrePersist]
-    public function onPrePersist(): void
-    {
-        if (!$this->createdAt) {
-            $this->createdAt = new \DateTimeImmutable();
-        }
-        $this->updatedAt = new \DateTime(); // initialise aussi updated_at
-        // Normalise le code en MAJ
-        $this->code = strtoupper($this->code);
-    }
-
-    #[ORM\PreUpdate]
-    public function onPreUpdate(): void
-    {
-        $this->updatedAt = new \DateTime();
-        // garde le code en MAJ si modifié via setter
-        $this->code = strtoupper($this->code);
-    }
-    #endregion
-
 
     public function getId(): ?int
     {
@@ -79,6 +52,7 @@ class MemberRoles
     {
         return $this->memberRoleLabel;
     }
+
     public function setMemberRoleLabel(?MemberRoleLabel$memberRoleLabel): self
     {
         $this->memberRoleLabel = $memberRoleLabel;
@@ -109,8 +83,35 @@ class MemberRoles
         return $this;
     }
 
+    public function getCode(): ?string
+    {
+        return $this->code;
+    }
+
+    public function setCode(string $code): static
+    {
+        $this->code = $code;
+        return $this;
+    }
+
+    public function getModerateMemberRole(): Collection
+    {
+        return $this->moderateMemberRole;
+    }
+
     public function getSymfonyRole(): string
     {
-        return $this->memberRoleLabel?->symfonyRole() ?? 'ROLE_USER';
+        if ($this->memberRoleLabel instanceof MemberRoleLabel) {
+            if (method_exists($this->memberRoleLabel, 'symfonyRole')) {
+                return $this->memberRoleLabel->symfonyRole();
+            }
+            if (method_exists($this->memberRoleLabel, 'value')) {
+                return 'ROLE_' . strtoupper(preg_replace('/[^A-Z0-9]+/i', '_', $this->memberRoleLabel->value));
+            }
+            // fallback: string cast
+            return 'ROLE_' . strtoupper(preg_replace('/[^A-Z0-9]+/i', '_', (string) $this->memberRoleLabel));
+        }
+        return 'ROLE_USER';
     }
+
 }

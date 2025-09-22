@@ -45,7 +45,6 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle player_trigger" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     {% if app.user %}
-                        {# avatarPath doit être une chaine relative du type "uploads/avatars/xxx.jpg" #}
                         {% set avatarUrl = app.user.avatarPath is defined ? app.user.avatarPath : null %}
                         {% if avatarUrl %}
                             <img class="avatar_icone" src="{{ asset(avatarUrl) }}" alt="avatar">

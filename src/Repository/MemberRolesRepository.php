@@ -21,21 +21,6 @@ class MemberRolesRepository extends ServiceEntityRepository
         parent::__construct($registry, MemberRoles::class);
     }
 
-//    /**
-//     * @return MemberRoles[] Returns an array of MemberRoles objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('m')
-//            ->andWhere('m.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('m.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
     public function findOneBySomeField($code): ?MemberRoles
     {
         return $this->createQueryBuilder('r')

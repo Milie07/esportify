@@ -12,31 +12,6 @@
         <h1 class="text-clair2 text-center pt-2">Connexion</h1>
         <!-- Formulaire de Connexion -->
         <section class="container-lg section_contact d-flex text_description justify-content-center my-4 mt-4"> 
-            {# <form action=""{{ path('app_login') }}"" method="POST" class="form_contact bg-clair1 rounded-4 text-lightBlue px-5 py-4" id="searchForm">
-                <!-- Informations personnelles -->
-                <div class="w-100 mx-auto">
-                <input id="pseudo" name="pseudo" value="{{ last_username }}" type="text" class="form-control input_filter mb-3" minlength="2" maxlength="50" placeholder="Votre pseudo" required>
-                </div>
-                <div class="w-100 mx-auto">
-                <input id="password" name="password" type="password" class="form-control input_filter mb-3" placeholder="Votre mot de passe" required>
-                </div>
-
-                <!-- Bouton d'envoi -->
-                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-                <div class="d-flex justify-content-center mt-4 mb-2">
-                    <input class="btn-custom-md-green btn btn-greenFluo" type="submit" value="Se connecter">
-                </div>
-
-                <div class="mb-3">
-                    <input type="checkbox" id="remember_me" name="_remember_me">
-                    <label for="remember_me">Se souvenir de moi</label>
-                </div> 
-
-                <div class="forget_password text_description text-center">
-                    <a class="text-lightBlue" href="{{ path('forgot_password') }}">Mot  de passe oublié ?</a>
-                </div>
-            </form> #}
-
             <form   class="form_contact bg-clair1 rounded-4 text-lightBlue px-5 py-4" 
                     id="loginForm"
                     action="{{ path('app_login') }}" 

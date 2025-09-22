@@ -43,6 +43,14 @@ class Tournament
     private CurrentStatus $currentStatus = CurrentStatus::EN_ATTENTE;
 
     //RELATIONS    
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(name: "tournament_image_id", referencedColumnName: "tournament_image_id", nullable: true, onDelete: "SET NULL")]
+    private ?TournamentImages $tournamentImage = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(name: 'member_id', referencedColumnName: 'member_id', nullable: false, options: ['unsigned' => true])]
+    private ?Member $organizer = null;
+
         // MEMBER_REGISTER_TOURNAMENT
     #[ORM\OneToMany(mappedBy: "tournament", targetEntity: MemberRegisterTournament::class, orphanRemoval: true)]
     private Collection $tournamentRegister;
@@ -63,10 +71,6 @@ class Tournament
     private Collection $tournamentHistory;
     public function getTournamentHistory(): Collection { return $this->tournamentHistory; }
     
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(name: "tournament_image_id", referencedColumnName: "tournament_image_id", nullable: true, onDelete: "SET NULL")]
-    private ?TournamentImages $tournamentImage = null;
-
     public function __construct()
     {
         $this->tournamentRegister = new ArrayCollection();
@@ -183,6 +187,18 @@ class Tournament
     public function setTournamentImage(TournamentImages $tournamentImage): static
     {
         $this->tournamentImage = $tournamentImage;
+
+        return $this;
+    }
+
+    public function getOrganizer(): Member
+    {
+        return $this->organizer;
+    }
+        
+    public function setOrganizer(Member $organizer): static
+    {
+        $this->organizer = $organizer;
 
         return $this;
     }

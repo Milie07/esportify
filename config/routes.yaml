@@ -5,6 +5,7 @@ app_home:
 events:
   path: /events
   controller: App\Controller\EventsController::index
+  methods: [GET]
 
 contact:
   path: /contact

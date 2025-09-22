@@ -28,7 +28,7 @@ class TournamentHistory
     #[ORM\Column(name:'to_status', type: Types::STRING, enumType: CurrentStatus::class, length: 20)]
     private ?CurrentStatus $to_status = null;
 
-    #[ORM\ManyToOne(inversedBy: 'tournamentHistory')]
+    #[ORM\ManyToOne(targetEntity: Tournament::class, inversedBy: 'tournamentHistory')]
     #[ORM\JoinColumn(name: 'tournament_id', referencedColumnName: 'tournament_id', onDelete: 'CASCADE', nullable: false)]
     private ?Tournament $tournament = null;
 

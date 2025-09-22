@@ -20,29 +20,4 @@ class MemberAddFavoritesTournamentRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, MemberAddFavoritesTournament::class);
     }
-
-//    /**
-//     * @return MemberAddFavoritesTournament[] Returns an array of MemberAddFavoritesTournament objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('m')
-//            ->andWhere('m.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('m.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?MemberAddFavoritesTournament
-//    {
-//        return $this->createQueryBuilder('m')
-//            ->andWhere('m.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }
