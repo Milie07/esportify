@@ -33,7 +33,7 @@
                         <a href="{{ path('events') }}" class="nav-link text-uppercase mx-1">Les Evénements</a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ path('signup') }}" class="nav-link text-uppercase mx-1">Inscription</a>
+                        <a href="{{ path('signup_form') }}" class="nav-link text-uppercase mx-1">Inscription</a>
                     </li>
                     <li class="nav-item">
                         <a href="{{ path('contact') }}" class="nav-link text-uppercase mx-1">Contact</a>
@@ -48,8 +48,6 @@
                         {% set avatarUrl = app.user.avatarPath is defined ? app.user.avatarPath : null %}
                         {% if avatarUrl %}
                             <img class="avatar_icone" src="{{ asset(avatarUrl) }}" alt="avatar">
-                        {% else %}
-                            <img class="avatar_icone" src="{{ asset('build/images/icones/avatarParDefaut.png') }}" alt="avatar">
                         {% endif %}
 
                         <span class="player_pseudo">{{ app.user.pseudo ?: app.user.username }}</span>
@@ -61,7 +59,7 @@
                         <span class="player_pseudo">Non connecté</span>
                     {% endif %}
                     </a>
-                    {# Dropdown Menu #}
+                    {# Dropdown Menu à modifier pour le responsive mobile #}
                     <ul class="dropdown-menu">
                         {% if not app.user %}
                             <li class="text-center"><a class="dropdown-item" href="{{ path('app_login') }}">Connexion</a></li>

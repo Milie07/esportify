@@ -57,6 +57,7 @@ class TournamentRepository extends ServiceEntityRepository
      * @param int|null    $playersCountMin  // capacité minimale (capacityGauge)
      * @return Tournament[]
      */
+
     public function findValidatedFiltered(?string $organizerPseudo, ?string $dateAtIso, ?int $playersCountMin): array
     {
         $statusValue = \App\Enum\CurrentStatus::VALIDE->value;
@@ -77,17 +78,14 @@ class TournamentRepository extends ServiceEntityRepository
 
         if ($dateAtIso) {
             try {
-                // DateTimeImmutable accepte "YYYY-MM-DDTHH:MM"
                 $dateAtObj = new \DateTimeImmutable($dateAtIso);
                 $qb->andWhere('t.startAt >= :dateAt')
                 ->setParameter('dateAt', $dateAtObj);
             } catch (\Throwable $e) {
-                // si la date ne se parse pas, on ignore le filtre
             }
         }
 
         if (is_int($playersCountMin)) {
-            // filtre sur capacityGauge (capacité totale autorisée)
             $qb->andWhere('t.capacityGauge >= :playersCountMin')
             ->setParameter('playersCountMin', $playersCountMin);
         }
@@ -98,7 +96,7 @@ class TournamentRepository extends ServiceEntityRepository
     /**
      * Retourne la liste distincte des pseudos d'organisateur pour les events validés.
      *
-     * @return string[] tableau de pseudos triés
+     * @return string[] 
      */
     public function findOrganizersForValidated(): array
     {
@@ -112,7 +110,6 @@ class TournamentRepository extends ServiceEntityRepository
             ->orderBy('o.pseudo', 'ASC');
 
         $rows = $qb->getQuery()->getScalarResult();
-        // getScalarResult renvoie un tableau de ['pseudo' => '...']
         return array_map(fn($r) => $r['pseudo'], $rows);
     }
 }

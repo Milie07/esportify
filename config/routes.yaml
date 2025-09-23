@@ -1,20 +1,64 @@
+# Page d'accueil
 app_home:
   path: /
   controller: App\Controller\HomeController::index
 
+# Page Events
 events:
   path: /events
   controller: App\Controller\EventsController::index
   methods: [GET]
 
+# Page Contact
+signup_form:
+  path: /signup
+  controller: App\Controller\AuthController::signup
+  methods: [GET]
+
+# Formulaires 
 contact:
   path: /contact
   controller: App\Controller\ContactController::index
+  methods: [GET, POST]
 
-signup:
+app_register:
   path: /signup
-  controller: App\Controller\AuthController::signup
+  controller: App\Controller\RegisterController::register
+  methods: [POST]
 
+event_create:
+  path: /events/create
+  controller: App\Controller\CreateEventController::create
+  methods: [GET, POST]
+
+# Connexion et Déconnexion
+app_login:
+  path: /login
+  controller: App\Controller\SecurityController::login
+  methods: [GET, POST]
+
+app_logout:
+  path: /logout
+  controller: App\Controller\SecurityController::logout
+  methods: [GET]
+  
+# Espaces Utilisateurs
+player_space:
+  path: /player_space
+  controller: App\Controller\SpaceController::playerSpace
+  methods: [GET]
+
+organizer_space:
+  path: /organizer_space
+  controller: App\Controller\SpaceController::organizerSpace
+  methods: [GET]
+
+admin_dashboard:
+  path: /admin_dashboard
+  controller: App\Controller\SpaceController::adminDashboard
+  methods: [GET]
+
+# Espaces à venir
 forgot_password:
   path: /forgot-password
   controller: App\Controller\AuthController::forgotPassword
@@ -23,23 +67,3 @@ modifProfile:
   path: /modifProfile
   controller: App\Controller\AuthController::modifProfile
 
-player_space:
-  path: /player-space
-  controller: App\Controller\SpaceController::playerSpace
-
-organizer_space:
-  path: /organizer-space
-  controller: App\Controller\SpaceController::organizerSpace
-
-admin_dashboard:
-  path: /admin-dashboard
-  controller: App\Controller\SpaceController::adminDashboard
-
-app_login:
-  path: /login
-  controller: App\Controller\SecurityController::login
-
-app_logout:
-  path: /logout
-  controller: App\Controller\SecurityController::logout
-  

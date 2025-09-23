@@ -13,8 +13,6 @@ security:
             class: App\Entity\Member
             property: pseudo 
 
-        users_in_memory: { memory: null }
-
     role_hierarchy:
         ROLE_ADMIN:     [ROLE_ORGANIZER, ROLE_PLAYER, ROLE_USER]
         ROLE_ORGANIZER: [ROLE_PLAYER, ROLE_USER]
@@ -27,24 +25,25 @@ security:
         main:
             lazy: true
             provider: app_user_provider
-            custom_authenticator: App\Security\LoginFormAuthenticator
-            entry_point: App\Security\LoginFormAuthenticator
+
             form_login:
-              login_path: login
-              check_path: login
+              login_path: app_login
+              check_path: app_login
               username_parameter: pseudo   
               password_parameter: password
+              
             logout:
                 path: app_logout
                 # where to redirect after logout
                 # target: app_any_route
-                target: app_home
+                target: app_login
 
             remember_me:
                 secret: '%kernel.secret%'
                 lifetime: 604800 #7 jours
                 path: /
                 always_remember_me: true
+
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
@@ -55,9 +54,9 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/player, roles: ROLE_PLAYER }
-        - { path: ^/organizer, roles: ROLE_ORGANIZER }
-        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/admin_dashboard, roles: ROLE_ADMIN }
+        - { path: ^/organizer_space, roles: ROLE_ORGANIZER }
+        - { path: ^/player_space, roles: ROLE_PLAYER }
 
 when@test:
     security:

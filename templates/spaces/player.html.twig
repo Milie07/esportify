@@ -6,7 +6,9 @@
     <div class="container-fluid mx-auto">
         <!-- Avatar Joueur -->
             {% block img %}
-            <img class="avatar avatar_player d-block mx-auto" src="{{ asset(avatarUrl) }}" alt="avatar">
+            {% set fromEntity = app.user ? app.user.avatarPath : null %}
+            {% set safeAvatar = avatarUrl ?? 'uploads/avatars/default-avatar.jpg' %}
+            <img class="avatar avatar_player d-block mx-auto" src="{{ asset(safeAvatar) }}" alt="avatar">
             {% endblock %}
         
         <!-- Titre de la page -->

@@ -22,13 +22,13 @@ class MemberRoles
     private ?int $id = null;
 
     //ENUM('Player', 'Organizer', 'Admin')
-    #[ORM\Column(name: "member_role_label", enumType: MemberRoleLabel::class, length: 20, options: ['default' => 'Player'])]
+    #[ORM\Column(name: "member_role_label", enumType: MemberRoleLabel::class, options: ['default' => 'Player'])]
     private ?MemberRoleLabel $memberRoleLabel = null;
 
-    #[ORM\Column(name: "created_at", type: TYPES:: DATETIME_IMMUTABLE)]
+    #[ORM\Column(name: "created_at", type: Types:: DATETIME_IMMUTABLE)]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column(name: "updated_at", type: TYPES:: DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(name: "updated_at", type: Types:: DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $updatedAt = null;
 
     #[ORM\Column(name: 'code', type: Types::STRING, length: 32, unique: true)]
@@ -41,6 +41,7 @@ class MemberRoles
     public function __construct()
     {
         $this->moderateMemberRole = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -108,7 +109,6 @@ class MemberRoles
             if (method_exists($this->memberRoleLabel, 'value')) {
                 return 'ROLE_' . strtoupper(preg_replace('/[^A-Z0-9]+/i', '_', $this->memberRoleLabel->value));
             }
-            // fallback: string cast
             return 'ROLE_' . strtoupper(preg_replace('/[^A-Z0-9]+/i', '_', (string) $this->memberRoleLabel));
         }
         return 'ROLE_USER';

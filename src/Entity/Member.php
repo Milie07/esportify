@@ -41,15 +41,15 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $memberScore = 0;
 
     // RELATIONS 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(targetEntity: MemberAvatars::class)]
     #[ORM\JoinColumn(name: "member_avatar_id", referencedColumnName: "member_avatar_id", nullable: true, onDelete: "SET NULL")]
-    private ?MemberAvatars $memberAvatarId = null;
+    private ?MemberAvatars $memberAvatar = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(targetEntity: MemberRoles::class)]
     #[ORM\JoinColumn(name: "member_role_id", referencedColumnName: "member_role_id")]
     private ?MemberRoles $memberRole = null;
 
-        // MEMBER_MODERATE_ROLES
+        // MEMBER_MODERATE_ROLES à venir
     #[ORM\OneToMany(mappedBy: "member", targetEntity: MemberModerateRoles::class, orphanRemoval: true)]
     private Collection $memberModerate;
     public function getMemberModerate(): Collection
@@ -57,7 +57,7 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->memberModerate;
     }
 
-        // MEMBER_REGISTER_TOURNAMENT
+        // MEMBER_REGISTER_TOURNAMENT à venir
     #[ORM\OneToMany(mappedBy: "member", targetEntity: MemberRegisterTournament::class, orphanRemoval: true)]
     private Collection $memberRegister;
     public function getMemberRegister(): Collection
@@ -65,7 +65,7 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->memberRegister;
     }
 
-        // MEMBER_PARTICIPATE_TOURNAMENT
+        // MEMBER_PARTICIPATE_TOURNAMENT à venir
     #[ORM\OneToMany(mappedBy: "member", targetEntity: MemberParticipateTournament::class, orphanRemoval: true)]
     private Collection $memberParticipate;
     public function getMemberParticipate(): Collection
@@ -73,7 +73,7 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->memberParticipate;
     }
 
-        // ADD_FAVORITES
+        // ADD_FAVORITES à venir
     #[ORM\OneToMany(mappedBy: "member", targetEntity: MemberAddFavoritesTournament::class, orphanRemoval: true)]
     private Collection $memberAddFavorites;
     public function getMemberAddFavorites(): Collection
@@ -81,7 +81,7 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->memberAddFavorites;
     }
 
-        // HISTORIQUE: côté inverse (un membre -> plusieurs mise en historique)
+        // HISTORIQUE: à venir (un membre -> plusieurs mise en historique)
     #[ORM\OneToMany(mappedBy: 'member', targetEntity: TournamentHistory::class, orphanRemoval: true)]
     private Collection $tournamentHistories;
 
@@ -94,9 +94,6 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
         $this->tournamentHistories = new ArrayCollection();
     }
 
-    /**
-     * Interface pour se Connecter.
-     */
     public function getUserIdentifier(): string
     {
         return (string) ($this->getPseudo() ?? '');
@@ -109,14 +106,27 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     
     public function getRoles(): array
     {
+        // Rôle par défaut
         $roles = ['ROLE_USER'];
-
-        if ($this->memberRole) {
-        $roles[] = $this->memberRole->getSymfonyRole();
+        
+        if ($this->memberRole instanceof MemberRoles) {
+            $code = $this->memberRole->getCode(); 
+            if ($code) {
+                $code = strtoupper($code);
+                if (!str_starts_with($code, 'ROLE_')) {
+                    $code = 'ROLE_' . $code;
+                }
+                $roles[] = $code;
+            } elseif (method_exists($this->memberRole, 'getSymfonyRole')) {
+                $mapped = (string) $this->memberRole->getSymfonyRole(); 
+                if ($mapped) {
+                    $roles[] = strtoupper($mapped);
+                }
+            }
         }
         return array_values(array_unique($roles));
     }
-
+    
     public function getPassword(): string
     {
         return $this->passwordHash ?? '';
@@ -128,12 +138,9 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * Pas de données sensibles temporaires à purger.
-     */
     public function eraseCredentials(): void
     {
-        // no-op
+
     }
 
     public function getId(): ?int
@@ -201,14 +208,14 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getMemberAvatarId(): ?MemberAvatars
+    public function getMemberAvatar(): ?MemberAvatars
     {
-        return $this->memberAvatarId;
+        return $this->memberAvatar;
     }
 
-    public function setMemberAvatar(?MemberAvatars $memberAvatarId): static
+    public function setMemberAvatar(?MemberAvatars $memberAvatar): static
     {
-        $this->memberAvatarId = $memberAvatarId;
+        $this->memberAvatar = $memberAvatar;
 
         return $this;
     }
@@ -267,11 +274,11 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     */
     public function getAvatarPath(): ?string
     {
-    if (!$this->memberAvatarId) {
+    if (!$this->memberAvatar) {
         return null;
     }
 
-    $avatar = $this->memberAvatarId;
+    $avatar = $this->memberAvatar;
     $value = null;
 
     if (method_exists($avatar, 'getAvatarUrl')) {
@@ -284,7 +291,6 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
         return null;
     }
 
-    // Normalisation simple pour usage avec asset():
     $value = trim(str_replace('\\', '/', $value));
     $value = preg_replace('#^/?public/#i', '', $value);
     $value = ltrim($value, '/');

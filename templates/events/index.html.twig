@@ -10,7 +10,7 @@
 
     <h1 class="text-clair2 text-center pt-2">Tous les événements</h1>
 
-    {# FILTRE avec méthode GET #}
+    {# FILTRE #}
     <div class="container-lg mt-3 d-flex justfy-content-center gap-2">
         <form class="form d-flex p-0" id="searchForm" method="get" action="{{ path('events') }}" autocomplete="off" novalidate>
             <div class="d-flex align-items-center justify-content-center">
@@ -64,7 +64,7 @@
         <h2 class="text-center pt-2 mt-3">A toi de jouer !</h2>
         <p class="text-description">Retrouve ici l'ensemble des tournois organisés sur Esportify.</p>
     </div>
-
+    {# CARTES EVENEMENTS #}
     <section class="container-fluid">
         <div class="row g-4">
             {% for event in events %}
@@ -92,7 +92,7 @@
                 </div>
             </div>
 
-    {# Modale serveur simple #}
+    {# MODALE #}
     <div class="modal fade" id="modalEvent-{{ event.id }}" tabindex="-1" aria-hidden="true" aria-labelledby="modalEventTitle-{{ event.id }}">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content rounded-4">

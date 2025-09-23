@@ -1,5 +1,4 @@
 <?php
-// src/Controller/EventsController.php
 namespace App\Controller;
 
 use App\Repository\TournamentRepository;
@@ -18,18 +17,14 @@ class EventsController extends AbstractController
         $playersCount = $request->query->get('playersCount');
         $playersCount = ($playersCount !== null && $playersCount !== '') ? (int) $playersCount : null;
 
-        // récupère entités Tournament filtrées
         $tournaments = $tournamentRepository->findValidatedFiltered($organizer, $dateAt, $playersCount);
         $organizers = $tournamentRepository->findOrganizersForValidated();
 
-        // timezone précise (Europe/Paris)
         $tz = new \DateTimeZone('Europe/Paris');
         $now = new \DateTimeImmutable('now', $tz);
 
-        // fonction utilitaire simple
         $formatDate = function(?\DateTimeInterface $dt) use ($tz) {
             if (!$dt) return '—';
-            // s'assurer du fuseau
             $d = $dt instanceof \DateTimeImmutable ? $dt : \DateTimeImmutable::createFromMutable($dt);
             $d = $d->setTimezone($tz);
             return $d->format('d/m/Y H:i');
@@ -39,7 +34,6 @@ class EventsController extends AbstractController
             if (!$start || !$end) {
                 return 'Statut temporel indisponible';
             }
-            // convertir au même type
             $startImmutable = $start instanceof \DateTimeImmutable ? $start : \DateTimeImmutable::createFromMutable($start);
             $endImmutable   = $end instanceof \DateTimeImmutable ? $end : \DateTimeImmutable::createFromMutable($end);
 
@@ -59,7 +53,6 @@ class EventsController extends AbstractController
             return 'Terminé';
         };
 
-        // transforme en tableau simple exploitable par Twig
         $eventsData = [];
         foreach ($tournaments as $t) {
             $organizerPseudo = $t->getOrganizer() ? $t->getOrganizer()->getPseudo() : null;

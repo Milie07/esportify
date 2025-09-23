@@ -16,9 +16,10 @@
                     id="loginForm"
                     action="{{ path('app_login') }}" 
                     method="post">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
                 <div>
                     <label for="pseudo">Pseudo</label>
-                    <input class="form-control input_filter mb-3" minlength="2" maxlength="50" placeholder="Votre pseudo" id="pseudo" name="pseudo" type="text" value="{{ last_username }}" required autocomplete="username" />
+                    <input class="form-control input_filter mb-3" minlength="2" maxlength="100" placeholder="Votre pseudo" id="pseudo" name="pseudo" type="text" value="{{ last_username }}" required autocomplete="username" />
                 </div>
 
                 <div>
