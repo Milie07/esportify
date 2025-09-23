@@ -27,9 +27,6 @@ config/jwt/*.pem
 # Uploads et médias non suivis
 /public/uploads/
 /backups/
-/*.sql
-*.sql
-*.sqlite
 
 # Éditeur & OS
 /.idea/
