@@ -1,7 +1,8 @@
     
 /* VALIDATION DES FORMULAIRES
     Première couche de sécurité front 
-    sf Entité HTML MDN */
+    sf Entité HTML MDN 
+*/
 
 // éviter la balise <script> dans les inputs
 function sanitizeInput(str) { 
@@ -20,7 +21,7 @@ function isValidEmail(email){
 };
 
 function validatePassword(input){
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/; //mdp qui prends minimum 8 caractères avec au moins 1 minuscule, 1 majuscule, 1 chiffre et 1 caractère spécial non alphanumérique
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/; //mdp qui prends minimum 8 caractères avec au moins 1 minuscule, 1 majuscule, et 1 chiffre 
     const passwordUser = input.value;
     if (passwordUser.match(passwordRegex)){
         input?.classList.add("is-valid");
@@ -29,6 +30,7 @@ function validatePassword(input){
     } else {
         input?.classList.remove("is-valid");
         input?.classList.add("is-invalid");
+        return false;
     }
 }
 function validateConfirmationPassword(pwdInput, confirmPwdInput) {
@@ -46,50 +48,45 @@ function validateConfirmationPassword(pwdInput, confirmPwdInput) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('searchForm');
-    const inputs = document.querySelectorAll('input[type="text"], input[type="search"], input[type="email"], input[type="password"]');
+    document.querySelectorAll('form.needs-validation').forEach(form => {
+        form.addEventListener('submit', (e) => {
+            let isFormValid = true;
 
+            const pwdInput = form.querySelector('#password');
+            const confirmPwdInput = form.querySelector('#confirmPassword');
+            const inputs = form.querySelectorAll('input[type="text"], input[type="search"], input[type="email"], input[type="password"]');
+
+            inputs.forEach(input => {
+                if (input.type === "email") {
+                    if (!isValidEmail(input.value.trim())) {
+                        input.classList.add("is-invalid");
+                        input.classList.remove("is-valid");
+                        isFormValid = false;
+                    } else {
+                        input.classList.add("is-valid");
+                        input.classList.remove("is-invalid");
+                    }
+                } 
     
-    if (form && inputs.length > 0) {
-        form.addEventListener('submit', (e) => { 
-        e.preventDefault(); 
-
-        const pwdInput = document.getElementById('password');
-        const confirmPwdInput = document.getElementById('confirmPassword');
-        
-        inputs.forEach(input => {
-            const raw = input.value; // version tapée
-            const safe = sanitizeInput(raw);  // version nettoyée
-
-            // Validation de l'email
-            if(input.type === "email") {
-                const email = input.value.trim();
-                if (isValidEmail(email)) {
-                    input.classList.add("is-valid");
-                    input.classList.remove("is-invalid");
-                    console.log("Adresse Valide : ", email);
-                } else {
-                    input.classList.add("is-invalid");
-                    input.classList.remove("is-valid");
-                    console.log("Adresse Invalide : ", email)
+                if (input.id === "password" && pwdInput) {
+                    if (!validatePassword(pwdInput)) isFormValid = false;
                 }
-            }
-            // Validation du mot de passe
-            if (input.id === "password" && pwdInput) {
-                validatePassword(pwdInput);
-            } 
-            // Validation de la confirmation du mot de passe
-            if (input.id === "confirmPassword" && pwdInput && confirmPwdInput) {
-                validateConfirmationPassword(pwdInput, confirmPwdInput);
-            }
 
-            console.log(input.id, "=>", safe);
+                if (input.id === "confirmPassword" && pwdInput && confirmPwdInput) {
+                    if (!validateConfirmationPassword(pwdInput, confirmPwdInput)) isFormValid = false;
+                }
             });
+            if (!isFormValid) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
         });
-    }
+    });
     
-// FILTRE ASYNCHRONE
-    const ENDPOINT = '/data/events.json';
+/* FILTRE ASYNCHRONE 
+    via la BDD
+*/
+    const ENDPOINT = '/api/events';
 
     const organizerSelect = document.getElementById('organizerSelect'); 
     const dateAt = document.getElementById('dateAt');
@@ -225,6 +222,31 @@ document.addEventListener('DOMContentLoaded', () => {
     initEvents();
     
 // MODALE "DETAIL D'UN EVENEMENT"
+    const modalEl = document.getElementById('modalEvent');
+    const elsModal = {
+        img: document.getElementById('modalEventImg'),
+        title: document.getElementById('modalEventTitle'),
+        tagline: document.getElementById('modalEventTagline'),
+        desc: document.getElementById('modalEventDesc'),
+        dates: document.getElementById('modalEventDates'),
+        players: document.getElementById('modalEventPlayers'),
+        gauge: document.getElementById('modalEventGauge'),
+        organizer: document.getElementById('modalEventOrganizer'),
+        status: document.getElementById('modalEventStatus'),
+        btnJoin: document.getElementById('modalBtnJoin'),
+        btnFav: document.getElementById('modalBtnFav'),
+        btnSubs: document.getElementById('modalBtnSubscribeIcon'),
+    };
+    
+    let bsModal = null;
+    if (modalEl && window.bootstrap?.Modal) {
+        bsModal = new bootstrap.Modal(modalEl, { backdrop: 'static' });
+    }
+    
+    function getEventById(id) {
+        return events.find(e => Number(e.id) === Number(id)) || null;
+    }
+    
     function formatRangeFR(startsAtISO, endsAtISO) {
         return `Du ${formatFR(startsAtISO)} au ${formatFR(endsAtISO)}`;
     }
@@ -248,31 +270,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return now >= start && now <= end;
     }
 
-    const modalEl = document.getElementById('modalEvent');
-    const elsModal = {
-        img: document.getElementById('modalEventImg'),
-        title: document.getElementById('modalEventTitle'),
-        tagline: document.getElementById('modalEventTagline'),
-        desc: document.getElementById('modalEventDesc'),
-        dates: document.getElementById('modalEventDates'),
-        players: document.getElementById('modalEventPlayers'),
-        gauge: document.getElementById('modalEventGauge'),
-        organizer: document.getElementById('modalEventOrganizer'),
-        status: document.getElementById('modalEventStatus'),
-        btnJoin: document.getElementById('modalBtnJoin'),
-        btnFav: document.getElementById('modalBtnFav'),
-        btnSubs: document.getElementById('modalBtnSubscribeIcon'),
-    };
-
-    let bsModal = null;
-    if (modalEl && window.bootstrap?.Modal) {
-        bsModal = new bootstrap.Modal(modalEl, { backdrop: 'static' });
-    }
-
-    function getEventById(id) {
-        return events.find(e => Number(e.id) === Number(id)) || null;
-    }
-
     function fillModal(ev) {
     // Textes
         elsModal.title.textContent     = ev.title || 'Évènement';
@@ -285,7 +282,9 @@ document.addEventListener('DOMContentLoaded', () => {
         elsModal.status.textContent = statusRaw === 'valide' ? 'Validé ✅' : (ev.status || '—');
 
     // Image + alt
-        elsModal.img.src = ev.imgUrl || '';
+        let image = ev.imgUrl || '/uploads/tournaments/default-event.jpg';
+        if (image && !image.startsWith('/')) image = '/' + image;
+        elsModal.img.src = image;
         elsModal.img.alt = `Image de l'évènement ${ev.title || ''}`.trim();
 
     // Dates / joueurs / jauge
@@ -294,10 +293,10 @@ document.addEventListener('DOMContentLoaded', () => {
         elsModal.players.textContent = g.count;
         elsModal.gauge.textContent   = g.label;
 
-    // Bouton "Rejoindre" selon fenêtre temporelle
+    // Bouton "Rejoindre" à venir
         elsModal.btnJoin.classList.toggle('d-none', !canShowJoin(ev.startsAt, ev.endsAt));
 
-    // Stockage id pour actions
+    // Stockage id pour actions à venir
         elsModal.btnJoin.dataset.eventId = ev.id;
         elsModal.btnFav.dataset.eventId  = ev.id;
         elsModal.btnSubs.dataset.eventId = ev.id;
@@ -318,19 +317,19 @@ document.addEventListener('DOMContentLoaded', () => {
     elsModal.btnFav?.addEventListener('click', () => {
         const id = elsModal.btnFav.dataset.eventId;
         console.log('Favori toggle pour event', id);
-    // TODO: fetch POST /favorites à relier au back
+    // à venir: fetch POST /favorites à relier au back
     });
 
     elsModal.btnJoin?.addEventListener('click', () => {
         const id = elsModal.btnJoin.dataset.eventId;
         console.log('Rejoindre event', id);
-    // TODO: inscription (vérifier rôles/places/état)
+    // à venir: inscription (vérifier rôles/places/état)
     });
 
     elsModal.btnSubs?.addEventListener('click', () => {
         const id = elsModal.btnSubs.dataset.eventId;
         console.log("S'inscrire à l'event", id);
-    // TODO: pré-inscription si logique distincte
+    // à venir: pré-inscription si logique distincte
     });
 
 });

@@ -13,8 +13,8 @@
 
         <!-- Formulaire de Contact -->
         <section class="section_contact d-flex text_description justify-content-center my-4 mt-4"> 
-            <form action="#" method="POST" class="form_contact bg-clair1 rounded-4 text-lightBlue px-5 py-4" id="searchForm">
-
+            <form action="#" method="POST" class="form_contact needs-validation bg-clair1 rounded-4 text-lightBlue px-5 py-4" id="searchForm">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('contact') }}">
                 <!-- Informations personnelles -->
                 <input id="name" name="name" type="text" class="form-control input_filter mb-3" minlength="2" maxlength="50" placeholder="Votre nom" required>
                 <input id="surname" name="surname" type="text" class="form-control input_filter mb-3" minlength="2" maxlength="50" placeholder="Votre prénom" required>
@@ -63,7 +63,7 @@
                 </div>
 
                 <!-- Message -->
-                <textarea class="form-control input_filter mt-3" type="text" maxlength="500" placeholder="Votre message..." required></textarea>
+                <textarea class="form-control input_filter mt-3" id="message" name="message" type="text" maxlength="500" placeholder="Votre message..." required></textarea>
 
                 <!-- Bouton d'envoi -->
                 <div class="d-flex justify-content-center mt-4 mb-2">

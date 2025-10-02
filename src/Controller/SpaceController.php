@@ -8,14 +8,26 @@ class SpaceController extends AbstractController
 {
 	public function playerSpace(): Response
 	{
-		return $this->render('spaces/player.html.twig');
+        $this->denyAccessUnlessGranted('ROLE_PLAYER');
+        /** @var \App\Entity\Member $user */
+        $user = $this->getUser();
+        $avatarPath = $user?->getAvatarPath() ?: 'uploads/avatars/default-avatar.jpg';
+    
+		return $this->render('spaces/player.html.twig', [
+        'user' => $user,
+        'avatarUrl' => $avatarPath, 
+    ]);
 	}
+
 	public function organizerSpace(): Response
 	{
-		return $this->render('spaces/organizer.html.twig');
+        $this->denyAccessUnlessGranted('ROLE_ORGANIZER');
+        return $this->render('spaces/organizer.html.twig');
 	}
+    
 	public function adminDashboard(): Response
 	{
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
 		return $this->render('spaces/admin.html.twig');
 	}
 }

@@ -1,27 +1,36 @@
 
-###> symfony/framework-bundle ###
-/.env.local
-/.env.local.php
-/.env.*.local
-/config/secrets/prod/prod.decrypt.private.php
-/public/bundles/
-/var/
+# Environnement & secrets
+.env.local
+.env.*.local
+.env.local.php
+phpunit.xml
+
+# Clés & certificats
+config/secrets/*/*decrypt.private.php
+config/jwt/*.pem
+*.key
+*.pem
+*.crt
+
+# Dépendances & builds
 /vendor/
-###< symfony/framework-bundle ###
-
-###> phpunit/phpunit ###
-/phpunit.xml
-.phpunit.result.cache
-###< phpunit/phpunit ###
-
-###> symfony/phpunit-bridge ###
-.phpunit.result.cache
-/phpunit.xml
-###< symfony/phpunit-bridge ###
-
-###> symfony/webpack-encore-bundle ###
 /node_modules/
 /public/build/
-npm-debug.log
-yarn-error.log
-###< symfony/webpack-encore-bundle ###
+/public/bundles/
+
+# Données générées
+/var/
+/coverage/
+.phpunit.result.cache
+.php-cs-fixer.cache
+
+# Uploads et médias non suivis
+/public/uploads/
+/backups/
+
+# Éditeur & OS
+/.idea/
+/.vscode/
+*.iml
+.DS_Store
+Thumbs.db
