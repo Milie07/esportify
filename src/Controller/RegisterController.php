@@ -43,6 +43,15 @@ final class RegisterController extends AbstractController
         $pass2   = (string) $request->request->get('confirm_password', '');
         $cgu     = $request->request->getBoolean('conditions'); 
 
+        dump([
+            'cgu' => $cgu,
+            'email' => $email,
+            'pseudo' => $pseudo,
+            'pass' => $pass,
+            'pass2' => $pass2,
+            'token_valid' => $csrf->isTokenValid($token)
+        ]);
+
         // Validations serveur
         if (!$cgu) { 
             $this->addFlash('danger', 'CGU obligatoires.');      
@@ -97,6 +106,7 @@ final class RegisterController extends AbstractController
         }
 
         // Écriture BDD 
+
         try { 
             $em->persist($user); 
             $em->flush(); 

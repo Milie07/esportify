@@ -49,6 +49,10 @@ function validateConfirmationPassword(pwdInput, confirmPwdInput) {
 
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('form.needs-validation').forEach(form => {
+        // Exclure le formulaire d'inscription pour régler le conflit 
+        if (form.id === 'searchForm') {
+            return;
+        }
         form.addEventListener('submit', (e) => {
             let isFormValid = true;
 
