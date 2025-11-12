@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20251106102910 extends AbstractMigration
+final class Version20251112155204 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -20,7 +20,7 @@ final class Version20251106102910 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('CREATE TABLE `member` (member_id INT UNSIGNED AUTO_INCREMENT NOT NULL, member_avatar_id INT UNSIGNED DEFAULT NULL, member_role_id INT UNSIGNED DEFAULT NULL, first_name VARCHAR(100) NOT NULL, last_name VARCHAR(100) NOT NULL, pseudo VARCHAR(100) NOT NULL, email VARCHAR(100) NOT NULL, password_hash VARCHAR(255) NOT NULL, member_score INT DEFAULT 0 NOT NULL, INDEX IDX_70E4FA78C610EDD5 (member_avatar_id), INDEX IDX_70E4FA7869F79538 (member_role_id), UNIQUE INDEX uq_member_pseudo (pseudo), UNIQUE INDEX uq_member_email (email), PRIMARY KEY(member_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE `member` (member_id INT UNSIGNED AUTO_INCREMENT NOT NULL, member_avatar_id INT UNSIGNED DEFAULT NULL, member_role_id INT UNSIGNED NOT NULL, first_name VARCHAR(100) NOT NULL, last_name VARCHAR(100) NOT NULL, pseudo VARCHAR(100) NOT NULL, email VARCHAR(100) NOT NULL, password_hash VARCHAR(255) NOT NULL, member_score INT DEFAULT 0 NOT NULL, INDEX IDX_70E4FA78C610EDD5 (member_avatar_id), INDEX IDX_70E4FA7869F79538 (member_role_id), UNIQUE INDEX uq_member_pseudo (pseudo), UNIQUE INDEX uq_member_email (email), PRIMARY KEY(member_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE member_add_favorites_tournament (member_id INT UNSIGNED NOT NULL, tournament_id INT UNSIGNED NOT NULL, INDEX IDX_2D4A983E7597D3FE (member_id), INDEX IDX_2D4A983E33D1A3E7 (tournament_id), PRIMARY KEY(member_id, tournament_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE member_avatars (member_avatar_id INT UNSIGNED AUTO_INCREMENT NOT NULL, avatar_url VARCHAR(255) DEFAULT NULL, code INT NOT NULL, UNIQUE INDEX UNIQ_F3D32B477153098 (code), PRIMARY KEY(member_avatar_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE member_moderate_roles (member_id INT UNSIGNED NOT NULL, member_role_id INT UNSIGNED NOT NULL, member_label_status VARCHAR(20) DEFAULT \'Actif\' NOT NULL, assigned_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\', INDEX IDX_E8D162F27597D3FE (member_id), INDEX IDX_E8D162F269F79538 (member_role_id), PRIMARY KEY(member_id, member_role_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');

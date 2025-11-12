@@ -46,7 +46,7 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     private ?MemberAvatars $memberAvatar = null;
 
     #[ORM\ManyToOne(targetEntity: MemberRoles::class)]
-    #[ORM\JoinColumn(name: "member_role_id", referencedColumnName: "member_role_id")]
+    #[ORM\JoinColumn(name: "member_role_id", referencedColumnName: "member_role_id", nullable: false)]
     private ?MemberRoles $memberRole = null;
 
         // MEMBER_MODERATE_ROLES à venir
@@ -127,6 +127,63 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
         return array_values(array_unique($roles));
     }
     
+    
+    public function eraseCredentials(): void
+    {
+      
+    }
+
+    public function getId(): ?int
+    {
+      return $this->id;
+    }
+    
+    public function getFirstName(): ?string
+    {
+        return $this->firstName;
+    }
+    
+    public function setFirstName(?string $firstName): static
+    {
+      $this->firstName = $firstName;
+
+      return $this;
+    }
+    
+    public function getLastName(): ?string
+    {
+      return $this->lastName;
+    }
+    
+    public function setLastName(?string $lastName): static
+    {
+      $this->lastName = $lastName;
+      
+      return $this;
+    }
+      
+    public function getPseudo(): ?string
+    {
+      return $this->pseudo;
+    }
+    
+    public function setPseudo(?string $pseudo): static
+    {
+      $this->pseudo = $pseudo;
+      return $this;
+    }
+    
+    public function getEmail(): ?string
+    {
+      return $this->email;
+    }
+    
+    public function setEmail(?string $email): static
+    {
+      $this->email = $email;
+      
+      return $this;
+    }
     public function getPassword(): string
     {
         return $this->passwordHash ?? '';
@@ -137,98 +194,32 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
         $this->passwordHash = $hashed;
         return $this;
     }
-
-    public function eraseCredentials(): void
-    {
-
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function getFirstName(): ?string
-    {
-        return $this->firstName;
-    }
-
-    public function setFirstName(?string $firstName): static
-    {
-        $this->firstName = $firstName;
-
-        return $this;
-    }
-
-    public function getLastName(): ?string
-    {
-        return $this->lastName;
-    }
-
-    public function setLastName(?string $lastName): static
-    {
-        $this->lastName = $lastName;
-
-        return $this;
-    }
-
-    public function getPseudo(): ?string
-    {
-        return $this->pseudo;
-    }
-
-    public function setPseudo(?string $pseudo): static
-    {
-        $this->pseudo = $pseudo;
-
-        return $this;
-    }
-
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-
-    public function setEmail(?string $email): static
-    {
-        $this->email = $email;
-
-        return $this;
-    }
-
+    
     public function getMemberScore(): ?int
     {
-        return $this->memberScore;
+      return $this->memberScore;
     }
-
     public function setMemberScore(?int $memberScore): static
     {
-        $this->memberScore = $memberScore;
-
+      $this->memberScore = $memberScore;
         return $this;
     }
-
     public function getMemberAvatar(): ?MemberAvatars
     {
         return $this->memberAvatar;
     }
-
     public function setMemberAvatar(?MemberAvatars $memberAvatar): static
     {
         $this->memberAvatar = $memberAvatar;
-
         return $this;
     }
-
     public function getMemberRole(): ?MemberRoles
     {
         return $this->memberRole;
     }
-
     public function setMemberRole(?MemberRoles $memberRole): static
     {
         $this->memberRole = $memberRole;
-
         return $this;
     }
 

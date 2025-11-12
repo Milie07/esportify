@@ -14,8 +14,11 @@ class TournamentImages
     #[ORM\Column(name: "tournament_image_id", type: TYPES::INTEGER, options: ['unsigned' => true])]
     private ?int $id = null;
 
-    #[ORM\Column(name: "image_url", type: TYPES::STRING, length: 255, nullable: true)]
+    #[ORM\Column(name: "image_url", type: TYPES::STRING, length: 255, nullable: false)]
     private ?string $imageUrl = null;
+
+    #[ORM\Column(name: "code", type: Types:: INTEGER, unique: true)]
+    private ?int $code = null;
 
 
     public function getId(): ?int
@@ -32,6 +35,18 @@ class TournamentImages
     {
         $this->imageUrl = $imageUrl;
         
+        return $this;
+    }
+
+    public function getCode(): ?int
+    {
+      return $this->code;
+    }
+
+    public function setCode(?int $code): static
+    {
+        $this->code = $code;
+
         return $this;
     }
 
