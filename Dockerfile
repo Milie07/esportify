@@ -8,14 +8,30 @@ RUN apt-get update && apt-get install -y \
 # Pour activer le mod_rewrite (nécessaire pour Symfony)
 RUN a2enmod rewrite
 
+# Pour installer composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
 # Pour copier la config Apache personnalisée
-COPY ./vhost.conf /etc/apache2/sites-available/000-default.conf
+COPY ./docker/vhost.conf /etc/apache2/sites-available/000-default.conf
 
 # Pour copier le code Symfony dans le conteneur
-COPY .. /var/www/html
+COPY . /var/www/html
 
 # Pour définir le dossier de travail
 WORKDIR /var/www/html
 
+
+# 
+RUN git config --global --add safe.directory /var/www/html
+
+# >Installer les dépendances Symfony
+RUN composer install --no-interaction --optimize-autoloader --no-scripts
+
 # Pour donner les droits à Apache
 RUN chown -R www-data:www-data /var/www/html
+
+# POur exposer le port 80
+EXPOSE 80
+
+# Lancer Apache
+CMD ["apache2-foreground"]

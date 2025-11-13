@@ -1,0 +1,3 @@
+# POur ne pas remplacé le node_modules généré par Docker
+node_modules
+vendor
