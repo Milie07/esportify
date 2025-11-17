@@ -1,0 +1,123 @@
+------------------------ REGLES METIERS ------------------------
+----------- 1/ Règles locales (validation sur champs) -------
+
+  - Member :
+    # L'email doit être unique
+    # L'email doit être valide
+    # Le pseudo doit contenir min 3 caractères et max 50 caractères
+    # L'avatar doit respecter une taille maximale
+    * Tous les champs sont obligatoires
+    * Le pseudo doit être unique
+    * Le mot de passe doit comporter minimum 8 caractères, 1 chiffre, 1 majuscule et 1 minuscule
+    * Les conditions générales doivent être cochées
+    * L'avatar n'est pas obligatoire
+
+  - Tournament :
+    # Le titre doit contenir min 3 et max 120 caractères
+    # Le nombre maximal de joueurs doit être 1 entier positif (Assert/Positive)
+    # Le statut enum doit être un statut autorisés (EN_ATTENTE, EN_COURS, VALIDE, TERMINE, REFUSE)
+    # L'image doit avoir une taille raisonnable
+
+    * Tous les champs sont obligatoires
+    * Le champ description doit comporter au minimum 50 caractères et au max 500 caractères
+    * La tagline doit comporter minimum 15 caractères et au max 60 caractères
+    * L'image doit être au format jpeg, pdf ou png
+    * Le nombre de joueur doit > à 10
+    * La date de début doit être ultérieure à la date actuelle
+  
+  - Formulaire de contact :
+    # Le champ Email doit être valide
+
+    * Tous les champs sont obligatoires
+    * Le message doit comporter au minimum 20 caractères et au max 500 caractères
+    
+2/ Règles globales (logique interne)
+
+  * Si 1 visiteur (utilisateur non connecté) clique sur le bouton s'inscrire d'1 tournoi il sera redirigé vers la page de connexion
+
+  REGLES D'INSCRIPTIONS
+  # 1 joueur (rôle PLAYER) ne peut pas s'inscrire à 1 tournoi avec le statut EN_COURS
+  # 1 joueur (rôle PLAYER) ne peut pas s'inscrire à 1 tournoi avec le statut TERMINE
+  # 1 joueur (rôle PLAYER) ne peut pas s'inscrire à 1 tournoi avec le statut EN_ATTENTE ou REFUSE
+
+  * 1 joueur (rôle PLAYER) ne peut pas s'inscrire à 1 tournoi déjà complet
+  * 1 joueur (rôle PLAYER) est inscrit automatiquement à 1 tournoi en cliquant sur le bouton s'inscrire sur la modale ou sur la carte du tournoi
+  * 1 joueur (rôle PLAYER) ne peut pas s'inscrire 2 fois à un tournoi
+  * 1 joueur (rôle PLAYER) avec le statut NON_ACTIF ou BANNI ne peut se réinscrire à 1 tournoi
+
+  ROLES (Member_Roles, Member, enum MemberLabelStatus)
+  # 1 joueur (rôle PLAYER) ne peut pas se donner 1 rôle supérieur (rôle ORGANIZER, ADMIN)
+  # 1 rôle admin (rôle ADMIN) ne peut être donné que par 1 autre employé d'Esportify (hors appli)
+
+  * 1 admin (rôle ADMIN) doit être 1 employé d'Esportify
+  * 1 joueur est 1 visiteur connecté (rôle PLAYER, ORGANIZER, ADMIN)
+  * 1 joueur (rôle PLAYER) peut faire 1 demande pour devenir organisateur (rôle ORGANIZER)
+
+
+  * 1 utilisateur (rôle PLAYER, ORGANIZER, ADMIN) a accès à son historique de scores ()
+  * 1 utilisateur (rôle PLAYER, ORGANIZER, ADMIN) a accès à ses favoris
+  * 1 utilisateur (rôle PLAYER, ORGANIZER, ADMIN) peut rejoindre 1 tournoi lorsque le bouton rejoindre apparaît
+
+  * 1 utilisateur (rôle ORGANIZER, ADMIN) peut créer 1 tournoi, le modifier, le supprimer (CRUD)
+  * 1 utilisateur (rôle ORGANIZER, ADMIN) démarre 1 tournoi (VALIDE -> EN_COURS)
+  * 1 utilisateur (rôle ORGANIZER, ADMIN) voit leurs tournois crées sur leurs espaces respectifs onglet "Mes tournois"
+  * 1 utilisateur (rôle ORGANIZER, ADMIN) peuvent refuser l'inscription d'1 joueur à 1 tournoi (REFUSE)
+
+  * 1 utilisateur (rôle ADMIN) peut valider et/ou refuser 1 joueur comme organisateur
+  * 1 utilisateur (rôle ADMIN) peut exclure temporairement (enum BANNI) ou définitivement (enum NON-ACTIF) 1 joueur
+  * 1 utilisateur (rôle ADMIN) peut valider ou refuser 1 tournoi (EN_ATTENTE -> VALIDE/REFUSE)
+  * 1 utilisateur (rôle ADMIN) peut arrêter 1 tournoi en cas de problème (EN_COURS -> TERMINE)
+
+  STATUTS DE TOURNOIS (enum Current_Status)
+  # 1 tournoi avec le statut EN_ATTENTE peut être validé par 1 admin
+  # 1 tournoi avec le statut VALIDE peut être démarré par l'organisateur ou l'admin qui l'a crée
+  # 1 tournoi avec le statut EN_COURS doit aller vers le statut TERMINE (sauf décision admin)
+  # 1 tournoi avec le statut TERMINE ne peut revenir vers le statut EN_COURS
+  # 1 tournoi avec le statut TERMINE ne peut plus accepter d'inscriptions
+  
+  * 1 tournoi avec le statut EN_COURS peut passer au statut TERMINE sur décision admin (modération)
+  * 1 tournoi avec le statut VALIDE peut être modifié et doit être validé une 2ème fois par 1 admin
+  * 1 tournoi avec le statut TERMINE est effacé de la base au bout de 6 mois
+  * 1 tournoi mis en favoris peut avoir le statut VALIDE et EN_COURS
+  * 1 tournoi entré en historique peut le statut TERMINE et REFUSE
+  * 1 tournoi crée par 1 utilisateur a le statut EN_ATTENTE automatiquement
+  * 1 tournoi modifié par 1 utilisateur peut repasser sur le statut EN_ATTENTE après avoir eu le statut VALIDE
+
+  TOURNOIS FAVORIS
+  # 1 tournoi est ajouté 1 seule fois en favoris (Unicité)
+  # 1 tournoi supprimé de l'onglet favoris ne conditionne pas l'inscription ou la désinscription de l'utilisateur à celui-ci
+  * 1 tournoi mis en favoris est automatiquement ajouté à l'onglet "mes favoris"
+
+  INTEGRITE DES SUPPRESSIONS
+  # La suppression d'1 utilisateur supprime ses tournois crées, ses scores, son historique et ses inscriptions aux tournois
+
+  * 1 tournoi effacé n'efface pas l'utilisateur qui l'a crée 
+  * 1 tournoi auquel 1 organisateur ou 1 admin a participé est automatiquement ajouté à l'onglet "Mon historique" dès qu'il passe au statut TERMINE
+  * 1 tournoi qu'1 admin passe au statut REFUSE est atumatiquement ajouté à l'onglet "Mon historique"
+  * Les tournois crées par 1 organisateur ou 1 admin sont ajoutés automatiquement "Mes tournois" dès qu'ils sont terminés
+
+  HISTORIQUE
+  # 1 tournoi avec le statut TERMINE est inscrit dans l'historique des participants même si le participant a le statut BANNI
+  # 1 
+  * 1 joueur n'a pas d'historique de tournois
+
+  
+  
+
+
+  * 1 utilisateur inactif (rôle PLAYER, ORGANIZER) est effacé de la base au bout d'1 an d'inactivité
+
+
+  * Le score d'1 utilisateur (rôle PLAYER, ORGANIZER, ADMIN) est automatiquement ajouté à l'onglet "Mes scores" et au score général
+
+3/ Règles de gestion (parcours utilisateur / comportement dans l'interface)
+
+  * Il faut être 1 utilisateur connecté (rôle PLAYER, ORGANIZER, ADMIN) pour s'inscrire à 1 tournoi
+  * Il faut être 1 utilisateur connecté (rôle ORGANIZER, ADMIN) pour créer 1 tournoi
+  * Chaque utilisateur (rôle PLAYER, ORGANIZER, ADMIN) n'a accés qu'à son propre espace
+  * Seul les tournois avec le statut VALIDE sont affichés dans le carousel et sur la page évènements
+  * Le rôle d'organisateur (rôle ORGANIZER) est disponible sur demande 
+  * Lorsque l'utilisateur s'inscrit, il obtient obligatoirement le rôle de joueur (rôle PLAYER)
+  * Lorsque l'inscription est validée, le nouveau joueur (rôle PLAYER) est dirigé vers son espace joueur
+  * L'utilisateur (rôle PLAYER, ORGANIZER, ADMIN) est déconnecté automatiquement au bout de 15 ou 30 minutes si il n'y a aucune interaction avec l'appli
+ 

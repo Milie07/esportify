@@ -20,14 +20,23 @@ COPY . /var/www/html
 # Pour définir le dossier de travail
 WORKDIR /var/www/html
 
-
 # 
 RUN git config --global --add safe.directory /var/www/html
 
-# >Installer les dépendances Symfony
+# Pour Installer les dépendances Symfony
 RUN composer install --no-interaction --optimize-autoloader --no-scripts
 
-# Pour donner les droits à Apache
+# # Pour installer Node + npm
+# RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+#     && apt-get install -y nodejs
+
+# # Pour installer les dépendances front
+# RUN npm install
+
+# # Pour générer les assets
+# RUN npm run build
+
+# Pour donner les droits à Apach
 RUN chown -R www-data:www-data /var/www/html
 
 # POur exposer le port 80
