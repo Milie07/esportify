@@ -86,7 +86,7 @@
                         </div>
 
                         <div class="mt-2 w-100 d-flex justify-content-between">
-                            <button class="register_icone btn"><i class="fa-solid fa-user-plus fa-lg text-lightBlue"></i></button>
+                            <a class="register_icone btn" href="{{ path('app_login') }}"><i class="fa-solid fa-user-plus fa-lg text-lightBlue"></i></a>
                             <button class="favoris_icone btn"><i class="fa-solid fa-star fa-lg text-lightBlue"></i></button>
                         </div>
                     </div>
@@ -113,7 +113,7 @@
                     <p class="p-0 mb-2">{{ event.timeStatus }}</p>
 
                     <div class="mt-2 w-100 d-flex justify-content-between align-items-center">
-                        <button class="btn register_icone" type="button" title="S'inscrire"><i class="fa-solid fa-user-plus fa-lg text-lightBlue"></i></button>
+                        <a class="btn register_icone" type="button" title="S'inscrire" href="{{ path('app_login') }}"><i class="fa-solid fa-user-plus fa-lg text-lightBlue"></i></a>
                         {# Normalement présent qu'à partir du moment où l'organisateur démarre l'évènement #}
                         <button class="btn-custom-sm-green btn btn-greenFluo mb-3" type="button">Rejoindre</button>
                         <button class="btn favoris_icone" type="button"><i class="fa-solid fa-star fa-lg text-lightBlue"></i></button>

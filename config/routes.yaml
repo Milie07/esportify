@@ -60,7 +60,7 @@ admin_dashboard:
 
 # Espaces à venir
 forgot_password:
-  path: /forgot-password
+  path: /forgot_password
   controller: App\Controller\AuthController::forgotPassword
 
 modifProfile:
