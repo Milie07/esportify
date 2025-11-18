@@ -1,137 +1,152 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Événements — Esportify{% endblock %}
+{% block title %}Événements — Esportify
+{% endblock %}
 
 {% block body %}
-<div class="container-fluid mx-auto">
-    <div class="container-lg text-center">
-        <img class="img-logo img-fluid" src="{{ asset('build/images/logo/logo-modifie.png') }}" alt="logo esportify">
-    </div>
+	<div class="container-fluid mx-auto">
+		<div class="container-lg text-center">
+			<img class="img-logo img-fluid" src="{{ asset('build/images/logo/logo-modifie.png') }}" alt="logo esportify">
+		</div>
 
-    <h1 class="text-clair2 text-center pt-2">Tous les événements</h1>
+		<h1 class="text-clair2 text-center pt-2">Tous les événements</h1>
 
-    {# FILTRE #}
-    <div class="container-lg mt-3 d-flex justfy-content-center gap-2">
-        <form class="form d-flex p-0" id="searchForm" method="get" action="{{ path('events') }}" autocomplete="off" novalidate>
-            <div class="d-flex align-items-center justify-content-center">
-                <p class="text_description text-beige m-0">Filtrer par :</p>
-                <button class="filters_icones btn mx-2 p-0" 
-                            type="button"  
-                            data-bs-toggle="collapse" 
-                            data-bs-target="#filters"
-                            aria-controls="filters" 
-                            aria-expanded="false" 
-                            aria-label="Afficher les filtres"> 
-                        <i class="fa-solid fa-sliders fa-xl"></i>
-                    </button>
-            </div>
-            <div class="collapse mt-2" id="filters">
-                <div class="container-lg">
-                    <div class="row g-3 align-items-end" id="filtersContent">
-                        <div class="col-12 col-md-4">
-                            <label class="form-label text_description text-clair2" for="organizerSelect" >Organisateur</label>
-                            <select class="input_filter text_description form-select form-select-sm" name="organizer" id="organizerSelect" >
-                                <option value="">Tous</option>
-                                    {% for pseudo in organizers %}
-                                        <option value="{{ pseudo }}" {% if filters.organizer is defined and filters.organizer == pseudo %}selected{% endif %}>{{ pseudo }}</option>
-                                    {% endfor %}
-                            </select>
-                        </div>
-                        <div class="col-12 col-md-4">
-                            <label class="form-label text_description text-clair2" for="dateAt">À partir de</label>
-                            <input class="input_filter form-control text_description" name="dateAt" id="dateAt"  type="datetime-local" value="{{ filters.dateAt ?? '' }}" aria-label="Date minimale">
-                        </div>  
+		{# FILTRE #}
+		<div class="container-lg mt-3 d-flex justfy-content-center gap-2">
+			<form class="form d-flex p-0" id="searchForm" method="get" action="{{ path('events') }}" autocomplete="off" novalidate>
+				<div class="d-flex align-items-center justify-content-center">
+					<p class="text_description text-beige m-0">Filtrer par :</p>
+					<button class="filters_icones btn mx-2 p-0" type="button" data-bs-toggle="collapse" data-bs-target="#filters" aria-controls="filters" aria-expanded="false" aria-label="Afficher les filtres">
+						<i class="fa-solid fa-sliders fa-xl"></i>
+					</button>
+				</div>
+				<div class="collapse mt-2" id="filters">
+					<div class="container-lg">
+						<div class="row g-3 align-items-end" id="filtersContent">
+							<div class="col-12 col-md-4">
+								<label class="form-label text_description text-clair2" for="organizerSelect">Organisateur</label>
+								<select class="input_filter text_description form-select form-select-sm" name="organizer" id="organizerSelect">
+									<option value="">Tous</option>
+									{% for pseudo in organizers %}
+										<option value="{{ pseudo }}" {% if filters.organizer is defined and filters.organizer == pseudo %} selected {% endif %}>{{ pseudo }}</option>
+									{% endfor %}
+								</select>
+							</div>
+							<div class="col-12 col-md-4">
+								<label class="form-label text_description text-clair2" for="dateAt">À partir de</label>
+								<input class="input_filter form-control text_description" name="dateAt" id="dateAt" type="datetime-local" value="{{ filters.dateAt ?? '' }}" aria-label="Date minimale">
+							</div>
 
-                        <div class="col-12 col-md-4">
-                            <label class="form-label text_description text-clair2" for="playersCount" >Nombre de joueurs :</label>
-                            <input class="input_filter form-control" name="playersCount" id="playersCount" class="form-control" type="number" min="0" step="1" value="{{ filters.playersCount ?? '' }}" placeholder="Nombre min">
-                        </div>
+							<div class="col-12 col-md-4">
+								<label class="form-label text_description text-clair2" for="playersCount">Nombre de joueurs :</label>
+								<input class="input_filter form-control" name="playersCount" id="playersCount" class="form-control" type="number" min="0" step="1" value="{{ filters.playersCount ?? '' }}" placeholder="Nombre min">
+							</div>
 
-                        <div class="d-flex justify-content-center">
-                            <button "filters_icones btn mx-2 p-0" id="applyFiltersBtn" type="submit" form="searchForm" aria-label="Rechercher">
-                                <i class="fa-solid fa-magnifying-glass fa-xl text-darkBlue"></i>
-                            </button>
-                            <a class="btn-custom-md-green btn btn-greenFluo" href="{{ path('events') }}">Réinitialiser</a>
-                        </div>
-                        
-                    </div>
-                </div>
-            </div>
-        </form>
-    </div>
+							<div class="d-flex justify-content-center">
+								<button class="filters_icones btn mx-2 p-0" id="applyFiltersBtn" type="submit" form="searchForm" aria-label="Rechercher">
+									<i class="fa-solid fa-magnifying-glass fa-xl"></i>
+								</button>
+								<a class="btn-custom-md-green btn btn-greenFluo" href="{{ path('events') }}">Réinitialiser</a>
+							</div>
 
-    <div class="container-sm text-clair2">
-        <h2 class="text-center pt-2 mt-3">A toi de jouer !</h2>
-        <p class="text-description text-center">Retrouve ici l'ensemble des tournois organisés sur Esportify.</p>
-    </div>
-    
-    {# CARTES EVENEMENTS #}
-    <section class="container-fluid">
-        <div class="row g-4">
-            {% for event in events %}
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="card">
-                    <img class="card-img-top rounded event-img" src="{{ asset(event.imagePath) }}" alt="Image de l'event {{ event.title }}">
-                    <div class="card-body d-flex flex-column justify-content-center align-items-center text-lightBlue">
-                        <h3 class="text-decoration-underline event-title">{{ event.title }}</h3>
-                        <p class="text_description event-dates">
-                            Du {{ event.startsAtFormatted }} au {{ event.endsAtFormatted }}
-                        </p>
-                        <p class="text_description">Nombre de joueurs : <span class="event-players">{{ event.capacityGauge }}</span></p>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
 
-                        <div>
-                            <button class="btn-custom-md-green btn btn-greenFluo btn-details" type="button" data-bs-toggle="modal" data-bs-target="#modalEvent-{{ event.id }}">
-                                Plus de détail
-                            </button>
-                        </div>
+		<div class="container-sm text-clair2">
+			<h2 class="text-center pt-2 mt-3">A toi de jouer !</h2>
+			<p class="text-description text-center">Retrouve ici l'ensemble des tournois organisés sur Esportify.</p>
+		</div>
 
-                        <div class="mt-2 w-100 d-flex justify-content-between">
-                            <a class="register_icone btn" href="{{ path('app_login') }}"><i class="fa-solid fa-user-plus fa-lg text-lightBlue"></i></a>
-                            <button class="favoris_icone btn"><i class="fa-solid fa-star fa-lg text-lightBlue"></i></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+		{# CARTES EVENEMENTS #}
+		<section class="container-fluid">
+			<div class="row g-4">
+				{% for event in events %}
+					<div class="col-12 col-md-6 col-lg-4">
+						<div class="card">
+							<img class="card-img-top rounded event-img" src="{{ asset(event.imagePath) }}" alt="Image de l'event {{ event.title }}">
+							<div class="card-body d-flex flex-column justify-content-center align-items-center text-lightBlue">
+								<h3 class="text-decoration-underline event-title">{{ event.title }}</h3>
+								<p class="text_description event-dates">
+									Du
+									{{ event.startsAtFormatted }}
+									au
+									{{ event.endsAtFormatted }}
+								</p>
+								<p class="text_description">Nombre de joueurs :
+									<span class="event-players">{{ event.capacityGauge }}</span>
+								</p>
 
-    {# MODALE #}
-    <div class="modal fade" id="modalEvent-{{ event.id }}" tabindex="-1" aria-hidden="true" aria-labelledby="modalEventTitle-{{ event.id }}">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content rounded-4">
-                <div class="text-center p-0 m-0">
-                    <img class="w-100 rounded-top-4 border border-white p-0" src="{{ asset(event.imagePath) }}" alt="Image de l'event">
-                    <h3 class="modal-title text-darkBlue mt-2" id="modalEventTitle-{{ event.id }}">{{ event.title }}</h3>
-                </div>
+								<div>
+									<button class="btn-custom-md-green btn btn-greenFluo btn-details" type="button" data-bs-toggle="modal" data-bs-target="#modalEvent-{{ event.id }}">
+										Plus de détail
+									</button>
+								</div>
 
-                <div class="text_description text-lightBlue modal-body d-flex flex-column justify-content-center align-items-center">
-                    <h4 class="text-darkBlue">{{ event.tagline }}</h4>
-                    <p class="p-0 mb-2">{{ event.description }}</p>
-                    <p class="p-0 m-0">Du {{ event.startsAtFormatted }} au {{ event.endsAtFormatted }}</p>
-                    <p class="p-0 m-0">Nombre de joueurs : <strong>{{ event.capacityGauge }}</strong></p>
+								<div class="mt-2 w-100 d-flex justify-content-between">
+									<a class="register_icone btn" href="{{ path('app_login') }}">
+										<i class="fa-solid fa-user-plus fa-lg text-lightBlue"></i>
+									</a>
+									<button class="favoris_icone btn">
+										<i class="fa-solid fa-star fa-lg text-lightBlue"></i>
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
 
-                    <p class="p-0 m-0">Crée par <strong>{{ event.organizerPseudo ?: '—' }}</strong></p>
+					{# MODALE #}
+					<div class="modal fade" id="modalEvent-{{ event.id }}" tabindex="-1" aria-hidden="true" aria-labelledby="modalEventTitle-{{ event.id }}">
+						<div class="modal-dialog modal-lg modal-dialog-centered">
+							<div class="modal-content rounded-4">
+								<div class="text-center p-0 m-0">
+									<img class="w-100 rounded-top-4 border border-white p-0" src="{{ asset(event.imagePath) }}" alt="Image de l'event">
+									<h3 class="modal-title text-darkBlue mt-2" id="modalEventTitle-{{ event.id }}">{{ event.title }}</h3>
+								</div>
 
-                    <p class="p-0 mb-2">{{ event.timeStatus }}</p>
+								<div class="text_description text-lightBlue modal-body d-flex flex-column justify-content-center align-items-center">
+									<h4 class="text-darkBlue">{{ event.tagline }}</h4>
+									<p class="p-0 mb-2">{{ event.description }}</p>
+									<p class="p-0 m-0">Du
+										{{ event.startsAtFormatted }}
+										au
+										{{ event.endsAtFormatted }}</p>
+									<p class="p-0 m-0">Nombre de joueurs :
+										<strong>{{ event.capacityGauge }}</strong>
+									</p>
 
-                    <div class="mt-2 w-100 d-flex justify-content-between align-items-center">
-                        <a class="btn register_icone" type="button" title="S'inscrire" href="{{ path('app_login') }}"><i class="fa-solid fa-user-plus fa-lg text-lightBlue"></i></a>
-                        {# Normalement présent qu'à partir du moment où l'organisateur démarre l'évènement #}
-                        <button class="btn-custom-sm-green btn btn-greenFluo mb-3" type="button">Rejoindre</button>
-                        <button class="btn favoris_icone" type="button"><i class="fa-solid fa-star fa-lg text-lightBlue"></i></button>
-                    </div>
+									<p class="p-0 m-0">Crée par
+										<strong>{{ event.organizerPseudo ?: '—' }}</strong>
+									</p>
 
-                    <button class="btn btn-close mb-3" data-bs-dismiss="modal" aria-label="Fermer la fenêtre"></button>
-                </div>
-            </div>
-        </div>
-    </div>
-            {% else %}
-    <p class="text-clair2">Aucun événement validé pour l'instant.</p>
-            {% endfor %}
-        </div>
+									<p class="p-0 mb-2">{{ event.timeStatus }}</p>
 
-        <div class="text-center mt-4">
-            <a class="btn-custom-lg-clair btn btn-clair2 mb-4" href="{{ path('app_home') }}">Retour à l'accueil</a>
-        </div>
-    </section>
-</div>
+									<div class="mt-2 w-100 d-flex justify-content-between align-items-center">
+										<a class="btn register_icone" type="button" title="S'inscrire" href="{{ path('app_login') }}">
+											<i class="fa-solid fa-user-plus fa-lg text-lightBlue"></i>
+										</a>
+										{# Normalement présent qu'à partir du moment où l'organisateur démarre l'évènement #}
+										<button class="btn-custom-sm-green btn btn-greenFluo mb-3" type="button">Rejoindre</button>
+										<button class="btn favoris_icone" type="button">
+											<i class="fa-solid fa-star fa-lg text-lightBlue"></i>
+										</button>
+									</div>
+
+									<button class="btn btn-close mb-3" data-bs-dismiss="modal" aria-label="Fermer la fenêtre"></button>
+								</div>
+							</div>
+						</div>
+					</div>
+				{% else %}
+					<p class="text-clair2">Aucun événement validé pour l'instant.</p>
+				{% endfor %}
+			</div>
+
+			<div class="text-center mt-4">
+				<a class="btn-custom-lg-clair btn btn-clair2 mb-4" href="{{ path('app_home') }}">Retour à l'accueil</a>
+			</div>
+		</section>
+	</div>
 {% endblock %}

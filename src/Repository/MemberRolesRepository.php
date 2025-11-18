@@ -16,18 +16,18 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class MemberRolesRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, MemberRoles::class);
-    }
+  public function __construct(ManagerRegistry $registry)
+  {
+    parent::__construct($registry, MemberRoles::class);
+  }
 
-    public function findOneBySomeField($code): ?MemberRoles
-    {
-        return $this->createQueryBuilder('r')
-            ->andWhere('r.code = :code')
-            ->setParameter('code', strtoupper($code))
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }    
+  public function findOneBySomeField($code): ?MemberRoles
+  {
+    return $this->createQueryBuilder('r')
+      ->andWhere('r.code = :code')
+      ->setParameter('code', strtoupper($code))
+      ->getQuery()
+      ->getOneOrNullResult()
+    ;
+  }
 }

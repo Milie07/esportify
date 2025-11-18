@@ -2,18 +2,18 @@ FROM php:8.2-apache
 
 # Pour installer les extensions nécessaires à Symfony
 RUN apt-get update && apt-get install -y \
-    git \
-    unzip \
-    libicu-dev \
-    libzip-dev \
-    zip \
-    openssl \
-    libssl-dev &&\
-    docker-php-ext-install intl pdo pdo_mysql zip
+  git \
+  unzip \
+  libicu-dev \
+  libzip-dev \
+  zip \
+  openssl \
+  libssl-dev &&\
+  docker-php-ext-install intl pdo pdo_mysql zip
 
 # Installer l'extension MongoDB dans le conteneur
 RUN pecl install mongodb \
-    && docker-php-ext-enable mongodb
+  && docker-php-ext-enable mongodb
 
 # Pour activer le mod_rewrite (nécessaire pour Symfony)
 RUN a2enmod rewrite

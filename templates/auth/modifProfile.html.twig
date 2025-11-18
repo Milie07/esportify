@@ -1,92 +1,92 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Connexion — Esportify{% endblock %}
+{% block title %}Connexion — Esportify
+{% endblock %}
 
 {% block body %}
-    <div class="container-fluid mx-auto"> 
-        <!-- Logo Esportify  -->
-        <div class="container-lg text-center">
-            <img class="img-logo img-fluid" src="{{ asset('build/images/logo/logo-modifie.png') }}" alt="logo esportify">
-        </div>
-        <!-- Titre de la page -->
-        <h1 class="text-clair2 text-center pt-2">Modifier son Profil</h1>
+	<div
+		class="container-fluid mx-auto">
+		<!-- Logo Esportify  -->
+		<div class="container-lg text-center">
+			<img class="img-logo img-fluid" src="{{ asset('build/images/logo/logo-modifie.png') }}" alt="logo esportify">
+		</div>
+		<!-- Titre de la page -->
+		<h1 class="text-clair2 text-center pt-2">Modifier son Profil</h1>
 
-        <!-- Formulaire d'Inscription -->
-        <section class="container-lg section_contact d-flex text_description justify-content-center my-4 mt-4"> 
-            <form action="#" method="POST" class="form_contact bg-clair1 rounded-4 text-lightBlue px-5 py-4" id="searchForm">
+		<!-- Formulaire d'Inscription -->
+		<section class="container-lg section_contact d-flex text_description justify-content-center my-4 mt-4">
+			<form
+				action="#" method="POST" class="form_contact bg-clair1 rounded-4 text-lightBlue px-5 py-4" id="searchForm">
 
-                <!-- Informations personnelles -->
-                <div class="w-75 mx-auto">
-                <input id="name" name="name" type="text" class="form-control input_filter mb-3" minlength="2" maxlength="50" placeholder="Votre nom" required>
-                </div>
-                <div class="w-75 mx-auto">
-                <input id="surname" name="surname" type="text" class="form-control input_filter mb-3" minlength="2" maxlength="50" placeholder="Votre prénom" required>
-                </div>
-                <div class="w-75 mx-auto">
-                <input id="pseudo" name="pseudo" type="text" class="form-control input_filter mb-3" minlength="2" maxlength="50" placeholder="Votre pseudo" disabled required>
-                </div>
-                <div class="w-75 mx-auto">
-                <input id="mail" name="mail" type="email" class="form-control input_filter mb-3" placeholder="example@example.fr" disabled required>
-                </div>
-                <div class="w-75 mx-auto">
-                <input id="password" name="password" type="password" class="form-control input_filter mb-3" placeholder="Votre mot de passe" required>
-                </div>
-                <div class="w-75 mx-auto">
-                <input id="confirm_password" name="confirmPassword" type="password" class="form-control input_filter mb-3" placeholder="Confirmer votre mot de passe" required>
-                </div>
+				<!-- Informations personnelles -->
+				<div class="w-75 mx-auto">
+					<input id="name" name="name" type="text" class="form-control input_filter mb-3" minlength="2" maxlength="50" placeholder="Votre nom" required>
+				</div>
+				<div class="w-75 mx-auto">
+					<input id="surname" name="surname" type="text" class="form-control input_filter mb-3" minlength="2" maxlength="50" placeholder="Votre prénom" required>
+				</div>
+				<div class="w-75 mx-auto">
+					<input id="pseudo" name="pseudo" type="text" class="form-control input_filter mb-3" minlength="2" maxlength="50" placeholder="Votre pseudo" disabled required>
+				</div>
+				<div class="w-75 mx-auto">
+					<input id="mail" name="mail" type="email" class="form-control input_filter mb-3" placeholder="example@example.fr" disabled required>
+				</div>
+				<div class="w-75 mx-auto">
+					<input id="password" name="password" type="password" class="form-control input_filter mb-3" placeholder="Votre mot de passe" required>
+				</div>
+				<div class="w-75 mx-auto">
+					<input id="confirm_password" name="confirmPassword" type="password" class="form-control input_filter mb-3" placeholder="Confirmer votre mot de passe" required>
+				</div>
 
-                <!-- Choix de l'avatar -->
-                <p class="text-center text-decoration-underline mb-2">Choisissez votre avatar :</p>
-                <div class="d-flex flex-wrap justify-content-center">
-                    <div class="align-self-start mx-1">
-                        <input type="radio" id="avatar1" name="avatar" value="avatar1">
-                        <img class="avatar_icone" src="{{ asset('build/images/icones/avatar1.jpg') }}" alt="choix d'avatar">
-                    </div>
-                    <div class="align-self-start mx-1 my-1">
-                        <input type="radio" id="avatar2" name="avatar" value="avatar2">
-                        <img class="avatar_icone" src="{{ asset('build/images/icones/avatar2.jpg') }}" alt="choix d'avatar">
-                    </div>
-                    <div class="align-self-start mx-1 my-1">
-                        <input type="radio" id="avatar3" name="avatar" value="avatar3">
-                        <img class="avatar_icone" src="{{ asset('build/images/icones/avatar3.jpg') }}" alt="choix d'avatar">
-                    </div>
-                    <div class="align-self-start mx-1 my-1">
-                        <input type="radio" id="avatar4" name="avatar" value="avatar4">
-                        <img class="avatar_icone" src="{{ asset('build/images/icones/avatar4.jpg') }}" alt="choix d'avatar">
-                    </div>
-                    <div class="align-self-start mx-1 my-1">
-                        <input type="radio" id="avatar5" name="avatar" value="avatar5">
-                        <img class="avatar_icone" src="{{ asset('build/images/icones/avatar5.jpg') }}" alt="choix d'avatar">
-                    </div>
-                    <div class="align-self-start mx-1 my-1">
-                        <input type="radio" id="avatar6" name="avatar" value="avatar6">
-                        <img class="avatar_icone" src="{{ asset('build/images/icones/avatar6.jpg') }}" alt="choix d'avatar">
-                    </div>
-                    <div class="align-self-start mx-1 my-1">
-                        <input type="radio" id="avatar7" name="avatar" value="avatar7">
-                        <img class="avatar_icone" src="{{ asset('build/images/icones/avatar7.jpg') }}" alt="choix d'avatar">
-                    </div>
-                    <div class="align-self-start mx-1 my-1">
-                        <input type="radio" id="avatar8" name="avatar" value="avatar8">
-                        <img class="avatar_icone" src="{{ asset('build/images/icones/avatar8.jpg') }}" alt="choix d'avatar">
-                    </div>
-                </div>
+				<!-- Choix de l'avatar -->
+				<p class="text-center text-decoration-underline mb-2">Choisissez votre avatar :</p>
+				<div class="d-flex flex-wrap justify-content-center">
+					<div class="align-self-start mx-1">
+						<input type="radio" id="avatar1" name="avatar" value="avatar1">
+						<img class="avatar_icone" src="{{ asset('build/images/icones/avatar1.jpg') }}" alt="choix d'avatar">
+					</div>
+					<div class="align-self-start mx-1 my-1">
+						<input type="radio" id="avatar2" name="avatar" value="avatar2">
+						<img class="avatar_icone" src="{{ asset('build/images/icones/avatar2.jpg') }}" alt="choix d'avatar">
+					</div>
+					<div class="align-self-start mx-1 my-1">
+						<input type="radio" id="avatar3" name="avatar" value="avatar3">
+						<img class="avatar_icone" src="{{ asset('build/images/icones/avatar3.jpg') }}" alt="choix d'avatar">
+					</div>
+					<div class="align-self-start mx-1 my-1">
+						<input type="radio" id="avatar4" name="avatar" value="avatar4">
+						<img class="avatar_icone" src="{{ asset('build/images/icones/avatar4.jpg') }}" alt="choix d'avatar">
+					</div>
+					<div class="align-self-start mx-1 my-1">
+						<input type="radio" id="avatar5" name="avatar" value="avatar5">
+						<img class="avatar_icone" src="{{ asset('build/images/icones/avatar5.jpg') }}" alt="choix d'avatar">
+					</div>
+					<div class="align-self-start mx-1 my-1">
+						<input type="radio" id="avatar6" name="avatar" value="avatar6">
+						<img class="avatar_icone" src="{{ asset('build/images/icones/avatar6.jpg') }}" alt="choix d'avatar">
+					</div>
+					<div class="align-self-start mx-1 my-1">
+						<input type="radio" id="avatar7" name="avatar" value="avatar7">
+						<img class="avatar_icone" src="{{ asset('build/images/icones/avatar7.jpg') }}" alt="choix d'avatar">
+					</div>
+					<div class="align-self-start mx-1 my-1">
+						<input type="radio" id="avatar8" name="avatar" value="avatar8">
+						<img class="avatar_icone" src="{{ asset('build/images/icones/avatar8.jpg') }}" alt="choix d'avatar">
+					</div>
+				</div>
 
-                <div class="mx-1 my-1">
-                        <input type="checkbox" id="conditions" name="conditions" value="conditions" required>
-                        <label for="conditions">J'accepte les conditions générales d'utilisation</label>
-                </div>
+				<div class="mx-1 my-1">
+					<input type="checkbox" id="conditions" name="conditions" value="conditions" required>
+					<label for="conditions">J'accepte les conditions générales d'utilisation</label>
+				</div>
 
-                <!-- Bouton d'envoi -->
-                <div class="d-flex justify-content-center mt-4 mb-2">
-                    <input class="btn-custom-lg-green btn btn-greenFluo" type="submit" value="Modifier le profil">
-                </div>
-            </form>
-        </section>
-    </div>
-
+				<!-- Bouton d'envoi -->
+				<div class="d-flex justify-content-center mt-4 mb-2">
+					<input class="btn-custom-lg-green btn btn-greenFluo" type="submit" value="Modifier le profil">
+				</div>
+			</form>
+		</section>
+	</div>
 
 
 {% endblock %}
-
-

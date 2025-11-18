@@ -1,110 +1,140 @@
 <!DOCTYPE html>
 <html lang="fr-FR">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<script src="https://kit.fontawesome.com/1c347601e2.js" crossorigin="anonymous"></script>
-    {# Gère app.scss + Bootstrap + JS custom #}
-    {{ encore_entry_link_tags('app') }}
-    {{ encore_entry_script_tags('app') }}
-	<title>{% block title %}Esportify{% endblock %}</title>
-</head>
-<body class="bg-darkBlue">
-    <!-- header -->
-	<header class="navbar navbar-expand-lg">
-        <div class="container-fluid">
-            <!-- Bouton menu burger -->
-                <button 
-                    class="navbar-toggler collapsed"   
-                    data-bs-toggle="collapse" 
-                    data-bs-target="#navbarNav"
-                    aria-controls="navbarNav" 
-                    aria-expanded="false" 
-                    aria-label="Toggle navigation">
-                        <i class="fa-solid fa-bars "></i>
-                </button>
-            <!-- Navigation principale -->
-            <nav class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a href="{{ path('app_home') }}" class="nav-link text-uppercase mx-1">Accueil</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ path('events') }}" class="nav-link text-uppercase mx-1">Les Evénements</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ path('signup_form') }}" class="nav-link text-uppercase mx-1">Inscription</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ path('contact') }}" class="nav-link text-uppercase mx-1">Contact</a>
-                    </li>
-                </ul>
-            </nav>
-            {# Avatar et Dropdown #}
-            <ul class="player_connexion navbar-nav ms-auto">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle player_trigger" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    {% if app.user %}
-                        {% set avatarUrl = app.user.avatarPath is defined ? app.user.avatarPath : null %}
-                        {% if avatarUrl %}
-                            <img class="avatar_icone" src="{{ asset(avatarUrl) }}" alt="avatar">
-                        {% endif %}
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<script src="https://kit.fontawesome.com/1c347601e2.js" crossorigin="anonymous"></script>
+		{# Gère app.scss + Bootstrap + JS custom #}
+		{{ encore_entry_link_tags('app') }}
+		{{ encore_entry_script_tags('app') }}
+		<title>
+			{% block title %}Esportify
+			{% endblock %}
+		</title>
+	</head>
+	<body
+		class="bg-darkBlue">
+		<!-- header -->
+		<header class="navbar navbar-expand-lg">
+			<div
+				class="container-fluid">
+				<!-- Bouton menu burger -->
+				<button class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+					<i class="fa-solid fa-bars "></i>
+				</button>
+				<!-- Navigation principale -->
+				<nav class="collapse navbar-collapse" id="navbarNav">
+					<ul class="navbar-nav">
+						<li class="nav-item">
+							<a href="{{ path('app_home') }}" class="nav-link text-uppercase mx-1">Accueil</a>
+						</li>
+						<li class="nav-item">
+							<a href="{{ path('events') }}" class="nav-link text-uppercase mx-1">Les Evénements</a>
+						</li>
+						<li class="nav-item">
+							<a href="{{ path('signup_form') }}" class="nav-link text-uppercase mx-1">Inscription</a>
+						</li>
+						<li class="nav-item">
+							<a href="{{ path('contact') }}" class="nav-link text-uppercase mx-1">Contact</a>
+						</li>
+					</ul>
+				</nav>
+				{# Avatar et Dropdown #}
+				<ul class="player_connexion navbar-nav ms-auto">
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle player_trigger" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+							{% if app.user %}
+								{% set avatarUrl = app.user.avatarPath is defined ? app.user.avatarPath : null %}
+								{% if avatarUrl %}
+									<img class="avatar_icone" src="{{ asset(avatarUrl) }}" alt="avatar">
+								{% endif %}
 
-                        <span class="player_pseudo">{{ app.user.pseudo ?: app.user.username }}</span>
-                        {% if app.user.memberScore is defined and app.user.memberScore is not null %}
-                            <span class="player_score"> - {{ app.user.memberScore }} 🏆</span>
-                        {% endif %}
-                    {% else %}
-                        <img class="avatar_icone" src="{{ asset('build/images/icones/avatarNonConnecte.png') }}" alt="avatar">
-                        <span class="player_pseudo">Non connecté</span>
-                    {% endif %}
-                    </a>
-                    {# Dropdown Menu à modifier pour le responsive mobile #}
-                    <ul class="dropdown-menu">
-                        {% if not app.user %}
-                            <li class="text-center"><a class="dropdown-item" href="{{ path('app_login') }}">Connexion</a></li>
-                        {% else %}
-                            {% if is_granted('ROLE_ADMIN') %}
-                                <li class="text-center"><a class="dropdown-item" href="{{ path('admin_dashboard') }}">Dashboard admin</a></li>
-                            {% elseif is_granted('ROLE_ORGANIZER') %}
-                                <li class="text-center"><a class="dropdown-item" href="{{ path('organizer_space') }}">Espace organisateur</a></li>
-                            {% elseif is_granted('ROLE_PLAYER') %}
-                                <li class="text-center"><a class="dropdown-item" href="{{ path('player_space') }}">Espace joueur</a></li>
-                            {% endif %}
-                            <li><hr class="dropdown-divider"></li>
-                            <li class="text-center"><a class="dropdown-item" href="{{ path('app_logout') }}">Déconnexion</a></li>
-                        {% endif %}
-                    </ul>
-                </li>
-            </ul>
-        </div> 
-    </header>
-    <!-- main -->
-    <main>
-        {% block body %}
-        {% endblock %}
-    </main>
+								<span class="player_pseudo">{{ app.user.pseudo ?: app.user.username }}</span>
+								{% if app.user.memberScore is defined and app.user.memberScore is not null %}
+									<span class="player_score">
+										-
+										{{ app.user.memberScore }}
+										🏆</span>
+								{% endif %}
+							{% else %}
+								<img class="avatar_icone" src="{{ asset('build/images/icones/avatarNonConnecte.png') }}" alt="avatar">
+								<span class="player_pseudo">Non connecté</span>
+							{% endif %}
+						</a>
+						{# Dropdown Menu à modifier pour le responsive mobile #}
+						<ul class="dropdown-menu">
+							{% if not app.user %}
+								<li class="text-center">
+									<a class="dropdown-item" href="{{ path('app_login') }}">Connexion</a>
+								</li>
+							{% else %}
+								{% if is_granted('ROLE_ADMIN') %}
+									<li class="text-center">
+										<a class="dropdown-item" href="{{ path('admin_dashboard') }}">Dashboard admin</a>
+									</li>
+								{% elseif is_granted('ROLE_ORGANIZER') %}
+									<li class="text-center">
+										<a class="dropdown-item" href="{{ path('organizer_space') }}">Espace organisateur</a>
+									</li>
+								{% elseif is_granted('ROLE_PLAYER') %}
+									<li class="text-center">
+										<a class="dropdown-item" href="{{ path('player_space') }}">Espace joueur</a>
+									</li>
+								{% endif %}
+								<li><hr class="dropdown-divider"></li>
+								<li class="text-center">
+									<a class="dropdown-item" href="{{ path('app_logout') }}">Déconnexion</a>
+								</li>
+							{% endif %}
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</header>
+		<!-- main -->
+		<main>
+			{% block body %}{% endblock %}
+		</main>
 
-    <!-- footer -->
-    <footer class="container-fluid text_description text-center text-beige mt-3 py-4">
-        <h3 class="text-beige">Retrouvez nous sur les Réseaux !</h3>
-        <div class="footer_icones mb-2">
-            <a  target="_blank" class="footer_social_media me-2" href="https://www.instagram.com">
-                <i class="fa-brands fa-instagram fa-xl"></i>
-            </a>
-            <a target="_blank" class="footer_social_media me-2" href="https://www.facebook.com">
-                <i class="fa-brands fa-facebook fa-xl"></i>
-            </a>
-            <a  target="_blank" class="footer_social_media me-2" href="https://www.discord.com">
-                <i class="fa-brands fa-discord fa-xl"></i>
-            </a>
-        </div>
-        <p class="p-0 m-0">Mentions légales</p>
-        <p class="p-0 m-0">Politique de confidentialité</p>
-        <p class="p-0 m-0">Conditions générales (CGU/CGV)</p>
+		<!-- footer -->
+		<footer class="container-fluid text_description text-center text-beige mt-3 py-4">
+			<h3 class="text-beige">Retrouvez nous sur les Réseaux !</h3>
+			<div class="footer_icones mb-2">
+				<a target="_blank" class="footer_social_media me-2" href="https://www.instagram.com">
+					<i class="fa-brands fa-instagram fa-xl"></i>
+				</a>
+				<a target="_blank" class="footer_social_media me-2" href="https://www.facebook.com">
+					<i class="fa-brands fa-facebook fa-xl"></i>
+				</a>
+				<a target="_blank" class="footer_social_media me-2" href="https://www.discord.com">
+					<i class="fa-brands fa-discord fa-xl"></i>
+				</a>
+			</div>
+			<p class="p-0 m-0">
+				<a class='nav-link' href="{{ path('legal_mentions') }}">Mentions légales</a>
+			</p>
+			<p class="p-0 m-0">
+				<a class='nav-link' href="{{ path('privacy') }}">Politique de confidentialité</a>
+			</p>
+			<p class="p-0 m-0">
+				<a class='nav-link' href="{{ path('cgu') }}">Conditions générales d'utilisation</a>
+			</p>
 
-        <small>©2025 - Sujet Esportify</small>
+			<small>©2025 - Sujet Esportify</small>
 
-    </footer>
-</body>
+		</footer>
+		{% if app.request.cookies.get('esportify_consent') is null %}
+			<div id="cookie-banner" class="cookie-banner bg-dark text-light p-3 position-fixed bottom-0 w-100">
+				<div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
+					<p class="mb-2 mb-md-0">
+						Ce site utilise un cookie pour améliorer votre expérience (connexion automatique).
+					</p>
+					<div>
+						<button id="cookie-accept" class="btn btn-success me-2">Accepter</button>
+						<button id="cookie-decline" class="btn btn-secondary">Refuser</button>
+					</div>
+				</div>
+			</div>
+		{% endif %}
+	</body>
 </html>

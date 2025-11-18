@@ -8,293 +8,299 @@ $theme-colors: map.merge($theme-colors, $custom-theme-colors);
 @import "custom";
 
 // MAIN GENERAL
-  // boutons 
+// boutons
 .btn-custom-lg-green {
-    @include bouton(lg);
-    @include btn-hover($lightBlue, $greenFluo);
+	@include bouton(lg);
+	@include btn-hover($lightBlue, $greenFluo);
 }
 .btn-custom-lg-clair {
-    @include bouton(lg);
-    @include btn-hover($lightBlue, $beige);
+	@include bouton(lg);
+	@include btn-hover($lightBlue, $beige);
 }
 
 .btn-custom-md-green {
-    @include bouton(md);
-    @include btn-hover($lightBlue, $greenFluo);
+	@include bouton(md);
+	@include btn-hover($lightBlue, $greenFluo);
 }
 
 .btn-custom-md-clair {
-    @include bouton(md);
-    @include btn-hover($lightBlue, $beige);
+	@include bouton(md);
+	@include btn-hover($lightBlue, $beige);
 }
 
 .btn-custom-sm-green {
-    @include bouton(sm);
-    @include btn-hover($lightBlue, $greenFluo);
+	@include bouton(sm);
+	@include btn-hover($lightBlue, $greenFluo);
 }
 
 .btn-custom-sm-clair {
-    @include bouton(sm);
-    @include btn-hover($lightBlue, $beige);
+	@include bouton(sm);
+	@include btn-hover($lightBlue, $beige);
 }
 
 // HEADER
 .navbar .navbar-collapse {
-    flex-grow: 0;
+	flex-grow: 0;
 }
 
 // menu burger
 .navbar-toggler {
-    color: $beige;
-    border: none !important;
-    box-shadow: none !important;
-    outline: none !important;
-    
-    &:not(.collapsed) {
-        border: none;
-    }
+	color: $beige;
+	border: none !important;
+	box-shadow: none !important;
+	outline: none !important;
+
+	&:not(.collapsed) {
+		border: none;
+	}
 }
 
 // navigation
 .nav-link {
-    color: $beige !important;
-    font-size: 0.875rem;
-    transition: all 0.3s ease-in-out;
-    
-    &:hover{
-        color: $greenFluo !important;
-        text-decoration: underline;
-        text-decoration-color: $beige;
-        text-underline-offset: 5px;
-    }
+	color: $beige !important;
+	font-size: 0.875rem;
+	transition: all 0.3s ease-in-out;
+
+	&:hover {
+		color: $greenFluo !important;
+		text-decoration: underline;
+		text-decoration-color: $beige;
+		text-underline-offset: 5px;
+	}
 }
 
 // Avatar
 .player_trigger {
-    display: inline-flex;         /* pas block, pas column */
-    align-items: center;
-    gap: .5rem;
-    white-space: nowrap;          /* évite les retours en tablette */
-    color: $beige !important;
-    text-decoration: none;
+	display: inline-flex; /* pas block, pas column */
+	align-items: center;
+	gap: 0.5rem;
+	white-space: nowrap; /* évite les retours en tablette */
+	color: $beige !important;
+	text-decoration: none;
 }
 
 .avatar {
-    width: 40px;
-    height: 40px;
-    display: block;
+	width: 40px;
+	height: 40px;
+	display: block;
 }
 
-.player_pseudo, .player_score {
-    white-space: nowrap;
+.player_pseudo,
+.player_score {
+	white-space: nowrap;
 }
 
 // menu dropdown
 .player_connexion .nav-item,
 .player_connexion .nav-link {
-    display: inline-flex;
-    align-items: center;
+	display: inline-flex;
+	align-items: center;
 }
-.navbar-nav .dropdown-menu{
-    position: relative;
+.navbar-nav .dropdown-menu {
+	position: relative;
 }
 
 .dropdown-menu {
-    min-width: 8rem;
-    border: 1px solid $greenFluo;
-    box-shadow: none;
-    background-color: transparent;
+	min-width: 8rem;
+	border: 1px solid $greenFluo;
+	box-shadow: none;
+	background-color: transparent;
 }
 
-.nav-item.dropdown { 
-    position: relative; 
+.nav-item.dropdown {
+	position: relative;
 }
 
 .dropdown-item {
-    color: $beige !important;
-    font-size: 0.875rem;
-    transition: all 0.3s ease-in-out;
-    &:hover,
-    &:focus {
-        background-color: transparent;
-        color: $greenFluo !important;
-    }
+	color: $beige !important;
+	font-size: 0.875rem;
+	transition: all 0.3s ease-in-out;
+	&:hover,
+	&:focus {
+		background-color: transparent;
+		color: $greenFluo !important;
+	}
 }
 
 // FOOTER
-.footer_social_media i{
-    color: $beige !important;
-    transition: all 0.5s ease-in-out;
-    
-    &:hover,
-    &:focus {
-        background-color: transparent;
-        color: $greenFluo !important;
-        transform: scale(120%);
-    }
+.footer_social_media i {
+	color: $beige !important;
+	transition: all 0.5s ease-in-out;
+
+	&:hover,
+	&:focus {
+		background-color: transparent;
+		color: $greenFluo !important;
+		transform: scale(120%);
+	}
 }
 
 // LOGO TITRE
 .img-logo {
-    width: 300px;
-    border: solid 1px $darkBlue;
-    border-radius: 10px;
+	width: 300px;
+	border: solid 1px $darkBlue;
+	border-radius: 10px;
 }
 
 // MAIN - PAGE HOME
-    // Carousel
+// Carousel
 .carousel-caption {
-    background-color: rgba(0,0,0,0.5);
-    color: $clair2;
-    border-radius: 10px;
-    max-width: 800px;
+	background-color: rgba(0, 0, 0, 0.5);
+	color: $clair2;
+	border-radius: 10px;
+	max-width: 800px;
 }
 .btn-carousel {
-    background-color: rgba(0,0,0,0.5);
-    border-radius: 50%;
+	background-color: rgba(0, 0, 0, 0.5);
+	border-radius: 50%;
 }
 
-    // Connection
+// Connection
 .img-connexion {
-    box-shadow: 1px 0px 10px 5px rgba(4, 54, 68, 0.8);
+	box-shadow: 1px 0px 10px 5px rgba(4, 54, 68, 0.8);
 }
 .connexion {
-    background: url('../img/jpg/quantumBash2-freepik-ia_resultat.jpg');
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position-x: center;
-    background-position-y: bottom;
-    background-attachment: fixed;
-    background-origin: initial;
-    background-clip: initial;
-    background-color: initial;
-    min-height: 200px;
+	background: url("../img/jpg/quantumBash2-freepik-ia_resultat.jpg");
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position-x: center;
+	background-position-y: bottom;
+	background-attachment: fixed;
+	background-origin: initial;
+	background-clip: initial;
+	background-color: initial;
+	min-height: 200px;
 }
 
 // MAIN - PAGE EVENTS
-  // Filtre
+// Filtre
 .filters_icones i {
-    color: $beige !important;
-    transition: all 0.5s ease-in-out;
-    
-    &:hover,
-    &:focus {
-        background-color: transparent;
-        color: $greenFluo !important;
-        transform: scale(120%);
-    }
+	color: $beige !important;
+	transition: all 0.5s ease-in-out;
+
+	&:hover,
+	&:focus {
+		background-color: transparent;
+		color: $greenFluo !important;
+		transform: scale(120%);
+	}
 }
 
-.register_icone i, .favoris_icone i {
-    color: $lightBlue !important;
-    transition: all 0.5s ease-in-out;
-    
-    &:hover,
-    &:focus {
-        background-color: transparent;
-        color: $greenFluo !important;
-        transform: scale(120%);
-    }
+.register_icone i,
+.favoris_icone i {
+	color: $lightBlue !important;
+	transition: all 0.5s ease-in-out;
+
+	&:hover,
+	&:focus {
+		background-color: transparent;
+		color: $greenFluo !important;
+		transform: scale(120%);
+	}
 }
 
 // MAIN - PAGE CONTACT
-  // Formulaire
-.section_contact{
-    max-width: 100%;
+// Formulaire
+.section_contact {
+	max-width: 100%;
 }
 
 .avatar_icone {
-    width: 70px;
-    height: 70px;
-    border: 2px solid $darkBlue;
-    border-radius: 50%;
-    margin-left: 10px;
-    transition: all 0.3s ease-in-out;
+	width: 70px;
+	height: 70px;
+	border: 2px solid $darkBlue;
+	border-radius: 50%;
+	margin-left: 10px;
+	transition: all 0.3s ease-in-out;
 
-    &:hover {
-        border: 2px solid $darkBlue;
-        box-shadow: 1px 1px 10px $beige;
-        transform: scale(110%);
-    }
+	&:hover {
+		border: 2px solid $darkBlue;
+		box-shadow: 1px 1px 10px $beige;
+		transform: scale(110%);
+	}
 }
 textarea {
-    min-height: 150px !important;
+	min-height: 150px !important;
 }
 
 // MAIN - USER SPACE
-.avatar_player  {
-    width: 150px;
-    height: 150px;
-    border: 2px solid $darkBlue;
-    border-radius: 50%;
-    margin-left: 10px;
-    transition: all 0.3s ease-in-out;
+.avatar_player {
+	width: 150px;
+	height: 150px;
+	border: 2px solid $darkBlue;
+	border-radius: 50%;
+	margin-left: 10px;
+	transition: all 0.3s ease-in-out;
 
-    &:hover {
-        border: 2px solid $darkBlue;
-        box-shadow: 1px 1px 10px $beige;
-        transform: scale(110%);
-    }
+	&:hover {
+		border: 2px solid $darkBlue;
+		box-shadow: 1px 1px 10px $beige;
+		transform: scale(110%);
+	}
 }
 
 // Scores
-.score_gauge { 
-    width: 320px; 
-    font-family: system-ui, sans-serif; 
+.score_gauge {
+	width: 320px;
+	font-family: system-ui, sans-serif;
 }
 
-.score_head { 
-    display:flex; 
-    gap:0.4rem; 
-    align-items:center; 
-    justify-content:center; 
-    margin-bottom:.25rem; 
-    font-weight:700; 
+.score_head {
+	display: flex;
+	gap: 0.4rem;
+	align-items: center;
+	justify-content: center;
+	margin-bottom: 0.25rem;
+	font-weight: 700;
 }
 
-#scoreValue { 
-    font-size:1.1rem; 
+#scoreValue {
+	font-size: 1.1rem;
 }
 
 .score_bar {
-    position: relative;
-    height: 16px;
-    border-radius: 8px;
-    background: #e9edd6;         
-    overflow: hidden;
-    //traits de repère (tous les 10 points sur 30 => 33.333%) 
-    background-image:
-    linear-gradient(#e9edd6, #e9edd6),
-    repeating-linear-gradient(to right,
-        transparent 0, transparent calc(33.333% - 1px),
-        #9aa58a calc(33.333% - 1px), #9aa58a calc(33.333%));
-    background-size: 100% 100%, 100% 100%;
-    background-position: 0 0, 0 0;
-    background-repeat: no-repeat;
+	position: relative;
+	height: 16px;
+	border-radius: 8px;
+	background: #e9edd6;
+	overflow: hidden;
+	//traits de repère (tous les 10 points sur 30 => 33.333%)
+	background-image: linear-gradient(#e9edd6, #e9edd6),
+		repeating-linear-gradient(
+			to right,
+			transparent 0,
+			transparent calc(33.333% - 1px),
+			#9aa58a calc(33.333% - 1px),
+			#9aa58a calc(33.333%)
+		);
+	background-size: 100% 100%, 100% 100%;
+	background-position: 0 0, 0 0;
+	background-repeat: no-repeat;
 }
 
 .score_fill {
-    height: 100%;
-    width: 0%;
-    //vert jusqu’au pourcentage, bleu sombre après (effet “section suivante”)
-    background:
-    linear-gradient(to right,
-        #14b8a6 0 var(--pct, 0%),
-        #113a59 var(--pct, 0%) 100%);
-    // transition: width 0.4s ease, background 0.4s ease;
+	height: 100%;
+	width: 0%;
+	//vert jusqu’au pourcentage, bleu sombre après (effet “section suivante”)
+	background: linear-gradient(
+		to right,
+		#14b8a6 0 var(--pct, 0%),
+		#113a59 var(--pct, 0%) 100%
+	);
+	// transition: width 0.4s ease, background 0.4s ease;
 }
 
-//labels sous la jauge 
+//labels sous la jauge
 .score_scale {
-    display:flex; 
-    justify-content:space-between; 
-    font-size:0.8rem; 
-    color:#2b2b2b; 
-    margin-top:0.25rem;
+	display: flex;
+	justify-content: space-between;
+	font-size: 0.8rem;
+	color: #2b2b2b;
+	margin-top: 0.25rem;
 }
 
 // MAIN PLAYER_SPACE TABLE
 
 .table_favoris {
-    width: 50px;
+	width: 50px;
 }

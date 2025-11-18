@@ -1,202 +1,210 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Espace Joueur — Esportify{% endblock %}
-
-{% block body %}
-    <div class="container-fluid mx-auto">
-        <!-- Avatar Joueur -->
-            {% block img %}
-            {% set fromEntity = app.user ? app.user.avatarPath : null %}
-            {% set safeAvatar = avatarUrl ?? 'uploads/avatars/default-avatar.jpg' %}
-            <img class="avatar avatar_player d-block mx-auto" src="{{ asset(safeAvatar) }}" alt="avatar">
-            {% endblock %}
-        
-        <!-- Titre de la page -->
-        <h1 class="text-center text-beige">Bienvenue <span>{{ app.user.pseudo }} <br> {{ app.user.memberScore}} 🏆</span></h1>
-        
-        <!-- Section rapports évènements -->
-        <section class="container-lg my-3 my-lg-3 py-2 py-lg-3">
-            <div class="row text_description text-center gap-2 gap-lg-0 mx-auto">
-
-                <!-- Scores joueur -->
-                <div class="col-12 col-lg-6">
-                    <div class="card bg-clair2 rounded-2 text-lightBlue p-3">
-                        <h2 class="card-title">Mes Scores 🏆</h2>
-                        <!-- liste des scores par évènement -->
-                        <table class="card-body bg-white border border-lightBlue py-2">
-                            <thead>
-                                <tr class="text_lightBlue text-decoration-underline">
-                                    <th scope="row">Évènements</th>
-                                    <th scope="row">Scores</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th class="text_lightBlue">Iron Arena</th>
-                                    <td class="text_lightBlue">15</td>
-                                </tr>
-                                <tr>
-                                    <th class="text_lightBlue">Pixel Panic</th>
-                                    <td class="text_lightBlue">5</td>
-                                </tr>
-                                <tr>
-                                    <th class="text_lightBlue">Dragon's Den</th>
-                                    <td class="text_lightBlue">0</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div> 
-
-                <!-- Favoris -->
-                <div class="col-12 col-lg-6">
-                    <div class="card bg-clair2 rounded-2 text-lightBlue p-3">
-                        <h2 class="card-title">Mes Favoris ⭐</h2>
-                        <!-- liste des scores par évènement -->
-                        <table class="card-body bg-white border border-lightBlue py-2">
-                            <thead>
-                                <tr class="text_lightBlue text-decoration-underline">
-                                    <th scope="row">Évènements</th>
-                                    <th scope="row">Statut</th>
-                                    <th class="" scope="row" colspan="3">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th scope="row" class="text_lightBlue">Iron Arena</th>
-                                    <td class="text_lightBlue">Validé ✅</td>
-                                    <td><button class="btn btn-beige rounded-pill text-lightBlue" type="button"><i class="fa-solid fa-person-circle-plus fa-xl"></i></button></td>
-                                    <td><button class="btn btn-beige rounded-pill text-lightBlue" type="button"><i class="fa-solid fa-person-circle-minus fa-xl"></i></td>
-                                    <td><button class="btn btn-beige rounded-pill text-lightBlue" type="button"><i class="fa-solid fa-right-to-bracket fa-xl"></i></button></td>
-                                </tr>
-                                <tr>
-                                    <th class="text_lightBlue">Pixel Panic</th>
-                                    <td class="text_lightBlue">En cours </td>
-                                    <td><button class="btn btn-beige text-lightBlue" type="button"><i class="fa-solid fa-person-circle-plus fa-xl"></i></button></td>
-                                    <td><button class="btn btn-beige text-lightBlue" type="button"><i class="fa-solid fa-person-circle-minus fa-xl"></i></td>
-                                    <td><button class="btn btn-beige text-lightBlue d-none" type="button"><i class="fa-solid fa-right-to-bracket fa-xl"></i></button></td>
-                                </tr>
-                                <tr>
-                                    <th class="text_lightBlue">Dragon's Den</th>
-                                    <td class="text_lightBlue"></td>
-                                    <td><button class="btn btn-beige rounded-pill text-lightBlue" type="button"><i class="fa-solid fa-person-circle-plus fa-xl"></i></button></td>
-                                    <td><button class="btn btn-beige rounded-pill text-lightBlue" type="button"><i class="fa-solid fa-person-circle-minus fa-xl"></i></td>
-                                    <td><button class="btn btn-beige rounded-pill text-lightBlue" type="button"><i class="fa-solid fa-right-to-bracket fa-xl"></i></button></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div> 
-            </div>        
-        </section>
-
-
-        <!-- Section devenir organisateur -->
-        <section class="container-lg my-3 my-lg-3 py-2 py-lg-3">
-            <div class="bg-clair2 rounded-2 text_description text-lightBlue text-center mx-auto p-3">
-                <h2>Devenir Organisateur</h2>
-                <div class="bg-beige border border-lightBlue rounded-2 p-3">
-                    <h3>Fais passer ton jeu au niveau supérieur !</h3>
-                    <p class="p-0 m-0"> Crée, coordonne, anime... Deviens l'architecte de l'arène !</p>
-                    <p class="p-0 m-0"> Tu veux animer des évènements, faire vibrer les joueurs comme toi ?</p>
-                    <p class="p-0 m-0"> L'espace organisateur t'ouvre ses portes : <br> C'est içi que commencent les avanetures des maitres du jeu. Prends les rènes, imagine ton format, choisis les règles et fais de ta vision un terrain de jeu colectif !</p>
-                    <h3>Envie de te lancer ?</h3>
-                    <p> Clique sur le bouton ci-dessous et commencer à bâtir des évènements inoubliables !</p>
-                    <div>
-                        <button class="btn-custom-md-green btn btn-greenFluo">C'est parti !</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Section gestion infos perso -->
-        <section class="container-lg my-3 my-lg-3 py-2 py-lg-3">
-            <div class="bg-clair2 rounded-2 text-lightBlue text-center mx-auto p-3">
-                <h2>Mes informations personnelles</h2>
-
-                <!-- Formulaire d'Inscription -->
-                <form action="#" method="POST" class="form_contact bg-beige rounded-2 border border-lightBlue text_description text-lightBlue px-5 pt-4 pb-2">
-
-                    <!-- Informations personnelles -->
-                    <div class="w-75 mx-auto">
-                        <label class="" for="name">Nom : </label>
-                        <input id="name" name="name" type="text" class="form-control input_filter mb-3" minlength="2" maxlength="50" value="{{ app.user.lastName }}" disabled required>
-                    </div>
-                    <div class="w-75 mx-auto">
-                        <label class="" for="surname">Prénom : </label>
-                        <input id="surname" name="surname" type="text" class="form-control input_filter mb-3" minlength="2" maxlength="50" value="{{ app.user.firstName }}" disabled required>
-                    </div>
-                    <div class="w-75 mx-auto">
-                        <label class="" for="pseudo">Pseudo : </label>
-                        <input id="pseudo" name="pseudo" type="text" class="form-control input_filter mb-3" minlength="2" maxlength="50" value="{{ app.user.pseudo }}" disabled required>
-                    </div>
-                    <div class="w-75 mx-auto">
-                        <label class="" for="mail">Email : </label>
-                        <input id="mail" name="mail" type="email" class="form-control input_filter mb-3" value="{{ app.user.email }}" disabled required>
-                    </div>
-                    <div class="w-75 mx-auto">
-                        <label class="" for="password">Mot de Passe : </label>
-                        <input id="password" name="password" type="password" class="form-control input_filter mb-3" placeholder="*********" disabled required>
-                    </div>
-    
-                    <div class="text-center">
-                        <a class="btn-custom-md-green btn btn-greenFluo align-self-center my-2" href="{{ path('modifProfile') }}">Modifier ⚙️</a>
-                    </div>
-                </form>
-            </div>
-        </section>
-
-        <div class="text-center mt-4">
-            <a class="btn-custom-lg-clair btn btn-clair2 mb-4" href="{{ path('app_home') }}">Retour à l'accueil</a>
-        </div>
-    </div>
+{% block title %}Espace Joueur — Esportify
 {% endblock %}
 
+{% block body %}
+	<div
+		class="container-fluid mx-auto">
+		<!-- Avatar Joueur -->
+		{% block img %}
+			{% set fromEntity = app.user ? app.user.avatarPath : null %}
+			{% set safeAvatar = avatarUrl ?? 'uploads/avatars/default-avatar.jpg' %}
+			<img class="avatar avatar_player d-block mx-auto" src="{{ asset(safeAvatar) }}" alt="avatar">
+		{% endblock %}
+
+		<!-- Titre de la page -->
+		<h1 class="text-center text-beige">Bienvenue
+			<span>{{ app.user.pseudo }}
+				<br>
+				{{ app.user.memberScore}}
+				🏆</span>
+		</h1>
+
+		<!-- Section rapports évènements -->
+		<section class="container-lg my-3 my-lg-3 py-2 py-lg-3">
+			<div
+				class="row text_description text-center gap-2 gap-lg-0 mx-auto">
+
+				<!-- Scores joueur -->
+				<div class="col-12 col-lg-6">
+					<div class="card bg-clair2 rounded-2 text-lightBlue p-3">
+						<h2 class="card-title">Mes Scores 🏆</h2>
+						<!-- liste des scores par évènement -->
+						<table class="card-body bg-white border border-lightBlue py-2">
+							<thead>
+								<tr class="text_lightBlue text-decoration-underline">
+									<th scope="row">Évènements</th>
+									<th scope="row">Scores</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<th class="text_lightBlue">Iron Arena</th>
+									<td class="text_lightBlue">15</td>
+								</tr>
+								<tr>
+									<th class="text_lightBlue">Pixel Panic</th>
+									<td class="text_lightBlue">5</td>
+								</tr>
+								<tr>
+									<th class="text_lightBlue">Dragon's Den</th>
+									<td class="text_lightBlue">0</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+				<!-- Favoris -->
+				<div class="col-12 col-lg-6">
+					<div class="card bg-clair2 rounded-2 text-lightBlue p-3">
+						<h2 class="card-title">Mes Favoris ⭐</h2>
+						<!-- liste des scores par évènement -->
+						<table class="card-body bg-white border border-lightBlue py-2">
+							<thead>
+								<tr class="text_lightBlue text-decoration-underline">
+									<th scope="row">Évènements</th>
+									<th scope="row">Statut</th>
+									<th class="" scope="row" colspan="3">Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<th scope="row" class="text_lightBlue">Iron Arena</th>
+									<td class="text_lightBlue">Validé ✅</td>
+									<td>
+										<button class="btn btn-beige rounded-pill text-lightBlue" type="button">
+											<i class="fa-solid fa-person-circle-plus fa-xl"></i>
+										</button>
+									</td>
+									<td>
+										<button class="btn btn-beige rounded-pill text-lightBlue" type="button">
+											<i class="fa-solid fa-person-circle-minus fa-xl"></i>
+										</td>
+									</td>
+									<td>
+										<button class="btn btn-beige rounded-pill text-lightBlue" type="button">
+											<i class="fa-solid fa-right-to-bracket fa-xl"></i>
+										</button>
+									</td>
+								</tr>
+								<tr>
+									<th class="text_lightBlue">Pixel Panic</th>
+									<td class="text_lightBlue">En cours
+									</td>
+									<td>
+										<button class="btn btn-beige text-lightBlue" type="button">
+											<i class="fa-solid fa-person-circle-plus fa-xl"></i>
+										</button>
+									</td>
+									<td>
+										<button class="btn btn-beige text-lightBlue" type="button">
+											<i class="fa-solid fa-person-circle-minus fa-xl"></i>
+										</td>
+									</td>
+									<td>
+										<button class="btn btn-beige text-lightBlue d-none" type="button">
+											<i class="fa-solid fa-right-to-bracket fa-xl"></i>
+										</button>
+									</td>
+								</tr>
+								<tr>
+									<th class="text_lightBlue">Dragon's Den</th>
+									<td class="text_lightBlue"></td>
+									<td>
+										<button class="btn btn-beige rounded-pill text-lightBlue" type="button">
+											<i class="fa-solid fa-person-circle-plus fa-xl"></i>
+										</button>
+									</td>
+									<td>
+										<button class="btn btn-beige rounded-pill text-lightBlue" type="button">
+											<i class="fa-solid fa-person-circle-minus fa-xl"></i>
+										</td>
+									</td>
+									<td>
+										<button class="btn btn-beige rounded-pill text-lightBlue" type="button">
+											<i class="fa-solid fa-right-to-bracket fa-xl"></i>
+										</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</section>
 
 
+		<!-- Section devenir organisateur -->
+		<section class="container-lg my-3 my-lg-3 py-2 py-lg-3">
+			<div class="bg-clair2 rounded-2 text_description text-lightBlue text-center mx-auto p-3">
+				<h2>Devenir Organisateur</h2>
+				<div class="bg-beige border border-lightBlue rounded-2 p-3">
+					<h3>Fais passer ton jeu au niveau supérieur !</h3>
+					<p class="p-0 m-0">
+						Crée, coordonne, anime... Deviens l'architecte de l'arène !</p>
+					<p class="p-0 m-0">
+						Tu veux animer des évènements, faire vibrer les joueurs comme toi ?</p>
+					<p class="p-0 m-0">
+						L'espace organisateur t'ouvre ses portes :
+						<br>
+						C'est içi que commencent les avanetures des maitres du jeu. Prends les rènes, imagine ton format, choisis les règles et fais de ta vision un terrain de jeu colectif !</p>
+					<h3>Envie de te lancer ?</h3>
+					<p>
+						Clique sur le bouton ci-dessous et commencer à bâtir des évènements inoubliables !</p>
+					<div>
+						<button class="btn-custom-md-green btn btn-greenFluo">C'est parti !</button>
+					</div>
+				</div>
+			</div>
+		</section>
 
+		<!-- Section gestion infos perso -->
+		<section class="container-lg my-3 my-lg-3 py-2 py-lg-3">
+			<div class="bg-clair2 rounded-2 text-lightBlue text-center mx-auto p-3">
+				<h2>Mes informations personnelles</h2>
 
+				<!-- Formulaire d'Inscription -->
+				<form
+					action="#" method="POST" class="form_contact bg-beige rounded-2 border border-lightBlue text_description text-lightBlue px-5 pt-4 pb-2">
 
+					<!-- Informations personnelles -->
+					<div class="w-75 mx-auto">
+						<label class="" for="name">Nom :
+						</label>
+						<input id="name" name="name" type="text" class="form-control input_filter mb-3" minlength="2" maxlength="50" value="{{ app.user.lastName }}" disabled required>
+					</div>
+					<div class="w-75 mx-auto">
+						<label class="" for="surname">Prénom :
+						</label>
+						<input id="surname" name="surname" type="text" class="form-control input_filter mb-3" minlength="2" maxlength="50" value="{{ app.user.firstName }}" disabled required>
+					</div>
+					<div class="w-75 mx-auto">
+						<label class="" for="pseudo">Pseudo :
+						</label>
+						<input id="pseudo" name="pseudo" type="text" class="form-control input_filter mb-3" minlength="2" maxlength="50" value="{{ app.user.pseudo }}" disabled required>
+					</div>
+					<div class="w-75 mx-auto">
+						<label class="" for="mail">Email :
+						</label>
+						<input id="mail" name="mail" type="email" class="form-control input_filter mb-3" value="{{ app.user.email }}" disabled required>
+					</div>
+					<div class="w-75 mx-auto">
+						<label class="" for="password">Mot de Passe :
+						</label>
+						<input id="password" name="password" type="password" class="form-control input_filter mb-3" placeholder="*********" disabled required>
+					</div>
 
+					<div class="text-center">
+						<a class="btn-custom-md-green btn btn-greenFluo align-self-center my-2" href="{{ path('modifProfile') }}">Modifier ⚙️</a>
+					</div>
+				</form>
+			</div>
+		</section>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+		<div class="text-center mt-4">
+			<a class="btn-custom-lg-clair btn btn-clair2 mb-4" href="{{ path('app_home') }}">Retour à l'accueil</a>
+		</div>
+	</div>
+{% endblock %}

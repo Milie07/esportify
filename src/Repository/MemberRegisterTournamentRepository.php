@@ -16,9 +16,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class MemberRegisterTournamentRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, MemberRegisterTournament::class);
-    }
-
+  public function __construct(ManagerRegistry $registry)
+  {
+    parent::__construct($registry, MemberRegisterTournament::class);
+  }
 }

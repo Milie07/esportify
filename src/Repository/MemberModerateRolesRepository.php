@@ -16,10 +16,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class MemberModerateRolesRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, MemberModerateRoles::class);
-    }
-
-
+  public function __construct(ManagerRegistry $registry)
+  {
+    parent::__construct($registry, MemberModerateRoles::class);
+  }
 }

@@ -1,7 +1,6 @@
-
 services:
   web:
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile
     container_name: esportify_web
@@ -40,7 +39,8 @@ services:
     ports:
       - "3306:3306"
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      test:
+        ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
       interval: 5s
       timeout: 3s
       retries: 10
@@ -54,7 +54,7 @@ services:
     environment:
       PMA_HOST: db
       MYSQL_ROOT_PASSWORD: root
-  
+
   mongo:
     image: mongo:7
     container_name: esportify_mongo
@@ -71,7 +71,7 @@ services:
     image: mongo-express:1
     container_name: esportify_mongo_express
     restart: always
-    ports: 
+    ports:
       - "8082:8081"
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root

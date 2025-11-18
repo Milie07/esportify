@@ -15,14 +15,14 @@ contact:
   controller: App\Controller\ContactController::index
   methods: [GET, POST]
 
-# Formulaires 
+# Formulaires
 signup_form:
   path: /signup
   controller: App\Controller\AuthController::signup
   methods: [GET]
 
 app_register:
-  path: /signup
+  path: /signup/submit
   controller: App\Controller\RegisterController::register
   methods: [POST]
 
@@ -41,7 +41,7 @@ app_logout:
   path: /logout
   controller: App\Controller\SecurityController::logout
   methods: [GET]
-  
+
 # Espaces Utilisateurs
 player_space:
   path: /player_space
@@ -67,3 +67,18 @@ modifProfile:
   path: /modifProfile
   controller: App\Controller\AuthController::modifProfile
 
+# Mentions légales
+cgu:
+  path: /cgu
+  controller: App\Controller\LegalController::cgu
+  methods: [GET]
+
+legal_mentions:
+  path: /mentions-legales
+  controller: App\Controller\LegalController::legalMentions
+  methods: [GET]
+
+privacy:
+  path: /confidentialite
+  controller: App\Controller\LegalController::privacy
+  methods: [GET]

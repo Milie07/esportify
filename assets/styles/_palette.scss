@@ -4,19 +4,18 @@ $darkBlue: rgb(4, 54, 68);
 $lightBlue: rgb(8, 85, 107);
 $greenFluo: rgb(3, 196, 144);
 $beige: rgb(218, 218, 202);
-$clair1: #F5F5D9;
+$clair1: #f5f5d9;
 $clair2: rgb(252, 253, 242);
 
 // Création d'un objet qui reprendra notre palette perso
 $custom-theme-colors: (
 	"darkBlue": $darkBlue,
 	"lightBlue": $lightBlue,
-    "greenFluo": $greenFluo,
-    "beige": $beige,
-    "clair1": $clair1,
-    "clair2": $clair2
+	"greenFluo": $greenFluo,
+	"beige": $beige,
+	"clair1": $clair1,
+	"clair2": $clair2,
 );
-
 
 // Boucle ForEach qui règle les bug concernant les customisations des couleurs des background et des textes.
 // Pour chaque paire clé/valeur dans custom-theme-colors alors je créé la classe bg et la classe texte ou seront égale la clé et la valeur
@@ -34,16 +33,14 @@ $font-family: "Roboto Flex", sans-serif;
 $header-font-family: "Tektur", sans-serif;
 
 @font-face {
-    font-family: "Roboto Flex";
-    src:
-    local("roboto_flex"),
-    url("../fonts/roboto_flex/RobotoFlex-VariableFont_GRAD\,XOPQ\,XTRA\,YOPQ\,YTAS\,YTDE\,YTFI\,YTLC\,YTUC\,opsz\,slnt\,wdth\,wght.ttf"),
-    format("truetype");
+	font-family: "Roboto Flex";
+	src: local("roboto_flex"),
+		url("../fonts/roboto_flex/RobotoFlex-VariableFont_GRAD\,XOPQ\,XTRA\,YOPQ\,YTAS\,YTDE\,YTFI\,YTLC\,YTUC\,opsz\,slnt\,wdth\,wght.ttf"),
+		format("truetype");
 }
 @font-face {
-    font-family: "Tektur";
-    src:
-    local("Tektur"),
-    url("../fonts/tektur/Tektur-VariableFont_wdth\,wght.ttf"),
-    format("truetype");
+	font-family: "Tektur";
+	src: local("Tektur"),
+		url("../fonts/tektur/Tektur-VariableFont_wdth\,wght.ttf"),
+		format("truetype");
 }

@@ -16,10 +16,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class TournamentHistoryRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, TournamentHistory::class);
-    }
-
-
+  public function __construct(ManagerRegistry $registry)
+  {
+    parent::__construct($registry, TournamentHistory::class);
+  }
 }

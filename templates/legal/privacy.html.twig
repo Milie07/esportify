@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Politique de Confidentialié — Esportify
+{% endblock %}
+
+{% block body %}
+	<div class="container-fluid mx-auto">
+		<h1 class="text-clair1 text-center pt-2">Politique de Confidentialité</h1>
+		<div class="container-lg w-50 bg-clair2 rounded-2 text-center text-darkBlue my-3 my-lg-5 py-2 py-lg-3">
+			<p class="text-decoration-underline link-offset-2 fw-bold">Données collectées</p>
+			<p class='text-description'>
+				Conformément à l’article 13 du RGPD, les données traitées sont exclusivement celles fournies par l’utilisateur :
+				Pseudo
+				Email
+				Mot de passe (hashé – jamais en clair)
+				Avatar
+				Informations liées aux tournois (inscriptions, historique, statistiques)
+				Journaux techniques (logs) en environnement Docker
+				Cookie “remember me” (si accord)
+				Aucune donnée sensible au sens de l’article 9 du RGPD n’est collectée.
+			</p>
+			<p class="text-decoration-underline link-offset-2 fw-bold">Responsable du traitement</p>
+			<p class="text-description">
+				Anne-Emilie Malassis
+				1320 Chemin de Fontbonne
+				07270 Nozières – France
+			</p>
+			<p class="text-decoration-underline link-offset-2 fw-bold">Finalités du traitement</p>
+			<p class="text-description">
+				Conformément à l’article 6-1 du RGPD, les traitements sont fondés sur :
+				Exécution du service → gestion compte, connexion, participation aux tournois
+				Intérêt légitime → sécurité du site, prévention des fraudes
+				Consentement → cookie “remember me”
+				Aucune prospection commerciale.
+				Aucun transfert à des tiers.
+			</p>
+			<p class="text-decoration-underline link-offset-2 fw-bold">Durée de conservation</p>
+			<p class="text-description">
+				Conformément aux principes RGPD (article 5-1-e) :
+				Données de compte : jusqu’à suppression du compte
+				Logs techniques : 12 mois max
+				Cookie consentement : 6 mois (recommandation CNIL 2023)
+				Cookie “remember me” : durée maximale conforme à la configuration choisie par l’utilisateur
+			</p>
+			<p class="text-decoration-underline link-offset-2 fw-bold">Sécurité</p>
+			<p class="text-description">
+				Mot de passe stocké via un système de hashage sécurisé (conforme article 32 RGPD).
+				Aucune donnée en clair.
+			</p>
+			<p class="text-decoration-underline link-offset-2 fw-bold">Vos droits</p>
+			<p class="text-description">
+				Selon les articles 15 à 22 du RGPD :
+				droit d’accès
+				droit de rectification
+				droit d’effacement
+				droit d’opposition
+				droit à la limitation
+				droit à la portabilité
+				Demande : à l’adresse email de l’éditeur.
+			</p>
+			<p class="text-decoration-underline link-offset-2 fw-bold">Cookies</p>
+			<p class="text-description">
+				Un bandeau de consentement est affiché conformément à la CNIL (délibération n°2020-091).
+				Cookie utilisé :
+				REMEMBERME_ESPORTIFY (connexion automatique – optionnel)
+				esportify_consent (stockage du consentement)
+				Aucun cookie publicitaire, aucun cookie analytique.
+			</p>
+		</div>
+	</div>
+{% endblock %}

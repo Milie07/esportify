@@ -1,48 +1,60 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Inscription — Esportify{% endblock %}
+{% block title %}Inscription — Esportify
+{% endblock %}
 
 {% block body %}
-    <div class="container-fluid mx-auto"> 
-        <!-- Logo Esportify  -->
-        <div class="container-lg text-center">
-            <img class="img-logo img-fluid" src="{{ asset('build/images/logo/logo-modifie.png') }}" alt="logo esportify">
-        </div>
-        <!-- Titre de la page -->
-        <h1 class="text-clair2 text-center pt-2">Inscription</h1>
+	<div
+		class="container-fluid mx-auto">
+		<!-- Logo Esportify  -->
+		<div class="container-lg text-center">
+			<img class="img-logo img-fluid" src="{{ asset('build/images/logo/logo-modifie.png') }}" alt="logo esportify">
+		</div>
+		<!-- Titre de la page -->
+		<h1 class="text-clair2 text-center pt-2">Inscription</h1>
 
-        <!-- Formulaire d'Inscription -->
-        <section class="container-lg section_contact d-flex text_description justify-content-center my-4 mt-4"> 
-            <form class="form_contact needs-validation bg-clair1 rounded-4 text-lightBlue px-5 py-4" id="searchForm"  action="{{ path('app_register') }}" method="post" >
-                <input type="hidden" name="_csrf_token" value="{{ csrf_token('register') }}">
-                <!-- Informations personnelles -->
-                <div class="w-75 mx-auto">
-                    <input class="form-control input_filter mb-3" id="name" name="name" type="text"  minlength="2" maxlength="100" placeholder="Votre nom" required>
-                </div>
-                <div class="w-75 mx-auto">
-                    <input class="form-control input_filter mb-3" id="surname" name="surname" type="text"  minlength="2" maxlength="100" placeholder="Votre prénom" required>
-                </div>
-                <div class="w-75 mx-auto">
-                    <input class="form-control input_filter mb-3" id="pseudo" name="pseudo" type="text"  minlength="2" maxlength="100" placeholder="Votre pseudo" required>
-                </div>
-                <div class="w-75 mx-auto">
-                    <input class="form-control input_filter mb-1" id="mail" name="mail" type="email"  placeholder="example@example.fr" required>
-                    <div class="invalid-feedback mb-3">Veuillez entrer une adresse email valide.</div>
-                </div>
-                <div class="w-75 mx-auto">
-                    <input class="form-control input_filter mb-1" id="password" name="password" type="password"  placeholder="Votre mot de passe" required>
-                    <div class="invalid-feedback mb-3">Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.
-                    </div>
-                </div>
-                <div class="w-75 mx-auto">
-                    <input class="form-control input_filter mb-3" id="confirmPassword" name="confirm_password" type="password"  placeholder="Confirmer votre mot de passe" required>
-                    <div class="invalid-feedback">Les mots de passe ne correspondent pas.</div>
-                </div>
+		<!-- Formulaire d'Inscription -->
+		<section class="container-lg section_contact d-flex text_description justify-content-center my-4 mt-4">
+			<form class="form_contact needs-validation bg-clair1 rounded-4 text-lightBlue px-5 py-4" id="searchForm" action="{{ path('app_register') }}" method="post">
+				<input
+				type="hidden" name="_csrf_token" value="{{ csrf_token('register') }}">
 
-                <!-- Choix de l'avatar -->
-                <p class="text-center text-decoration-underline mb-2">Choisissez votre avatar :</p>
-                <div class="d-flex flex-wrap justify-content-center">
-                    {% set avatars = [
+				<!-- Informations personnelles -->
+				<div class="w-75 mx-auto pb-2">
+					<input class="form-control input_filter" id="firstName" name="firstName" type="text" minlength="2" maxlength="100" placeholder="Votre nom" required>
+				</div>
+				<div class="w-75 mx-auto py-1">
+					<input class="form-control input_filter" id="lastName" name="lastName" type="text" minlength="2" maxlength="100" placeholder="Votre prénom" required>
+				</div>
+				<div class="w-75 mx-auto py-1">
+					<input class="form-control input_filter" id="pseudo" name="pseudo" type="text" minlength="2" maxlength="100" placeholder="Votre pseudo" required>
+					{% if errors.pseudo is defined %}
+						<div class="text-danger small mt-1">{{ errors.pseudo }}</div>
+					{% endif %}
+				</div>
+				<div class="w-75 mx-auto py-1">
+					<input class="form-control input_filter" id="email" name="email" type="email" value="{{ old.email|default('') }}" placeholder="example@example.fr" required>
+					{% if errors.email is defined %}
+						<div class="text-danger small mt-1">{{ errors.email }}</div>
+					{% endif %}
+				</div>
+				<div class="w-75 mx-auto py-1">
+					<input class="form-control input_filter" id="password" name="password" type="password" placeholder="Votre mot de passe" required>
+					{% if errors.password is defined %}
+						<div class="text-danger small mt-1">{{ errors.password }}</div>
+					{% endif %}
+				</div>
+				<div class="w-75 mx-auto py-1">
+					<input class="form-control input_filter" id="confirmPassword" name="confirm_password" type="password" placeholder="Confirmer votre mot de passe" required>
+					{% if errors.confirm_password is defined %}
+						<div class="text-danger small mt-1">{{ errors.confirm_password }}</div>
+					{% endif %}
+				</div>
+
+				<!-- Choix de l'avatar -->
+				<p class="text-center text-decoration-underline mb-2">Choisissez votre avatar :</p>
+				<div class="d-flex flex-wrap justify-content-center">
+					{% set avatars = [
                         {code: 1, path:'uploads/avatars/avatar1.jpg'},
                         {code: 2, path:'uploads/avatars/avatar2.jpg'},
                         {code: 3, path:'uploads/avatars/avatar3.jpg'},
@@ -52,24 +64,29 @@
                         {code: 7, path:'uploads/avatars/avatar7.jpg'},
                         {code: 8, path:'uploads/avatars/avatar8.jpg'},
                     ] %}
-                    {% for a in avatars %}
-                    <label class="align-self-start mx-1 my-1" style="cursor:pointer;">
-                        <input type="radio" name="avatar" value="{{ a.code }}" {% if loop.first %}checked{% endif %}>
-                        <img class="avatar_icone" src="{{ asset(a.path) }}" alt="avatar {{ a.code }}">
-                    </label>
-                    {% endfor %}
-                </div>
+					{% for a in avatars %}
+						<label class="align-self-start mx-1 my-1" style="cursor:pointer;">
+							<input type="radio" name="avatar" value="{{ a.code }}" {% if loop.first %} checked {% endif %}>
+							<img class="avatar_icone" src="{{ asset(a.path) }}" alt="avatar {{ a.code }}">
+						</label>
+					{% endfor %}
+				</div>
 
-                <div class="mx-1 my-1">
-                        <input type="checkbox" id="conditions" name="conditions" value="1" required>
-                        <label for="conditions">J'accepte les conditions générales d'utilisation</label>
-                </div>
+				<div class="mx-1 my-1">
+					<input type="checkbox" id="conditions" name="conditions" value="1" required>
+					{% if errors.conditions is defined %}
+						<div class="text-danger small mt-1">{{ errors.conditions }}</div>
+					{% endif %}
+					<label for="conditions">J’accepte les
+						<a href="{{ path('cgu') }}" target="_blank">Conditions Générales d’Utilisation</a>
+					</label>
+				</div>
 
-                <!-- Bouton d'envoi -->
-                <div class="d-flex justify-content-center mt-4 mb-2">
-                    <input class="btn-custom-lg-green btn btn-greenFluo" type="submit" value="Valider l'inscription">
-                </div>
-            </form>
-        </section>
-    </div>
+				<!-- Bouton d'envoi -->
+				<div class="d-flex justify-content-center mt-4 mb-2">
+					<input class="btn-custom-lg-green btn btn-greenFluo" type="submit" value="Valider l'inscription">
+				</div>
+			</form>
+		</section>
+	</div>
 {% endblock %}
