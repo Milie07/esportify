@@ -12,7 +12,7 @@
             {% endblock %}
         
         <!-- Titre de la page -->
-        <h1 class="text-center text-beige">Bienvenue <span>{{ app.user.pseudo ?: app.user.username }}</span></h1>
+        <h1 class="text-center text-beige">Bienvenue <span>{{ app.user.pseudo }} <br> {{ app.user.memberScore}} 🏆</span></h1>
         
         <!-- Section rapports évènements -->
         <section class="container-lg my-3 my-lg-3 py-2 py-lg-3">
@@ -120,19 +120,19 @@
                     <!-- Informations personnelles -->
                     <div class="w-75 mx-auto">
                         <label class="" for="name">Nom : </label>
-                        <input id="name" name="name" type="text" class="form-control input_filter mb-3" minlength="2" maxlength="50" placeholder="Doe" disabled required>
+                        <input id="name" name="name" type="text" class="form-control input_filter mb-3" minlength="2" maxlength="50" value="{{ app.user.lastName }}" disabled required>
                     </div>
                     <div class="w-75 mx-auto">
                         <label class="" for="surname">Prénom : </label>
-                        <input id="surname" name="surname" type="text" class="form-control input_filter mb-3" minlength="2" maxlength="50"  placeholder="John" disabled required>
+                        <input id="surname" name="surname" type="text" class="form-control input_filter mb-3" minlength="2" maxlength="50" value="{{ app.user.firstName }}" disabled required>
                     </div>
                     <div class="w-75 mx-auto">
                         <label class="" for="pseudo">Pseudo : </label>
-                        <input id="pseudo" name="pseudo" type="text" class="form-control input_filter mb-3" minlength="2" maxlength="50"    placeholder="Grymwald" disabled required>
+                        <input id="pseudo" name="pseudo" type="text" class="form-control input_filter mb-3" minlength="2" maxlength="50" value="{{ app.user.pseudo }}" disabled required>
                     </div>
                     <div class="w-75 mx-auto">
                         <label class="" for="mail">Email : </label>
-                        <input id="mail" name="mail" type="email" class="form-control input_filter mb-3" placeholder="example@example.fr" disabled required>
+                        <input id="mail" name="mail" type="email" class="form-control input_filter mb-3" value="{{ app.user.email }}" disabled required>
                     </div>
                     <div class="w-75 mx-auto">
                         <label class="" for="password">Mot de Passe : </label>

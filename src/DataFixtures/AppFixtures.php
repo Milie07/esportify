@@ -58,12 +58,13 @@ class AppFixtures extends Fixture
 
         // --- Membres ---
         $membersData = [
-            ['first_name' => 'Elodie', 'last_name' => 'Marchal', 'pseudo' => 'ElodieAdmin', 'email' => 'admin.elodie@esportify.com', 'password_hash' => 'AdminElodie2025', 'member_score' => 20, 'avatar' => 6, 'role' => 'ROLE_ADMIN'],
+            ['first_name' => 'Elodie', 'last_name' => 'Marchal', 'pseudo' => 'ElodieAdmin', 'email' => 'admin.elodie@esportify.com', 'password_hash' => 'AdminElodie2025', 'member_score' => 90, 'avatar' => 6, 'role' => 'ROLE_ADMIN'],
+            ['first_name' => 'Raphaël', 'last_name' => 'Malassis', 'pseudo' => 'RaphAdmin', 'email' => 'admin.raph@esportify.com', 'password_hash' => 'AdminRaph2025', 'member_score' => 120, 'avatar' => 1, 'role' => 'ROLE_ADMIN'],
             ['first_name' => 'Hugo', 'last_name' => 'Perret', 'pseudo' => 'HugoOrga', 'email' => 'orga.hugo@esportify.com', 'password_hash' => 'OrgaHugo2025', 'member_score' => 80, 'avatar' => 4, 'role' => 'ROLE_ORGANIZER'],
             ['first_name' => 'Alex', 'last_name' => 'Durand', 'pseudo' => 'AlexOrga', 'email' => 'orga.alex@esportify.com', 'password_hash' => 'OrgaAlex2025', 'member_score' => 90, 'avatar' => 2, 'role' => 'ROLE_ORGANIZER'],
             ['first_name' => 'Tom', 'last_name' => 'Garcia', 'pseudo' => 'TomPlayer', 'email' => 'play.tom@esportify.com', 'password_hash' => 'PlayTom2025', 'member_score' => 30, 'avatar' => 8, 'role' => 'ROLE_PLAYER'],
             ['first_name' => 'Ines', 'last_name' => 'Garcia', 'pseudo' => 'InesPlayer', 'email' => 'play.ines@esportify.com', 'password_hash' => 'PlayInes2025', 'member_score' => 10, 'avatar' => 1, 'role' => 'ROLE_PLAYER'],
-            ['first_name' => 'Raphael', 'last_name' => 'Malassis', 'pseudo' => 'RaphPlayer', 'email' => 'play.raph@esportify.com', 'password_hash' => 'PlayRaph2025', 'member_score' => 100, 'avatar' => 3, 'role' => 'ROLE_PLAYER'],
+            ['first_name' => 'Nicolas', 'last_name' => 'Malassis', 'pseudo' => 'NicoPlayer', 'email' => 'play.nico@esportify.com', 'password_hash' => 'PlayNico2025', 'member_score' => 100, 'avatar' => 5, 'role' => 'ROLE_PLAYER'],
             ['first_name' => 'Emma', 'last_name' => 'Corrompt', 'pseudo' => 'EmmaPlayer', 'email' => 'play.emma@esportify.com', 'password_hash' => 'PlayEmma2025', 'member_score' => 40, 'avatar' => 5, 'role' => 'ROLE_PLAYER'],
             ['first_name' => 'Nais', 'last_name' => 'Malassis', 'pseudo' => 'NaisPlayer', 'email' => 'play.nais@esportify.com', 'password_hash' => 'PlayNais2025', 'member_score' => 30, 'avatar' => 7, 'role' => 'ROLE_PLAYER'],
         ];

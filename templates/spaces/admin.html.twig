@@ -8,7 +8,7 @@
             <img class="avatar avatar_player d-block mx-auto" src="{{ asset(avatarUrl) }}" alt="avatar">
         {% endblock %}
         <!-- Titre de la page -->
-        <h1 class="text-center text-beige">Bienvenue <span>{{ app.user.pseudo ?: app.user.username }}</span></h1>
+        <h1 class="text-center text-beige">Bienvenue <span>{{ app.user.pseudo }} <br> {{ app.user.memberScore}} 🏆</span></h1>
 
         <!-- statistiques organisateur -->
         <section class="container-lg rounded-2 my-3 my-lg-3 py-2 py-lg-3">
@@ -54,35 +54,35 @@
         <section class="container-lg my-3 my-lg-3 py-2 py-lg-3">
             <div class="row text_description text-center gap-2 gap-lg-0 mx-auto">
 
-                <!-- Scores joueur -->
-                <div class="col-12 col-lg-4">
-                    <div class="card bg-clair2 rounded-2 text-lightBlue p-3">
-                        <h2 class="card-title">Mes Scores 🏆</h2>
-                        <!-- liste des scores par évènement -->
-                        <table class="card-body bg-white border border-lightBlue py-2">
-                            <thead>
-                                <tr class="text_lightBlue text-decoration-underline">
-                                    <th scope="row">Évènements</th>
-                                    <th scope="row">Scores</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th class="text_lightBlue">Iron Arena</th>
-                                    <td class="text_lightBlue">15</td>
-                                </tr>
-                                <tr>
-                                    <th class="text_lightBlue">Pixel Panic</th>
-                                    <td class="text_lightBlue">5</td>
-                                </tr>
-                                <tr>
-                                    <th class="text_lightBlue">Dragon's Den</th>
-                                    <td class="text_lightBlue">0</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div> 
+              <!-- Scores joueur -->
+              <div class="col-12 col-lg-4">
+                  <div class="card bg-clair2 rounded-2 text-lightBlue p-3">
+                      <h2 class="card-title">Mes Scores 🏆</h2>
+                      <!-- liste des scores par évènement -->
+                      <table class="card-body bg-white border border-lightBlue py-2">
+                          <thead>
+                              <tr class="text_lightBlue text-decoration-underline">
+                                  <th scope="row">Évènements</th>
+                                  <th scope="row">Scores</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              <tr>
+                                  <th class="text_lightBlue">Iron Arena</th>
+                                  <td class="text_lightBlue">15</td>
+                              </tr>
+                              <tr>
+                                  <th class="text_lightBlue">Pixel Panic</th>
+                                  <td class="text_lightBlue">5</td>
+                              </tr>
+                              <tr>
+                                  <th class="text_lightBlue">Dragon's Den</th>
+                                  <td class="text_lightBlue">0</td>
+                              </tr>
+                          </tbody>
+                      </table>
+                  </div>
+              </div> 
 
                 <!-- Favoris -->
                 <div class="col-12 col-lg-4">
@@ -163,9 +163,37 @@
                 </div> 
             </div>        
         </section>
+        <!-- Messagerie -->
+        <section class="container-lg bg-clair2 my-3 my-lg-3 py-2 py-lg-3"> 
+          <div class="text_description text-center text-lightBlue gap-2 gap-lg-0 mx-auto">
+            <h2>Messages reçus</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Sujets</th>
+                        <th>Message</th>
+                        <th>Date</th>
+                        <th rowscope>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% for m in messages %}
+                    <tr>
+                        <td>{{ m.email }}</td>
+                        <td>{{ m.subject }}</td>
+                        <td>{{ m.message }}</td>
+                        <td>{{ m.createdAt.toDateTime()|date('d/m/Y H:i') }}</td>
+                        <td></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+          </div>
+        </section>
 
 
-            </div>
 
         <!-- Section gestion évènements -->
         <section class="container-lg my-3 my-lg-3 py-2 py-lg-3">
@@ -260,19 +288,19 @@
                     <!-- Informations personnelles -->
                     <div class="w-75 mx-auto">
                         <label class="" for="name">Nom : </label>
-                        <input class="form-control input_filter mb-3" id="name" name="name" type="text" minlength="2" maxlength="50" placeholder="Doe" disabled autocomplete required>
+                        <input class="form-control input_filter mb-3" id="name" name="name" type="text" minlength="2" maxlength="50" value="{{ app.user.lastName }}" disabled autocomplete required>
                     </div>
                     <div class="w-75 mx-auto">
                         <label class="" for="surname">Prénom : </label>
-                        <input class="form-control input_filter mb-3" id="surname" name="surname" type="text" minlength="2" maxlength="50"  placeholder="John" disabled required>
+                        <input class="form-control input_filter mb-3" id="surname" name="surname" type="text" minlength="2" maxlength="50" value="{{ app.user.firstName }}" disabled required>
                     </div>
                     <div class="w-75 mx-auto">
                         <label class="" for="pseudo">Pseudo : </label>
-                        <input class="form-control input_filter mb-3" id="pseudo" name="pseudo" type="text" minlength="2" maxlength="50"    placeholder="Grymwald" disabled required>
+                        <input class="form-control input_filter mb-3" id="pseudo" name="pseudo" type="text" minlength="2" maxlength="50" value="{{ app.user.pseudo }}" disabled required>
                     </div>
                     <div class="w-75 mx-auto">
                         <label class="" for="mail">Email : </label>
-                        <input class="form-control input_filter mb-3" id="mail" name="mail" type="email" placeholder="example@example.fr" disabled required>
+                        <input class="form-control input_filter mb-3" id="mail" name="mail" type="email" value="{{ app.user.email }}" disabled required>
                     </div>
                     <div class="w-75 mx-auto">
                         <label class="" for="password">Mot de Passe : </label>

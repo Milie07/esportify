@@ -11,9 +11,13 @@ services:
       - .:/var/www/html
       - /var/www/html/vendor
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+      mongo:
+        condition: service_started
     environment:
       DATABASE_URL: "mysql://esportify_user:esportify_pass@db:3306/esportify?serverVersion=8.0&charset=utf8mb4"
+      MONGODB_URL: "mongodb://root:rootpass@mongo:27017"
     command: >
       bash -c "
         php bin/console doctrine:database:create --if-not-exists &&
@@ -22,7 +26,6 @@ services:
         php bin/console cache:clear &&
         apache2-foreground
         "
-
   db:
     image: mysql:8.0
     container_name: esportify_db
@@ -36,6 +39,11 @@ services:
       - db_data:/var/lib/mysql
     ports:
       - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
   phpmyadmin:
     image: phpmyadmin:latest
@@ -47,5 +55,33 @@ services:
       PMA_HOST: db
       MYSQL_ROOT_PASSWORD: root
   
+  mongo:
+    image: mongo:7
+    container_name: esportify_mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpass
+    volumes:
+      - mongo_data:/data/db
+
+  mongo_express:
+    image: mongo-express:1
+    container_name: esportify_mongo_express
+    restart: always
+    ports: 
+      - "8082:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: rootpass
+      ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: pass
+    depends_on:
+      - mongo
+
 volumes:
   db_data:
+  mongo_data:

@@ -10,16 +10,16 @@ events:
   methods: [GET]
 
 # Page Contact
-signup_form:
-  path: /signup
-  controller: App\Controller\AuthController::signup
-  methods: [GET]
-
-# Formulaires 
 contact:
   path: /contact
   controller: App\Controller\ContactController::index
   methods: [GET, POST]
+
+# Formulaires 
+signup_form:
+  path: /signup
+  controller: App\Controller\AuthController::signup
+  methods: [GET]
 
 app_register:
   path: /signup

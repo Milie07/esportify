@@ -2,8 +2,18 @@ FROM php:8.2-apache
 
 # Pour installer les extensions nécessaires à Symfony
 RUN apt-get update && apt-get install -y \
-    git unzip libicu-dev libzip-dev zip && \
+    git \
+    unzip \
+    libicu-dev \
+    libzip-dev \
+    zip \
+    openssl \
+    libssl-dev &&\
     docker-php-ext-install intl pdo pdo_mysql zip
+
+# Installer l'extension MongoDB dans le conteneur
+RUN pecl install mongodb \
+    && docker-php-ext-enable mongodb
 
 # Pour activer le mod_rewrite (nécessaire pour Symfony)
 RUN a2enmod rewrite
@@ -20,23 +30,13 @@ COPY . /var/www/html
 # Pour définir le dossier de travail
 WORKDIR /var/www/html
 
-# 
+#
 RUN git config --global --add safe.directory /var/www/html
 
-# Pour Installer les dépendances Symfony
+# Pour Installer les dépendances Symfony 
 RUN composer install --no-interaction --optimize-autoloader --no-scripts
 
-# # Pour installer Node + npm
-# RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
-#     && apt-get install -y nodejs
-
-# # Pour installer les dépendances front
-# RUN npm install
-
-# # Pour générer les assets
-# RUN npm run build
-
-# Pour donner les droits à Apach
+# Pour donner les droits à Apache
 RUN chown -R www-data:www-data /var/www/html
 
 # POur exposer le port 80
