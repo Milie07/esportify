@@ -5,6 +5,13 @@
 
 {% block body %}
 	<div class="container-fluid mx-auto">
+		{% for type, flashes in app.flashes() %}
+			{% for msg in flashes %}
+				<div class="alert alert-{{ type }} text-center">
+					{{ msg }}
+				</div>
+			{% endfor %}
+		{% endfor %}
 		{% block img %}
 			<img class="avatar avatar_player d-block mx-auto" src="{{ asset(avatarUrl) }}" alt="avatar">
 		{% endblock %}
@@ -16,7 +23,7 @@
 				🏆</span>
 		</h1>
 
-		<!-- statistiques organisateur -->
+		<!-- statistiques  -->
 		<section class="container-lg rounded-2 my-3 my-lg-3 py-2 py-lg-3">
 			<div class="d-flex gap-4 my-3">
 				<div class="row my-4 mx-auto">
@@ -223,7 +230,7 @@
 				</div>
 			</div>
 		</section>
-		<!-- Messagerie -->
+		<!-- Messagerie page Contact-->
 		<section class="container-lg bg-clair2 my-3 my-lg-3 py-2 py-lg-3">
 			<div class="text_description text-center text-lightBlue gap-2 gap-lg-0 mx-auto">
 				<h2>Messages reçus</h2>
@@ -256,6 +263,65 @@
 			</div>
 		</section>
 
+		<section class="container-lg bg-clair2 my-3 my-lg-3 py-2 py-lg-3">
+			<div class="text_description text-center text-lightBlue gap-2 gap-lg-0 mx-auto">
+				<h2>Demandes d'évènements</h2>
+
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Pseudo</th>
+							<th>Email</th>
+							<th>Titre du tournoi</th>
+							<th>Demande du</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+
+					<tbody>
+						{% for t in requests %}
+							<tr>
+								<td>{{ t['pseudo'] }}</td>
+								<td>{{ t['organizerEmail'] }}</td>
+								<td>{{ t['title'] }}</td>
+								<td>{{ t['createdAt'].toDateTime()|date('d/m/Y H:i') }}</td>
+
+								<td
+									class="d-flex justify-content-center gap-2">
+
+									<!-- Voir détails -->
+									<a href="{{ path('admin_tournament_show', { id: t['tournamentId'] }) }}" class="btn btn-info btn-sm">
+										Voir
+									</a>
+
+									<!-- Valider -->
+									<form action="{{ path('admin_tournament_validate', { id: t['tournamentId'] }) }}" method="POST" onsubmit="return confirm('Valider ce tournoi ?');">
+										<button type="submit" class="btn btn-success btn-sm">
+											Valider
+										</button>
+									</form>
+
+									<!-- Refuser -->
+									<form action="{{ path('admin_tournament_refuse', { id: t['tournamentId'] }) }}" method="POST" onsubmit="return confirm('Refuser ce tournoi ?');">
+										<button type="submit" class="btn btn-danger btn-sm">
+											Refuser
+										</button>
+									</form>
+
+								</td>
+							</tr>
+						{% else %}
+							<tr>
+								<td colspan="5" class="text-center text-lightBlue">
+									Aucune demande en attente.
+								</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+
+			</div>
+		</section>
 
 		<!-- Section gestion évènements -->
 		<section class="container-lg my-3 my-lg-3 py-2 py-lg-3">
@@ -335,26 +401,26 @@
 							</div>
 
 							<div class="w-75 mx-auto">
-								<label class="" for="dateStart">Date et Heure de Début :
+								<label class="" for="startAt">Date et Heure de Début :
 								</label>
-								<input class="form-control input_filter mb-3" id="dateStart" name="dateStart" type="datetime-local" disabled required>
+								<input class="form-control input_filter mb-3" id="startAt" name="startAt" type="datetime-local" disabled required>
 							</div>
 							<div class="w-75 mx-auto">
-								<label class="" for="dateEnd">Date et Heure de Fin :
+								<label class="" for="endAt">Date et Heure de Fin :
 								</label>
-								<input class="form-control input_filter mb-3" id="dateEnd" name="dateEnd" type="datetime-local" disabled required>
-							</div>
-
-							<div class="w-75 mx-auto">
-								<label class="" for="playerGauge">Nombre maximal de joueurs :
-								</label>
-								<input class="form-control input_filter mb-3" id="playerGauge" name="playerGauge" type="number" min="10" max="100" disabled required>
+								<input class="form-control input_filter mb-3" id="endAt" name="endAt" type="datetime-local" disabled required>
 							</div>
 
 							<div class="w-75 mx-auto">
-								<label class="" for="imgFile">Image ou photo de l'évènement :
+								<label class="" for="capacityGauge">Nombre maximal de joueurs :
 								</label>
-								<input class="form-control input_filter mb-3" id="imgFile" name="imgFile" type="file" accept="image/png, image/jpeg" disabled required>
+								<input class="form-control input_filter mb-3" id="capacityGauge" name="capacityGauge" type="number" min="10" max="100" disabled required>
+							</div>
+
+							<div class="w-75 mx-auto">
+								<label class="" for="file">Image ou photo de l'évènement :
+								</label>
+								<input class="form-control input_filter mb-3" id="file" name="file" type="file" accept="image/png, image/jpeg" disabled required>
 							</div>
 
 							<div class="d-flex justify-content-center">
@@ -411,5 +477,43 @@
 					<a class="btn-custom-lg-clair btn btn-clair2 mb-4" href="{{ path('app_home') }}">Retour à l'accueil</a>
 				</div>
 			</section>
+
 		</div>
+		{% if tournament is defined %}
+			<div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.6)">
+				<div class="modal-dialog modal-lg">
+					<div class="modal-content">
+
+						<div class="modal-header">
+							<h5 class="modal-title">{{ tournament.title }}</h5>
+							<a href="{{ path('admin_dashboard') }}" class="btn-close"></a>
+						</div>
+
+						<div class="modal-body">
+							<img src="{{ asset(tournament.getImagePath()) }}" class="img-fluid mb-3"/>
+
+							<p>
+								<strong>Description :</strong>
+								{{ tournament.description }}</p>
+							<p>
+								<strong>Slogan :</strong>
+								{{ tournament.tagline }}</p>
+							<p>
+								<strong>Début :</strong>
+								{{ tournament.startAt|date('d/m/Y H:i') }}</p>
+							<p>
+								<strong>Fin :</strong>
+								{{ tournament.endAt|date('d/m/Y H:i') }}</p>
+							<p>
+								<strong>Places :</strong>
+								{{ tournament.capacityGauge }}</p>
+							<p>
+								<strong>Statut :</strong>
+								{{ tournament.currentStatus.value }}</p>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		{% endif %}
 	{% endblock %}

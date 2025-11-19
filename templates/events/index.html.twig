@@ -66,7 +66,10 @@
 				{% for event in events %}
 					<div class="col-12 col-md-6 col-lg-4">
 						<div class="card">
-							<img class="card-img-top rounded event-img" src="{{ asset(event.imagePath) }}" alt="Image de l'event {{ event.title }}">
+							
+              <div class="ratio ratio-4x3 overflow-hidden">
+                <img class="card-img-top rounded object-fit-cover" src="{{ asset(event.imagePath) }}"  alt="Image de {{ event.title }}">
+              </div>
 							<div class="card-body d-flex flex-column justify-content-center align-items-center text-lightBlue">
 								<h3 class="text-decoration-underline event-title">{{ event.title }}</h3>
 								<p class="text_description event-dates">

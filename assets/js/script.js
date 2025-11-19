@@ -3,6 +3,15 @@
     sf Entité HTML MDN 
 */
 
+// Activation des popovers de Bootstrap
+import * as bootstrap from "bootstrap";
+
+document.addEventListener("DOMContentLoaded", () => {
+	document.querySelectorAll('[data-bs-toggle="popover"]').forEach((element) => {
+		new bootstrap.Popover(element);
+	});
+});
+
 document.addEventListener("DOMContentLoaded", () => {
 	document.querySelectorAll("form.needs-validation").forEach((form) => {
 		// Exclure le formulaire d'inscription pour régler le conflit

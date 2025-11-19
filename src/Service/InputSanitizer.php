@@ -33,4 +33,12 @@ final class InputSanitizer
     $i = filter_var($v, FILTER_VALIDATE_INT, ['options' => ['min_range' => $min, 'max_range' => $max]]);
     return $i === false ? $min : $i;
   }
+
+  public function sanitize(?string $value): ?string
+  {
+    if ($value === null) {
+      return null;
+    }
+    return htmlspecialchars(trim($value), ENT_QUOTES, 'UTF-8');
+  }
 }

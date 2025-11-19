@@ -44,7 +44,9 @@
 						{% for tournament in carouselTournaments %}
 							{% set img = tournament.imagePath ? tournament.imagePath : (tournament.tournamentImage ? tournament.tournamentImage.getImagePath() :    'build/images/jpg/default-event.jpg') %}
 							<div class="carousel-item {{ loop.first ? 'active' : '' }}" data-bs-interval="10000">
-								<img class="w-100 d-block" src="{{ asset(img) }}" alt="Image de l'event {{ tournament.title }}" loading="lazy">
+								<div class="ratio ratio-4x3 overflow-hidden">
+                  <img class="card-img-top object-fit-cover" src="{{ asset(tournament.getImagePath()) }}"  alt="Image de {{ tournament.title }}" loading="lazy">
+                </div>
 								<div class="carousel-caption d-sm-block">
 									<h3>{{ tournament.title }}</h3>
 									<p>

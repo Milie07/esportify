@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Tournament;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use MongoDB\Client;
@@ -21,27 +23,43 @@ class SpaceController extends AbstractController
     ]);
   }
 
-  public function organizerSpace(): Response
+  public function organizerSpace(EntityManagerInterface $em): Response
   {
     $this->denyAccessUnlessGranted('ROLE_ORGANIZER');
-    return $this->render('spaces/organizer.html.twig');
+
+    $user = $this->getUser();
+
+    $tournaments = $em->getRepository(Tournament::class)->findBy(
+
+      ['organizer' => $user],
+      ['createdAt' => 'DESC']
+    );
+
+    return $this->render('spaces/organizer.html.twig', [
+      'tournaments' => $tournaments
+    ]);
   }
 
   public function adminDashboard(): Response
   {
+    $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
     // Connexion MongoDB
     $client = new Client($_ENV['MONGODB_URL']);
-    $collection = $client->esportify_messaging->contact_messages;
 
-    // Récupérer les messages (triés en ordre décroissant)
-    $messages = $collection->find([], [
-      'sort' => ['createdAt' => -1]
-    ]);
+    $messages = $client->esportify_messaging->contact_messages->find(
+      [],
+      ['sort' => ['createdAt' => -1]]
+    );
 
-    $this->denyAccessUnlessGranted('ROLE_ADMIN');
+    $requests = $client->esportify_messaging->tournament_requests->find(
+      [], 
+      ['sort' => ['createdAt' => -1]]);
+
 
     return $this->render('spaces/admin.html.twig', [
       'messages' => $messages,
+      'requests' => $requests,
     ]);
   }
 }
