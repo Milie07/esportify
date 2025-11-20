@@ -165,7 +165,7 @@
       .   MCD ou diagramme de classe,
       .   Diagramme de cas d’utilisation, Diagrammes de séquence
   - A venir :
-    - Documentation du déploiement
+    - En cours sur IONOS je pense.
     - Lien de l'application déployée (URL) 
 13. **Crédits et Licence**  
   Freepik : Images et icones d'avatars téléchargées en licence gratuite.
