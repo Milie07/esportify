@@ -50,6 +50,7 @@ security:
     - {path: ^/admin_dashboard, roles: ROLE_ADMIN}
     - {path: ^/organizer_space, roles: ROLE_ORGANIZER}
     - {path: ^/player_space, roles: ROLE_PLAYER}
+    - { path: ^/events/create, roles: [ROLE_ORGANIZER, ROLE_ADMIN] }
 
 when@test:
   security:

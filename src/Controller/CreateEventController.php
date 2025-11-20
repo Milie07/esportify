@@ -16,15 +16,29 @@ final class CreateEventController extends AbstractController
 {
   public function create(Request $request, InputSanitizer $san, EntityManagerInterface $em): Response
   {
-    $this->denyAccessUnlessGranted('ROLE_ORGANIZER');
-
+    // Autorisé pour ORGANIZER + ADMIN
+    if (!$this->isGranted('ROLE_ORGANIZER') && !$this->isGranted('ROLE_ADMIN')) {
+    throw $this->createAccessDeniedException();
+    }
+    
+    // Page formulaire
     if ($request->isMethod('GET')) {
-      return $this->render('spaces/organizer.html.twig');
+
+      // Organisateur
+      if ($this->isGranted('ROLE_ORGANIZER')) {
+        return $this->render('spaces/organizer.html.twig');
+      }
+
+      // Admin
+      if ($this->isGranted('ROLE_ADMIN')) {
+        return $this->render('spaces/admin.html.twig');
+      }
     }
 
+    // Soumission formulaire
     if ($request->isMethod('POST')) {
 
-      // --- SANITIZATION ---
+      // SANITIZATION
       $title = $san->sanitize($request->request->get('title'));
       $description = $san->sanitize($request->request->get('description'));
       $tagline = $san->sanitize($request->request->get('tagline'));
@@ -36,29 +50,33 @@ final class CreateEventController extends AbstractController
       /** @var UploadedFile|null $file */
       $file = $request->files->get('tournamentImage');
 
-      // --- CHECK FORMULAIRE ---
+      // Vérification
       if (
-        empty($title) ||
-        empty($description) ||
-        empty($startAt) ||
-        empty($endAt) ||
+        empty($title) || empty($description) ||
+        empty($startAt) || empty($endAt) ||
         $capacityGauge <= 0 ||
         !$file instanceof UploadedFile
       ) {
         $this->addFlash('error', 'Tous les champs doivent être remplis.');
-        return $this->redirectToRoute('organizer_space');
+
+        return $this->isGranted('ROLE_ADMIN')
+          ? $this->redirectToRoute('admin_dashboard')
+          : $this->redirectToRoute('organizer_space');
       }
 
-      // --- VALIDATION FORMAT DATE ---
+      // Dates
       $startDate = \DateTimeImmutable::createFromFormat('Y-m-d\TH:i', $startAt);
-      $endDate = \DateTimeImmutable::createFromFormat('Y-m-d\TH:i', $endAt);
+      $endDate   = \DateTimeImmutable::createFromFormat('Y-m-d\TH:i', $endAt);
 
       if (!$startDate || !$endDate) {
         $this->addFlash('error', 'Format de date invalide.');
-        return $this->redirectToRoute('organizer_space');
+
+        return $this->isGranted('ROLE_ADMIN')
+          ? $this->redirectToRoute('admin_dashboard')
+          : $this->redirectToRoute('organizer_space');
       }
 
-      // --- UPLOAD IMAGE ---
+      // Upload image
       $extension = $file->guessExtension() ?: 'bin';
       $filename = uniqid('tournament_', true) . '.' . $extension;
 
@@ -67,7 +85,7 @@ final class CreateEventController extends AbstractController
         $filename
       );
 
-      // --- ENTITÉS SQL ---
+      // ENTITÉS SQL
       $tImg = new TournamentImages();
       $tImg->setImageUrl('uploads/tournaments/' . $filename);
       $tImg->setCode(random_int(100000, 999999));
@@ -81,24 +99,19 @@ final class CreateEventController extends AbstractController
       $tournament->setCapacityGauge($capacityGauge);
       $tournament->setCurrentStatus(CurrentStatus::EN_ATTENTE);
 
-      // --- ORGANIZER ---
+      /** @var \App\Entity\Member $user */
       $user = $this->getUser();
-      if (!$user instanceof \App\Entity\Member) {
-        throw new \LogicException("L'utilisateur connecté n'est pas un Member.");
-      }
-
       $tournament->setOrganizer($user);
       $tournament->setCreatedAt(new \DateTimeImmutable());
       $tournament->setTournamentImage($tImg);
 
-      $em->persist($tournament);
       $em->persist($tImg);
+      $em->persist($tournament);
       $em->flush();
 
-      // --- MONGODB : tournament_requests ---
+      // MONGODB : demandes de validation
       $client = new Client($_ENV['MONGODB_URL']);
-      $db = $client->selectDatabase('esportify_messaging');
-      $collection = $db->selectCollection('tournament_requests');
+      $collection = $client->esportify_messaging->tournament_requests;
 
       $collection->insertOne([
         'tournamentId'    => $tournament->getId(),
@@ -110,8 +123,11 @@ final class CreateEventController extends AbstractController
         'status'          => 'new',
       ]);
 
-      $this->addFlash('success', 'Le tournoi est créé et en attente de validation par un admin.');
-      return $this->redirectToRoute('organizer_space');
+      $this->addFlash('success', 'Le tournoi est créé et en attente de validation.');
+
+      return $this->isGranted('ROLE_ADMIN')
+        ? $this->redirectToRoute('admin_dashboard')
+        : $this->redirectToRoute('organizer_space');
     }
 
     return new Response('Méthode non autorisée.', 405);

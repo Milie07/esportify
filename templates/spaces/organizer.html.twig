@@ -78,12 +78,12 @@
 
 									{# BADGE DE STATUT #}
 									<span class="badge rounded-pill d-block mx-auto w-50 p-2 mb-3
-																																{% if tournament.currentStatus.value == 'En Attente' %} bg-warning text-dark
-																																{% elseif tournament.currentStatus.value == 'Validé' %} bg-success
-																																{% elseif tournament.currentStatus.value == 'En Cours' %} bg-primary
-																																{% elseif tournament.currentStatus.value == 'Terminé' %} bg-secondary
-																																{% elseif tournament.currentStatus.value == 'Refusé' %} bg-danger
-																																{% endif %}">
+										{% if tournament.currentStatus.value == 'En Attente' %} bg-warning text-dark
+										{% elseif tournament.currentStatus.value == 'Validé' %} bg-success
+										{% elseif tournament.currentStatus.value == 'En Cours' %} bg-primary
+										{% elseif tournament.currentStatus.value == 'Terminé' %} bg-secondary
+										{% elseif tournament.currentStatus.value == 'Refusé' %} bg-danger
+										{% endif %}">
 										{{ tournament.currentStatus.value }}
 									</span>
 
@@ -122,7 +122,7 @@
         <!-- Formulaire de Création -->
         <form class="form_contact bg-beige rounded-2 border border-lightBlue text_description text-lightBlue px-5 pt-4 pb-2" id="searchForm" action={{ path('event_create') }} method="POST" enctype="multipart/form-data">
 					<inputtype="hidden" name="_csrf_token" value="{{ csrf_token('event_create') }}">
-          <!-- Informations personnelles -->
+          <!-- Informations -->
           <div class="mx-auto">
 							<label class="" for="title">Titre de l'évènement :</label>
 							<input class="form-control input_filter mb-3" id="title" name="title" type="text" minlength="2" maxlength="120" required></div>

@@ -13,6 +13,7 @@ class SpaceController extends AbstractController
   public function playerSpace(): Response
   {
     $this->denyAccessUnlessGranted('ROLE_PLAYER');
+
     /** @var \App\Entity\Member $user */
     $user = $this->getUser();
     $avatarPath = $user->getAvatarPath() ?: 'uploads/avatars/default-avatar.jpg';
@@ -30,7 +31,6 @@ class SpaceController extends AbstractController
     $user = $this->getUser();
 
     $tournaments = $em->getRepository(Tournament::class)->findBy(
-
       ['organizer' => $user],
       ['createdAt' => 'DESC']
     );
@@ -39,32 +39,5 @@ class SpaceController extends AbstractController
       'tournaments' => $tournaments
     ]);
   }
-
-  public function adminDashboard(): Response
-  {
-    $this->denyAccessUnlessGranted('ROLE_ADMIN');
-
-    // Connexion MongoDB
-    $client = new Client($_ENV['MONGODB_URL']);
-    $db = $client->selectDatabase('esportify_messaging');
-
-    // Messages de contact
-    $contactCollection = $db->selectCollection('contact_messages');
-    $messages = $contactCollection->find(
-      [],
-      ['sort' => ['createdAt' => -1]]
-    );
-
-    // Demandes de tournois
-    $requestsCollection = $db->selectCollection('tournament_requests');
-    $requests = $requestsCollection->find(
-      [],
-      ['sort' => ['createdAt' => -1]]
-    );
-
-    return $this->render('spaces/admin.html.twig', [
-      'messages' => $messages,
-      'requests' => $requests,
-    ]);
-  }
 }
+  
