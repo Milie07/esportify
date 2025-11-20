@@ -1,88 +1,98 @@
 <?php
+
 namespace App\Controller;
 
 use App\Repository\TournamentRepository;
+use App\Service\TournamentStatusService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\{Request, Response};
 use Symfony\Component\Routing\Annotation\Route;
 
 class EventsController extends AbstractController
 {
-    #[Route('/events', name: 'app_events', methods: ['GET'])]
-    public function index(Request $request, TournamentRepository $tournamentRepository): Response
-    {
-        $organizer = $request->query->get('organizer') ?: null;
-        $dateAt = $request->query->get('dateAt') ?: null;
-        $playersCount = $request->query->get('playersCount');
-        $playersCount = ($playersCount !== null && $playersCount !== '') ? (int) $playersCount : null;
+  #[Route('/events', name: 'app_events', methods: ['GET'])]
+  public function index(Request $request, TournamentRepository $tournamentRepository, TournamentStatusService $statusService): Response
+  {
+    $statusService->updateAllStatus();
 
-        $tournaments = $tournamentRepository->findValidatedFiltered($organizer, $dateAt, $playersCount);
-        $organizers = $tournamentRepository->findOrganizersForValidated();
+    $organizer = $request->query->get('organizer') ?: null;
+    $dateAt = $request->query->get('dateAt') ?: null;
+    $playersCount = $request->query->get('playersCount');
+    $playersCount = ($playersCount !== null && $playersCount !== '') ? (int) $playersCount : null;
 
-        $tz = new \DateTimeZone('Europe/Paris');
-        $now = new \DateTimeImmutable('now', $tz);
+    $tournaments = $tournamentRepository->findValidatedOrRunning(
+      $organizer,
+      $dateAt,
+      $playersCount
+    );
 
-        $formatDate = function(?\DateTimeInterface $dt) use ($tz) {
-            if (!$dt) return '—';
-            $d = $dt instanceof \DateTimeImmutable ? $dt : \DateTimeImmutable::createFromMutable($dt);
-            $d = $d->setTimezone($tz);
-            return $d->format('d/m/Y H:i');
-        };
+    $organizers = $tournamentRepository->findOrganizersForValidatedOrRunning();
+    $carouselEvents = $tournamentRepository->findValidatedForCarousel();
 
-        $computeTimeStatus = function(?\DateTimeInterface $start, ?\DateTimeInterface $end) use ($now) {
-            if (!$start || !$end) {
-                return 'Statut temporel indisponible';
-            }
-            $startImmutable = $start instanceof \DateTimeImmutable ? $start : \DateTimeImmutable::createFromMutable($start);
-            $endImmutable   = $end instanceof \DateTimeImmutable ? $end : \DateTimeImmutable::createFromMutable($end);
+    $tz = new \DateTimeZone('Europe/Paris');
+    $now = new \DateTimeImmutable('now', $tz);
 
-            if ($startImmutable > $now) {
-                $diff = $startImmutable->diff($now);
-                $days = (int) $diff->days;
-                $hours = (int) $diff->h;
-                $result = 'Commence dans ' . $days . ' jour' . ($days > 1 ? 's' : '');
-                if ($hours > 0) $result .= ' et ' . $hours . 'h';
-                return $result;
-            }
+    $formatDate = function (?\DateTimeInterface $dt) use ($tz) {
+      if (!$dt) return '—';
+      $d = $dt instanceof \DateTimeImmutable ? $dt : \DateTimeImmutable::createFromMutable($dt);
+      $d = $d->setTimezone($tz);
+      return $d->format('d/m/Y H:i');
+    };
 
-            if ($startImmutable <= $now && $endImmutable >= $now) {
-                return 'En cours';
-            }
+    $computeTimeStatus = function (?\DateTimeInterface $start, ?\DateTimeInterface $end) use ($now) {
+      if (!$start || !$end) {
+        return 'Statut temporel indisponible';
+      }
+      $startImmutable = $start instanceof \DateTimeImmutable ? $start : \DateTimeImmutable::createFromMutable($start);
+      $endImmutable   = $end instanceof \DateTimeImmutable ? $end : \DateTimeImmutable::createFromMutable($end);
 
-            return 'Terminé';
-        };
+      if ($startImmutable > $now) {
+        $diff = $startImmutable->diff($now);
+        $days = (int) $diff->days;
+        $hours = (int) $diff->h;
+        $result = 'Commence dans ' . $days . ' jour' . ($days > 1 ? 's' : '');
+        if ($hours > 0) $result .= ' et ' . $hours . 'h';
+        return $result;
+      }
 
-        $eventsData = [];
-        foreach ($tournaments as $t) {
-            $organizerPseudo = $t->getOrganizer() ? $t->getOrganizer()->getPseudo() : null;
-            $start = $t->getStartAt();
-            $end   = $t->getEndAt();
+      if ($startImmutable <= $now && $endImmutable >= $now) {
+        return 'En cours';
+      }
 
-            $eventsData[] = [
-                'id' => $t->getId(),
-                'title' => $t->getTitle(),
-                'tagline' => $t->getTagline(),
-                'description' => $t->getDescription(),
-                'startsAtFormatted' => $formatDate($start),
-                'endsAtFormatted' => $formatDate($end),
-                'startsAtIso' => $start ? $start->format(\DateTime::ATOM) : null,
-                'endsAtIso' => $end ? $end->format(\DateTime::ATOM) : null,
-                'capacityGauge' => $t->getCapacityGauge(),
-                'organizerPseudo' => $organizerPseudo,
-                'statusLabel' => $t->getCurrentStatus() ? $t->getCurrentStatus()->label() : null,
-                'timeStatus' => $computeTimeStatus($start, $end),
-                'imagePath' => $t->getImagePath() ?: 'build/images/jpg/default-event.jpg',
-            ];
-        }
+      return 'Terminé';
+    };
 
-        return $this->render('events/index.html.twig', [
-            'events' => $eventsData,
-            'organizers' => $organizers,
-            'filters' => [
-                'organizer' => $organizer,
-                'dateAt' => $dateAt,
-                'playersCount' => $playersCount,
-            ],
-        ]);
+    $eventsData = [];
+    foreach ($tournaments as $t) {
+      $organizerPseudo = $t->getOrganizer() ? $t->getOrganizer()->getPseudo() : null;
+      $start = $t->getStartAt();
+      $end   = $t->getEndAt();
+
+      $eventsData[] = [
+        'id' => $t->getId(),
+        'title' => $t->getTitle(),
+        'tagline' => $t->getTagline(),
+        'description' => $t->getDescription(),
+        'startsAtFormatted' => $formatDate($start),
+        'endsAtFormatted' => $formatDate($end),
+        'startsAtIso' => $start ? $start->format(\DateTime::ATOM) : null,
+        'endsAtIso' => $end ? $end->format(\DateTime::ATOM) : null,
+        'capacityGauge' => $t->getCapacityGauge(),
+        'organizerPseudo' => $organizerPseudo,
+        'statusLabel' => $t->getCurrentStatus()->label(),
+        'timeStatus' => $computeTimeStatus($start, $end),
+        'imagePath' => $t->getImagePath() ?: 'build/images/jpg/default-event.jpg',
+      ];
     }
+
+    return $this->render('events/index.html.twig', [
+      'events' => $eventsData,
+      'organizers' => $organizers,
+      'filters' => [
+        'organizer' => $organizer,
+        'dateAt' => $dateAt,
+        'playersCount' => $playersCount,
+      ],
+    ]);
+  }
 }

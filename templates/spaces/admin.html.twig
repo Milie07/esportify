@@ -23,78 +23,16 @@
 				🏆</span>
 		</h1>
 
-		<!-- statistiques  -->
-		<section class="container-lg rounded-2 my-3 my-lg-3 py-2 py-lg-3">
-			<div class="d-flex gap-4 my-3">
-				<div class="row my-4 mx-auto">
-					<div class="col col-lg-3">
-						<div class="card text-center h-100">
-							<div class="card-body d-flex flex-column justify-content-between">
-								<h2 class="card-title fs-3">Liste inscrits</h2>
-								<span class="badge rounded-pill bg-info align-self-center text-lightBlue fs-5">12</span>
-							</div>
-						</div>
-					</div>
-					<div class="col col-lg-3">
-						<div class="card text-center h-100">
-							<div class="card-body d-flex flex-column justify-content-between">
-								<h2 class="card-title fs-3">Events en cours</h2>
-								<span class="badge rounded-pill bg-info align-self-center text-lightBlue fs-5">3</span>
-							</div>
-						</div>
-					</div>
-					<div class="col col-lg-3">
-						<div class="card text-center h-100">
-							<div class="card-body d-flex flex-column justify-content-between">
-								<h2 class="card-title fs-3">Demandes joueurs</h2>
-								<span class="badge rounded-pill bg-info align-self-center text-lightBlue fs-5">12</span>
-							</div>
-						</div>
-					</div>
-					<div class="col col-lg-3">
-						<div class="card text-center h-100">
-							<div class="card-body d-flex flex-column justify-content-between">
-								<h2 class="card-title fs-3">Demandes events</h2>
-								<span class="badge rounded-pill bg-info align-self-center text-lightBlue fs-5">3</span>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-
 		<!-- Section rapports évènements -->
 		<section class="container-lg my-3 my-lg-3 py-2 py-lg-3">
 			<div
 				class="row text_description text-center gap-2 gap-lg-0 mx-auto">
 
-				<!-- Scores joueur -->
+				<!-- Scores  -->
 				<div class="col-12 col-lg-4">
 					<div class="card bg-clair2 rounded-2 text-lightBlue p-3">
 						<h2 class="card-title">Mes Scores 🏆</h2>
-						<!-- liste des scores par évènement -->
-						<table class="card-body bg-white border border-lightBlue py-2">
-							<thead>
-								<tr class="text_lightBlue text-decoration-underline">
-									<th scope="row">Évènements</th>
-									<th scope="row">Scores</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<th class="text_lightBlue">Iron Arena</th>
-									<td class="text_lightBlue">15</td>
-								</tr>
-								<tr>
-									<th class="text_lightBlue">Pixel Panic</th>
-									<td class="text_lightBlue">5</td>
-								</tr>
-								<tr>
-									<th class="text_lightBlue">Dragon's Den</th>
-									<td class="text_lightBlue">0</td>
-								</tr>
-							</tbody>
-						</table>
+						{# Favoris A venir #}
 					</div>
 				</div>
 
@@ -102,134 +40,21 @@
 				<div class="col-12 col-lg-4">
 					<div class="card bg-clair2 rounded-2 text-lightBlue p-3">
 						<h2 class="card-title">Mes Favoris ⭐</h2>
-						<!-- liste des scores par évènement -->
-						<table class="card-body bg-white border border-lightBlue py-2">
-							<thead>
-								<tr class="text_lightBlue text-decoration-underline">
-									<th scope="row">Évènements</th>
-									<th scope="row">Statut</th>
-									<th class="" scope="row" colspan="3">Actions</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<th scope="row" class="text_lightBlue">Iron Arena</th>
-									<td class="text_lightBlue">Validé ✅</td>
-									<td>
-										<button class="btn btn-beige rounded-pill text-lightBlue" type="button">
-											<i class="fa-solid fa-person-circle-plus fa-xl"></i>
-										</button>
-									</td>
-									<td>
-										<button class="btn btn-beige rounded-pill text-lightBlue" type="button">
-											<i class="fa-solid fa-person-circle-minus fa-xl"></i>
-										</td>
-									</td>
-									<td>
-										<button class="btn btn-beige rounded-pill text-lightBlue" type="button">
-											<i class="fa-solid fa-right-to-bracket fa-xl"></i>
-										</button>
-									</td>
-								</tr>
-								<tr>
-									<th class="text_lightBlue">Pixel Panic</th>
-									<td class="text_lightBlue">En cours
-									</td>
-									<td>
-										<button class="btn btn-beige text-lightBlue" type="button">
-											<i class="fa-solid fa-person-circle-plus fa-xl"></i>
-										</button>
-									</td>
-									<td>
-										<button class="btn btn-beige text-lightBlue" type="button">
-											<i class="fa-solid fa-person-circle-minus fa-xl"></i>
-										</td>
-									</td>
-									<td>
-										<button class="btn btn-beige text-lightBlue d-none" type="button">
-											<i class="fa-solid fa-right-to-bracket fa-xl"></i>
-										</button>
-									</td>
-								</tr>
-								<tr>
-									<th class="text_lightBlue">Dragon's Den</th>
-									<td class="text_lightBlue"></td>
-									<td>
-										<button class="btn btn-beige rounded-pill text-lightBlue" type="button">
-											<i class="fa-solid fa-person-circle-plus fa-xl"></i>
-										</button>
-									</td>
-									<td>
-										<button class="btn btn-beige rounded-pill text-lightBlue" type="button">
-											<i class="fa-solid fa-person-circle-minus fa-xl"></i>
-										</td>
-									</td>
-									<td>
-										<button class="btn btn-beige rounded-pill text-lightBlue" type="button">
-											<i class="fa-solid fa-right-to-bracket fa-xl"></i>
-										</button>
-									</td>
-								</tr>
-							</tbody>
-						</table>
+						{# Favoris A venir #}
 					</div>
 				</div>
 
+				<!-- Historique -->
 				<div class="col-12 col-lg-4">
 					<div class="card bg-clair2 rounded-2 gap-2 text-lightBlue p-3">
 						<h2>Mon Historique 📜</h2>
-						<!-- Historique -->
-						<table class="card-body bg-white border border-lightBlue py-2">
-							<thead>
-								<tr class="text_lightBlue text-decoration-underline">
-									<th scope="col" class="text_lightBlue">Évènements</th>
-									<th scope="col" class="text_lightBlue">Statut</th>
-									<th scope="col" class="text_lightBlue">Action</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<th scope="row" class="text_lightBlue">Iron Arena</th>
-									<td class="text_lightBlue">Validé ✅</td>
-									<td>
-										<button class="btn btn-beige rounded-pill text-lightBlue" type="button">
-											<i class="fa-solid fa-trash fa-md"></i>
-										</button>
-									</td>
-								</tr>
-								<tr>
-									<th scope="row" class="text_lightBlue">Pixel Panic</th>
-									<td class="text_lightBlue">En attente ⏳</td>
-									<td>
-										<button class="btn btn-beige rounded-pill text-lightBlue" type="button">
-											<i class="fa-solid fa-trash fa-md"></i>
-										</button>
-									</td>
-								</tr>
-								<tr>
-									<th scope="row" class="text_lightBlue">Dragon's Den</th>
-									<td class="text_lightBlue">Refusé ❌</td>
-									<td>
-										<button class="btn btn-beige rounded-pill text-lightBlue" type="button">
-											<i class="fa-solid fa-trash fa-md"></i>
-										</button>
-									</td>
-								</tr>
-								<tr>
-									<th scope="row" class="text_lightBlue">Dragon's Den</th>
-									<td class="text_lightBlue">Terminé</td>
-									<td>
-										<button class="btn btn-beige rounded-pill text-lightBlue" type="button">
-											<i class="fa-solid fa-trash fa-md"></i>
-										</button>
-									</td>
-								</tr>
-							</tbody>
-						</table>
+						{# Historique A venir #}
 					</div>
 				</div>
+
 			</div>
 		</section>
+    
 		<!-- Messagerie page Contact-->
 		<section class="container-lg bg-clair2 my-3 my-lg-3 py-2 py-lg-3">
 			<div class="text_description text-center text-lightBlue gap-2 gap-lg-0 mx-auto">

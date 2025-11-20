@@ -11,6 +11,11 @@ RUN apt-get update && apt-get install -y \
   libssl-dev &&\
   docker-php-ext-install intl pdo pdo_mysql zip
 
+# Mettre la TimeZone en corrélation
+RUN echo "date.timezone=Europe/Paris" > /usr/local/etc/php/conf.d/timezone.ini \
+    && ln -snf /usr/share/zoneinfo/Europe/Paris /etc/localtime \
+    && echo "Europe/Paris" > /etc/timezone
+
 # Installer l'extension MongoDB dans le conteneur
 RUN pecl install mongodb \
   && docker-php-ext-enable mongodb

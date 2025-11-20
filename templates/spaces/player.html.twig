@@ -26,112 +26,30 @@
 			<div
 				class="row text_description text-center gap-2 gap-lg-0 mx-auto">
 
-				<!-- Scores joueur -->
-				<div class="col-12 col-lg-6">
+				<!-- Scores  -->
+				<div class="col-12 col-lg-4">
 					<div class="card bg-clair2 rounded-2 text-lightBlue p-3">
 						<h2 class="card-title">Mes Scores 🏆</h2>
-						<!-- liste des scores par évènement -->
-						<table class="card-body bg-white border border-lightBlue py-2">
-							<thead>
-								<tr class="text_lightBlue text-decoration-underline">
-									<th scope="row">Évènements</th>
-									<th scope="row">Scores</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<th class="text_lightBlue">Iron Arena</th>
-									<td class="text_lightBlue">15</td>
-								</tr>
-								<tr>
-									<th class="text_lightBlue">Pixel Panic</th>
-									<td class="text_lightBlue">5</td>
-								</tr>
-								<tr>
-									<th class="text_lightBlue">Dragon's Den</th>
-									<td class="text_lightBlue">0</td>
-								</tr>
-							</tbody>
-						</table>
+						{# Favoris A venir #}
 					</div>
 				</div>
 
 				<!-- Favoris -->
-				<div class="col-12 col-lg-6">
+				<div class="col-12 col-lg-4">
 					<div class="card bg-clair2 rounded-2 text-lightBlue p-3">
 						<h2 class="card-title">Mes Favoris ⭐</h2>
-						<!-- liste des scores par évènement -->
-						<table class="card-body bg-white border border-lightBlue py-2">
-							<thead>
-								<tr class="text_lightBlue text-decoration-underline">
-									<th scope="row">Évènements</th>
-									<th scope="row">Statut</th>
-									<th class="" scope="row" colspan="3">Actions</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<th scope="row" class="text_lightBlue">Iron Arena</th>
-									<td class="text_lightBlue">Validé ✅</td>
-									<td>
-										<button class="btn btn-beige rounded-pill text-lightBlue" type="button">
-											<i class="fa-solid fa-person-circle-plus fa-xl"></i>
-										</button>
-									</td>
-									<td>
-										<button class="btn btn-beige rounded-pill text-lightBlue" type="button">
-											<i class="fa-solid fa-person-circle-minus fa-xl"></i>
-										</td>
-									</td>
-									<td>
-										<button class="btn btn-beige rounded-pill text-lightBlue" type="button">
-											<i class="fa-solid fa-right-to-bracket fa-xl"></i>
-										</button>
-									</td>
-								</tr>
-								<tr>
-									<th class="text_lightBlue">Pixel Panic</th>
-									<td class="text_lightBlue">En cours
-									</td>
-									<td>
-										<button class="btn btn-beige text-lightBlue" type="button">
-											<i class="fa-solid fa-person-circle-plus fa-xl"></i>
-										</button>
-									</td>
-									<td>
-										<button class="btn btn-beige text-lightBlue" type="button">
-											<i class="fa-solid fa-person-circle-minus fa-xl"></i>
-										</td>
-									</td>
-									<td>
-										<button class="btn btn-beige text-lightBlue d-none" type="button">
-											<i class="fa-solid fa-right-to-bracket fa-xl"></i>
-										</button>
-									</td>
-								</tr>
-								<tr>
-									<th class="text_lightBlue">Dragon's Den</th>
-									<td class="text_lightBlue"></td>
-									<td>
-										<button class="btn btn-beige rounded-pill text-lightBlue" type="button">
-											<i class="fa-solid fa-person-circle-plus fa-xl"></i>
-										</button>
-									</td>
-									<td>
-										<button class="btn btn-beige rounded-pill text-lightBlue" type="button">
-											<i class="fa-solid fa-person-circle-minus fa-xl"></i>
-										</td>
-									</td>
-									<td>
-										<button class="btn btn-beige rounded-pill text-lightBlue" type="button">
-											<i class="fa-solid fa-right-to-bracket fa-xl"></i>
-										</button>
-									</td>
-								</tr>
-							</tbody>
-						</table>
+						{# Favoris A venir #}
 					</div>
 				</div>
+
+				<!-- Historique -->
+				<div class="col-12 col-lg-4">
+					<div class="card bg-clair2 rounded-2 gap-2 text-lightBlue p-3">
+						<h2>Mon Historique 📜</h2>
+						{# Historique A venir #}
+					</div>
+				</div>
+
 			</div>
 		</section>
 
@@ -195,7 +113,6 @@
 						</label>
 						<input id="password" name="password" type="password" class="form-control input_filter mb-3" placeholder="*********" disabled required>
 					</div>
-
 					<div class="text-center">
 						<a class="btn-custom-md-green btn btn-greenFluo align-self-center my-2" href="{{ path('modifProfile') }}">Modifier ⚙️</a>
 					</div>
@@ -206,5 +123,6 @@
 		<div class="text-center mt-4">
 			<a class="btn-custom-lg-clair btn btn-clair2 mb-4" href="{{ path('app_home') }}">Retour à l'accueil</a>
 		</div>
+    
 	</div>
 {% endblock %}

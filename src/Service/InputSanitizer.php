@@ -37,8 +37,16 @@ final class InputSanitizer
   public function sanitize(?string $value): ?string
   {
     if ($value === null) {
-      return null;
+        return null;
     }
-    return htmlspecialchars(trim($value), ENT_QUOTES, 'UTF-8');
-  }
+
+    // enlève les balises HTML
+    $clean = strip_tags($value);
+
+    // nettoie les espaces
+    $clean = trim(preg_replace('/\s+/u', ' ', $clean));
+
+    // retourne la valeur BRUTE 
+    return $clean;
+  } 
 }

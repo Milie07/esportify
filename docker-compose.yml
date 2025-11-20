@@ -15,13 +15,14 @@ services:
       mongo:
         condition: service_started
     environment:
+      TZ: Europe/Paris
       DATABASE_URL: "mysql://esportify_user:esportify_pass@db:3306/esportify?serverVersion=8.0&charset=utf8mb4"
       MONGODB_URL: "mongodb://root:rootpass@mongo:27017"
     command: >
       bash -c "
         php bin/console doctrine:database:create --if-not-exists &&
-        php bin/console doctrine:migrations:migrate --no-interaction &&
-        php bin/console doctrine:fixtures:load --no-interaction &&
+        php bin/console doctrine:migrations:migrate --no-interaction ||
+        true &&
         php bin/console cache:clear &&
         apache2-foreground
         "
@@ -35,7 +36,7 @@ services:
       MYSQL_USER: esportify_user
       MYSQL_PASSWORD: esportify_pass
     volumes:
-      - db_data:/var/lib/mysql
+      - esportify_db_data:/var/lib/mysql
     ports:
       - "3306:3306"
     healthcheck:
@@ -54,6 +55,8 @@ services:
     environment:
       PMA_HOST: db
       MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - esportify_db_data:/var/lib/mysql
 
   mongo:
     image: mongo:7
@@ -65,7 +68,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: rootpass
     volumes:
-      - mongo_data:/data/db
+      - esportify_mongo_data:/data/db
 
   mongo_express:
     image: mongo-express:1
@@ -83,5 +86,5 @@ services:
       - mongo
 
 volumes:
-  db_data:
-  mongo_data:
+  esportify_db_data:
+  esportify_mongo_data:

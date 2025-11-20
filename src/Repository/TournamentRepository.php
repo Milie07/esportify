@@ -21,42 +21,64 @@ class TournamentRepository extends ServiceEntityRepository
   {
     parent::__construct($registry, Tournament::class);
   }
-
   //    /**
-  //     * @return Tournament[] Retourne un tableau de tournois validés pour le carousel
+  //     * @return Tournament[] Je retourne un tableau de tournois validés pour le carousel
   //     */
   public function findValidatedForCarousel(int $limit = 10): array
   {
-    $statusValue = CurrentStatus::VALIDE->value;
-    return $this->findBy(
-      ['currentStatus' => $statusValue],
-      ['startAt' => 'ASC'],
-      $limit
-    );
+    $status = [
+      CurrentStatus::VALIDE->value,
+      CurrentStatus::EN_COURS->value
+    ];
+
+    return $this->createQueryBuilder('t')
+      ->andWhere('t.currentStatus IN (:status)')
+      ->setParameter('status', $status)
+      ->orderBy('t.startAt', 'ASC')
+      ->setMaxResults($limit)
+      ->getQuery()
+      ->getResult();
   }
 
-  public function findValidated(int $limit = 10): array
+  public function findValidatedOrRunning(?string $organizerPseudo, ?string $dateAtIso, ?int $playersCountMin): array
   {
-    $statusValue = CurrentStatus::VALIDE->value;
+    $status = [
+      CurrentStatus::VALIDE->value,
+      CurrentStatus::EN_COURS->value
+    ];
+
     $qb = $this->createQueryBuilder('t')
-      ->andWhere('t.currentStatus = :status')
-      ->setParameter('status', $statusValue)
+      ->leftJoin('t.tournamentImage', 'img')
+      ->leftJoin('t.organizer', 'o')
+      ->andWhere('t.currentStatus IN (:status)')
+      ->setParameter('status', $status)
       ->orderBy('t.startAt', 'ASC');
 
-    if ($limit) {
-      $qb->setMaxResults($limit);
+    // Filtre pour l'organisateur
+    if ($organizerPseudo) {
+      $qb->andWhere('o.pseudo = :organizerPseudo')
+        ->setParameter('organizerPseudo', $organizerPseudo);
     }
 
+    // Filtre pour la date
+    if ($dateAtIso) {
+      try {
+        $dateAtObj = new \DateTimeImmutable($dateAtIso);
+        $qb->andWhere('t.startAt >= :dateAt')
+          ->setParameter('dateAt', $dateAtObj);
+      } catch (\Throwable $e) {
+        // date invalide → on ignore (comme tu fais)
+      }
+    }
+
+    // Filtre pour le nombre de joueurs
+    if (is_int($playersCountMin)) {
+      $qb->andWhere('t.capacityGauge >= :playersCountMin')
+        ->setParameter('playersCountMin', $playersCountMin);
+    }
     return $qb->getQuery()->getResult();
   }
-  /**
-   * Retourne les événements validés, filtrés si nécessaire.
-   *
-   * @param string|null $organizerPseudo
-   * @param string|null $dateAtIso        // format attendu: "YYYY-MM-DDTHH:MM" ou ISO
-   * @param int|null    $playersCountMin  // capacité minimale (capacityGauge)
-   * @return Tournament[]
-   */
+
 
   public function findValidatedFiltered(?string $organizerPseudo, ?string $dateAtIso, ?int $playersCountMin): array
   {
@@ -94,22 +116,26 @@ class TournamentRepository extends ServiceEntityRepository
   }
 
   /**
-   * Retourne la liste distincte des pseudos d'organisateur pour les events validés.
+   * Retourne la liste distincte des pseudos d'organisateur pour les events validés et en cours.
    *
    * @return string[] 
    */
-  public function findOrganizersForValidated(): array
+  public function findOrganizersForValidatedOrRunning(): array
   {
-    $statusValue = \App\Enum\CurrentStatus::VALIDE->value;
+    $statuses = [
+      CurrentStatus::VALIDE->value,
+      CurrentStatus::EN_COURS->value
+    ];
 
-    $qb = $this->createQueryBuilder('t')
+    $rows = $this->createQueryBuilder('t')
       ->select('DISTINCT o.pseudo AS pseudo')
       ->leftJoin('t.organizer', 'o')
-      ->andWhere('t.currentStatus = :status')
-      ->setParameter('status', $statusValue)
-      ->orderBy('o.pseudo', 'ASC');
+      ->andWhere('t.currentStatus IN (:status)')
+      ->setParameter('status', $statuses)
+      ->orderBy('o.pseudo', 'ASC')
+      ->getQuery()
+      ->getScalarResult();
 
-    $rows = $qb->getQuery()->getScalarResult();
-    return array_map(fn($r) => $r['pseudo'], $rows);
+    return array_column($rows, 'pseudo');
   }
 }
