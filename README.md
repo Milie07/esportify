@@ -5,7 +5,7 @@
 1.  **Fonctionnalités**
   - Page d'accueil :
     * Présentation de l'entreprise 
-    * Evènements validés à venir sous forme de slide avec images etdates
+    * Evènements validés à venir sous forme de slide avec images et dates
   - Menu d'application
     * Retour vers la page d'accueil
     * Accès à tous les évènements
@@ -13,21 +13,21 @@
     * Contact
     * Avatar (connecté/non connecté)
     * Score (si connecté)
-    * menu Connexion / Accés à l'espace dédié de l'utilisateur /Déconnexion
+    * menu Connexion / Accès à l'espace dédié de l'utilisateur /Déconnexion
   - Vue globale de tous les évènements
     * Affichage de tous les évènements validés
     * Modale pour le détail d'un évènement
   - Page Contact
-    * Formualire en dev
+    * Envoi de messages réceptionnés sur l'espace de l'admin
   - Espaces utilisateur et Rôles dédiés :
     * Visiteur : lecture publique
-    * Joueur : Espace en dev => Espace personnel, favoris, scores etlienvers une demande pour devenir organisateur
-    * Organisateur : Espace en dev => Espace Personnel,historiqued'évènements crées, favoris et scores et formulaire decréationd'évènement à soumettre (gestion de ses propres évènements)démarrer un évènement.
-    * Admin : Espace en dev => Dashboard regroupant lesmêmesfonctionalités plus la possibilités de lister tous les inscrits,devisualiser les messages envoyés depuis la page contact, lesdemandesde joueurs pour devenir organisateur ainsi que lesdemandesd'évènements (modération, validation et gestion des droits)
+    * Joueur : Espace en dev => Espace personnel, favoris, scores et lien vers une demande pour devenir organisateur (à venir)
+    * Organisateur : Espace en dev => Espace Personnel avec historique d'évènements crées, favoris et scores - formulaire de création d'évènement à soumettre et la gestion de ses propres évènements (OK) plus la possibilité de démarrer un évènement.(à venir)
+    * Admin : Espace en dev => Dashboard regroupant les mêmes fonctionalités, plus la possibilités de lister tous les inscrits (à venir), de visualiser les messages envoyés depuis la page contact (Ok), les demandes de joueurs pour devenir organisateur ainsi que les demandes d'évènements (modération, validation et refus Ok)
   - Evènements :
     * CRUD et statuts (En Attente, En cours, Validé, Terminé ou Refusé)
   - Filtre asynchrone :
-    * Filter les évènements par date et heure, organisateurs ou nombre de joueurs
+    * Filter les évènements par date et heure, organisateurs ou nombre de joueurs sur la page évènements
 2.  **Architecture et Technologie**
   - Front-End
     * HTML/CSS/Bootstrap 5.3.6 et Sass 1.92.1, Javascript et WebPackEncore
@@ -63,6 +63,7 @@
     * compte Admin (rôle ADMIN) -> pseudo: ElodieAdmin / mdp:AdminElodie2025
     * compte Admin (rôle ADMIN) -> pseudo: RaphAdmin / mdp: AdminRaph2025
     * compte Organisateur (rôle ORGANIZER) -> pseudo: HugoOrga / mdp:OrgaHugo2025
+    * compte Organisateur (rôle ORGANIZER) -> pseudo: AlexOrga / mdp:OrgaAlex2025
     * compte Joueur (rôle PLAYER) -> pseudo: NicoPlayer / mdp PlayNico2025
 5.  **Configuration**
   `APP_ENV=dev`
@@ -72,12 +73,10 @@
   - Au lancement du service web, les commandas suivantes s'exécutent :
   `php bin/console doctrine:database:create --if-not-exists`
   `php bin/console doctrine:migrations:migrate --no-interaction`
-  `php bin/console doctrine:fixtures:load --no-interaction`
   - Les données de démonstration proviennent de : 
-  `src/DataFixtures/AppFixtures.php`
-  Elles sont chargées automatiquement lors du premier lancement et lorsd'un reset complet avec `docker-compose down -v`
+  `src/DataFixtures/AppFixtures.php` et sont chargées en BDD
 7. **Base de Données NoSQL (Mode conteneurisé)** 
-  - L'application intègre une base NoSQL dédiée à la messagerie et aux intéractions utilisateurs:
+  - L'application intègre une base NoSQL MongoDB dédiée à la messagerie et aux intéractions utilisateurs:
   - L'objectif est d'isoler toutes les données liées :
     * aux messages issus de la page Contact
     * aux reponses administrateurs
@@ -85,20 +84,21 @@
     * aux futurs messages asynchrones liés aux tournois/évènements (chatasynchrone)
   - Base NOSQL
     * nom de la base : esportify_messaging
+    * nom des tables : contact_messages
+                       tournaments_requests
   - Technologie
     * MongoDB (conteneurisé)
     * Driver PHP MongoDB via un service Symfony dédié
     * Stockage flexible adapté aux données relationnelles
-  - Collections prévues
-    * messages_contact
-    * messages_admin
-    * requests_organizer
+  - Collections 
+    * contact_messages
+    * tournaments_requests
+    * admin_messages (à venir)
     * threads_events (optionnelle)  
 8.  **Lancement en développement**
   L'application est entièrement conteneurisée
   - Démarrage complet (Apache + PHP + MySQL + phpMyAdmin)
-    `docker compose build`
-    `docker compose up -d`
+    `docker compose up --build`
     `npm install`
     `npm run dev`
 9.  **Sécurité**
@@ -109,8 +109,7 @@
   - Sessions : Durée d’inactivité configurable (auto‑déconnexion à formaliser dans la config — voir feuille de route)
   - Logs & erreurs : Environnement prod sans debug ; dev avec debug
 10. **Déploiement**
-  - A venir
-  - Hébergement prévu sur Heroku ou Netlify
+  - Hébergement prévu sur Heroku 
 11. **Conteneurisation** 
   - Contenu :
     * Dockerfile : image PHP 8.2 + extensions (pdo_mysql, mysqli)
@@ -156,7 +155,7 @@
   - Dans le dossier `docs/maquettes/` à la racine du projet
     -  Charte graphique (PDF : palette, polices)
     -  Exports des maquettes : Wireframes (3 mobiles, 3 desktop) et  Mockups (3 mobiles, 3 desktop) 
-    - Diagrammes : MCD, MLD, MPD et User_Case
+    - Diagrammes : MCD, MLD, MPD, Diagramme de Séquence et User_Case
   - Sur la Copie à rendre
     - Dépôt GitHub public
     - Lien de gestion de projet
