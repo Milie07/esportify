@@ -40,7 +40,7 @@ class TournamentRepository extends ServiceEntityRepository
       ->getResult();
   }
 
-  public function findValidatedOrRunning(?string $organizerPseudo, ?string $dateAtIso, ?int $playersCountMin): array
+  public function findValidatedOrRunning(?string $organizerPseudo = null, ?string $dateAtIso = null, ?int $playersCountMin = null): array
   {
     $status = [
       CurrentStatus::VALIDE->value,

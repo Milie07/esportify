@@ -265,19 +265,14 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
       return null;
     }
 
-    $avatar = $this->memberAvatar;
-    $value = null;
-
-    if (method_exists($avatar, 'getAvatarUrl')) {
-      $value = $avatar->getAvatarUrl();
-    } else {
-      return null;
-    }
+    // On sait que la méthode existe => pas besoin de method_exists()
+    $value = $this->memberAvatar->getAvatarUrl();
 
     if (!$value) {
       return null;
     }
 
+    // Normalisation du chemin
     $value = trim(str_replace('\\', '/', $value));
     $value = preg_replace('#^/?public/#i', '', $value);
     $value = ltrim($value, '/');
@@ -288,6 +283,7 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
 
     return $value;
   }
+
 
   /**
    * Affichage du pseudo 

@@ -28,12 +28,12 @@ class ContactController extends AbstractController
       $subject = $request->request->get('subject');
       $message = $request->request->get('message');
 
-      // Connexion MongoDB
-      // L'URL est dans .env (MONGODB_URL)
+      // MongoDB
       $client = new Client($_ENV['MONGODB_URL']);
 
       // Sélection de la BD et collection
-      $collection = $client->esportify_messaging->contact_messages;
+      $db = $client->selectDatabase('esportify_messaging');
+      $collection = $db->selectCollection('contact_messages');
 
       // Insertion du message
       $collection->insertOne([

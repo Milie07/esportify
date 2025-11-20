@@ -15,7 +15,7 @@ class SpaceController extends AbstractController
     $this->denyAccessUnlessGranted('ROLE_PLAYER');
     /** @var \App\Entity\Member $user */
     $user = $this->getUser();
-    $avatarPath = $user?->getAvatarPath() ?: 'uploads/avatars/default-avatar.jpg';
+    $avatarPath = $user->getAvatarPath() ?: 'uploads/avatars/default-avatar.jpg';
 
     return $this->render('spaces/player.html.twig', [
       'user' => $user,
@@ -46,16 +46,21 @@ class SpaceController extends AbstractController
 
     // Connexion MongoDB
     $client = new Client($_ENV['MONGODB_URL']);
+    $db = $client->selectDatabase('esportify_messaging');
 
-    $messages = $client->esportify_messaging->contact_messages->find(
+    // Messages de contact
+    $contactCollection = $db->selectCollection('contact_messages');
+    $messages = $contactCollection->find(
       [],
       ['sort' => ['createdAt' => -1]]
     );
 
-    $requests = $client->esportify_messaging->tournament_requests->find(
-      [], 
-      ['sort' => ['createdAt' => -1]]);
-
+    // Demandes de tournois
+    $requestsCollection = $db->selectCollection('tournament_requests');
+    $requests = $requestsCollection->find(
+      [],
+      ['sort' => ['createdAt' => -1]]
+    );
 
     return $this->render('spaces/admin.html.twig', [
       'messages' => $messages,

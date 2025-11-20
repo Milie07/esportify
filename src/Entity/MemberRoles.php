@@ -102,15 +102,10 @@ class MemberRoles
 
   public function getSymfonyRole(): string
   {
-    if ($this->memberRoleLabel instanceof MemberRoleLabel) {
-      if (method_exists($this->memberRoleLabel, 'symfonyRole')) {
-        return $this->memberRoleLabel->symfonyRole();
-      }
-      if (method_exists($this->memberRoleLabel, 'value')) {
-        return 'ROLE_' . strtoupper(preg_replace('/[^A-Z0-9]+/i', '_', $this->memberRoleLabel->value));
-      }
-      return 'ROLE_' . strtoupper(preg_replace('/[^A-Z0-9]+/i', '_', (string) $this->memberRoleLabel));
+    if (!$this->memberRoleLabel instanceof MemberRoleLabel) {
+        return 'ROLE_USER';
     }
-    return 'ROLE_USER';
+
+    return $this->memberRoleLabel->symfonyRole();
   }
 }

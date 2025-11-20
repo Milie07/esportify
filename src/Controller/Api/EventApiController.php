@@ -11,8 +11,8 @@ class EventApiController extends AbstractController
     #[Route('/events', name: 'events')]
     public function index(TournamentRepository $tournamentRepository): Response
     {
-        $events = $tournamentRepository->findValidated(); 
-
+        $events = $tournamentRepository->findValidatedOrRunning();
+        
         return $this->render('events/index.html.twig', ['events' => $events,]);
     }    
 }

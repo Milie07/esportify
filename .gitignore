@@ -34,3 +34,6 @@ config/jwt/*.pem
 *.iml
 .DS_Store
 Thumbs.db
+###> phpstan/phpstan ###
+phpstan.neon
+###< phpstan/phpstan ###

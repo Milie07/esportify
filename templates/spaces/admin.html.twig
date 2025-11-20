@@ -149,64 +149,67 @@
 		</section>
 
 		<!-- Section gestion évènements -->
-		<section class="container-lg my-3 my-lg-3 py-2 py-lg-3">
-			<div class="bg-clair2 rounded-2 justify-content-center p-3">
-				<section class="container-lg  my-3 my-lg-3 py-2 py-lg-3">
-					<div class="bg-clair2 rounded-2 justify-content-center p-3 mx-auto">
-						<h2 class="text-center text-lightBlue mb-3">Mes Evènements</h2>
-						<div class="row gap-1 mb-3">
-							<div class="col">
-								<div class="card align-items-center mx-auto shadow-lg">
-									<img src={{ asset('build/images/jpg/noobGames1-freepik-ia_resultat.jpg') }} class="card-img-top" alt="...">
-									<div class="card-body">
-										<h3 class="card-title text-lightBlue">Titre de l'event</h3>
-										<a class="btn btn-beige rounded-pill text-lightBlue" href="#">
-											<i class="fa-solid fa-people-group fa-2xl"></i>
-										</a>
-										<a class="btn btn-beige rounded-pill text-lightBlue" href="#">
-											<i class="fa-solid fa-file-pen fa-xl"></i>
-										</a>
-										<a class="btn btn-greenFluo rounded-pill text-lightBlue" href="#">
-											<i class="fa-solid fa-play fa-xl"></i>
-										</a>
-									</div>
+		<section class="container-lg  my-3 my-lg-3 py-2 py-lg-3">
+			<div class="bg-clair2 rounded-2 justify-content-center p-3 mx-auto">
+				<h2 class="text-center text-lightBlue mb-3">Mes Evènements</h2>
+				<div class="row g-4">
+					{% for tournament in tournaments %}
+						<div class="col-12 col-md-6 col-lg-4">
+							<div class="card align-items-center mx-auto shadow-lg">
+								<div class="ratio ratio-4x3 overflow-hidden">
+									<img class="card-img-top object-fit-cover" src="{{ asset(tournament.getImagePath()) }}" alt="Image de {{ tournament.title }}">
 								</div>
-							</div>
-							<div class="col">
-								<div class="card align-items-center mx-auto shadow-lg">
-									<img src={{ asset('build/images/jpg/noobGames1-freepik-ia_resultat.jpg') }} class="card-img-top" alt="...">
-									<div class="card-body">
-										<h3 class="card-title text-lightBlue">Titre de l'event</h3>
+								<div class="card-body">
+									<h3 class="card-title text-center text-lightBlue">{{ tournament.title }}</h3>
+									<p class="text-description text-center text-darkBlue p-0 m-0">Démarre le
+										<span>{{ tournament.startAt|date('d/m/Y H:i', 'Europe/Paris') }}</span>
+									</p>
+									<p class="text-description text-center text-darkBlue p-0 mb-3">Se termine le
+										<span>{{ tournament.endAt|date('d/m/Y H:i', 'Europe/Paris') }}</span>
+									</p>
+
+									{# BADGE DE STATUT #}
+									<span class="badge rounded-pill d-block mx-auto w-50 p-2 mb-3
+																																{% if tournament.currentStatus.value == 'En Attente' %} bg-warning text-dark
+																																{% elseif tournament.currentStatus.value == 'Validé' %} bg-success
+																																{% elseif tournament.currentStatus.value == 'En Cours' %} bg-primary
+																																{% elseif tournament.currentStatus.value == 'Terminé' %} bg-secondary
+																																{% elseif tournament.currentStatus.value == 'Refusé' %} bg-danger
+																																{% endif %}">
+										{{ tournament.currentStatus.value }}
+									</span>
+
+									<div class="d-flex justify-content-between ">
 										<a class="btn btn-beige rounded-pill text-lightBlue" href="#">
-											<i class="fa-solid fa-people-group fa-2xl"></i>
+											<span class="d-inline-block" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-trigger="hover" data-bs-content="Liste des Inscrits">
+												<i class="fa-solid fa-people-group fa-2xl"></i>
+											</span>
 										</a>
 										<a class="btn btn-beige rounded-pill text-lightBlue" href="#">
-											<i class="fa-solid fa-file-pen fa-xl"></i>
+											<span class="d-inline-block" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-trigger="hover" data-bs-content="Modifier l'event">
+												<i class="fa-solid fa-file-pen fa-xl"></i>
+											</span>
 										</a>
-										<a class="btn btn-greenFluo rounded-pill text-lightBlue" href="#">
-											<i class="fa-solid fa-play fa-xl"></i>
-										</a>
+										{# Bouton démarrer : affiché seulement si tournoi validé et dans les 30 min avant #}
+										{% set now = "now"|date("U") %}
+										{% set start = tournament.startAt|date("U") %}
+										{% set diff = start - now %}
+										{% if tournament.currentStatus.value == 'Validé' and diff <= 1800 and diff >= 0 %}
+											<a class="btn btn-greenFluo rounded-pill text-lightBlue" href="#">
+												<span class="d-inline-block" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-trigger="hover" data-bs-content="Démarrer l'event">
+													<i class="fa-solid fa-play fa-xl"></i>
+												</span>
+											</a>
+										{% endif %}
 									</div>
-								</div>
-							</div>
-							<div class="col">
-								<div class="card align-items-center mx-auto shadow-lg">
-									<img src={{ asset('build/images/jpg/noobGames1-freepik-ia_resultat.jpg') }} class="card-img-top" alt="...">
-									<div class="card-body">
-										<h3 class="card-title text-lightBlue">Titre de l'event</h3>
-										<a class="btn btn-beige rounded-pill text-lightBlue" href="#">
-											<i class="fa-solid fa-people-group fa-2xl"></i>
-										</a>
-										<a class="btn btn-beige rounded-pill text-lightBlue" href="#">
-											<i class="fa-solid fa-file-pen fa-xl"></i>
-										</a>
-										<a class="btn btn-greenFluo rounded-pill text-lightBlue" href="#">
-											<i class="fa-solid fa-play fa-xl"></i>
-										</a>
-									</div>
+
 								</div>
 							</div>
 						</div>
+					{% else %}
+						<p class="text-center text-lightBlue">Aucun évènement créé pour le moment.</p>
+					{% endfor %}
+				</div>
 						<h2 class="text-center">Créer mon évenement 🎉</h2>
 						<!-- Formulaire d'Inscription -->
 						<form action="#" method="POST" class="form_contact bg-beige rounded-2 border border-lightBlue text_description text-lightBlue px-5 pt-4 pb-2" id="searchForm">

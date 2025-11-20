@@ -20,16 +20,25 @@ class TournamentStatusService
 
     foreach ($tournaments as $t) {
 
+      // Récupération des dates
+      /** @var \DateTimeImmutable|null $start */
+      /** @var \DateTimeImmutable|null $end */
       $start = $t->getStartAt();
       $end   = $t->getEndAt();
 
-      if (!$start || !$end) continue;
+      // Si une date est absente : ne rien faire
+      if ($start === null || $end === null) {
+        continue;
+      }
 
-      // Convertir en immutable TZ Paris
-      $start = ($start instanceof \DateTimeImmutable) ? $start : \DateTimeImmutable::createFromMutable($start);
-      $end   = ($end instanceof \DateTimeImmutable) ? $end : \DateTimeImmutable::createFromMutable($end);
+      if (!$start instanceof \DateTimeImmutable) {
+        $start = \DateTimeImmutable::createFromMutable($start);
+      }
+      if (!$end instanceof \DateTimeImmutable) {
+        $end = \DateTimeImmutable::createFromMutable($end);
+      }
 
-      // Statut Terminé 
+      // --- TERMINÉ ---
       if ($end < $now) {
         if ($t->getCurrentStatus() !== CurrentStatus::TERMINE) {
           $t->setCurrentStatus(CurrentStatus::TERMINE);
@@ -37,21 +46,20 @@ class TournamentStatusService
         continue;
       }
 
-      // Statut En cours
-      if ($start <= $now && $end >= $now) {
+      // --- EN COURS ---
+      if ($start <= $now && $now < $end) {
         if ($t->getCurrentStatus() !== CurrentStatus::EN_COURS) {
           $t->setCurrentStatus(CurrentStatus::EN_COURS);
         }
         continue;
       }
 
-      // Statut Validé
+      // --- VALIDÉ (évènement futur déjà validé) ---
       if ($start > $now && $t->getCurrentStatus() === CurrentStatus::VALIDE) {
-        // rien à changer
         continue;
       }
 
-      // Si en attente ou refusé → NE PAS toucher
+      // Sinon, EN_ATTENTE ou REFUSE -> on ne touche pas
     }
 
     $this->em->flush();
