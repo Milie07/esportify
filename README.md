@@ -50,9 +50,10 @@
     `cd esportify`
     * Les fichiers envoyés dans `public/uploads` ne sont pas versionnésdans Git. Pour le rendu, un dossier complet `uploads/` est fourni àpart dans le projet. Ainsi il faut décompresser le fichier `uploadszip` situé à la racine du projet dans le dossier `docs/` nommé`uploads` puis le glisser dans le dossier `public/`
   - Lancement de l'application
-    `docker compose build`
-    `docker compose up -d`
+    - `docker compose build`
+    - `docker compose up -d`
     ou `docker-compose up --build`
+    - `docker exec -it esportify_web php bin/console doctrine:fixtures:load` à lancer pour regénérer les données en base dans un environnement local.
   - Accès
     * Accès à l'application Symfony -> conteneur esportify_web (http:/localhost:8080)
     * Accès à la base de donnée phpmyadmin -> conteneuresportify_phpmyadmin (http://localhost:8081)
@@ -74,7 +75,8 @@
   `php bin/console doctrine:database:create --if-not-exists`
   `php bin/console doctrine:migrations:migrate --no-interaction`
   - Les données de démonstration proviennent de : 
-  `src/DataFixtures/AppFixtures.php` et sont chargées en BDD
+  `src/DataFixtures/AppFixtures.php` et sont chargées en BDD 
+  `docker exec -it esportify_web php bin/console doctrine:fixtures:load` à lancer pour regénérer les données en base dans un environnement local.
 7. **Base de Données NoSQL (Mode conteneurisé)** 
   - L'application intègre une base NoSQL MongoDB dédiée à la messagerie et aux intéractions utilisateurs:
   - L'objectif est d'isoler toutes les données liées :
@@ -101,6 +103,7 @@
     `docker compose up --build`
     `npm install`
     `npm run dev`
+    `docker exec -it esportify_web php bin/console doctrine:fixtures:load` à lancer pour regénérer les données en base dans un environnement local.
 9.  **Sécurité**
   - Formulaires : Validation serveur via contraintes Symfony Validator,CSRF activé sur les formulaires, auto‑escape Twig
   - Mots de passe : Encodage via Password Hasher (jamais en clair)
