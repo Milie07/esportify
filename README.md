@@ -54,6 +54,7 @@
     - `docker compose up -d`
     ou `docker-compose up --build`
     - `docker exec -it esportify_web php bin/console doctrine:fixtures:load` à lancer pour regénérer les données en base dans un environnement local.
+    - Les images de tests sont dans un dossier nommé `uploads.zip` situé dans le dossier `docs/upload/` à décompresser et à charger en local dans le dossier `public`pour les initialiser via la BDD.
   - Accès
     * Accès à l'application Symfony -> conteneur esportify_web (http:/localhost:8080)
     * Accès à la base de donnée phpmyadmin -> conteneuresportify_phpmyadmin (http://localhost:8081)
