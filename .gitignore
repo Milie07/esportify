@@ -1,8 +1,8 @@
-
 # Environnement & secrets
 .env.local
 .env.*.local
 .env.local.php
+.env.test
 phpunit.xml
 
 # Clés & certificats
@@ -37,3 +37,10 @@ Thumbs.db
 ###> phpstan/phpstan ###
 phpstan.neon
 ###< phpstan/phpstan ###
+.env.local
+.env.test 
+
+#Docs divers
+CONFIGURATION.md 
+SCHEMA_ENV_FILES.md
+INSTALLATION_JURY.md

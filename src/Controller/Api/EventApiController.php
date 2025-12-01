@@ -8,11 +8,27 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class EventApiController extends AbstractController
 {
-    #[Route('/events', name: 'events')]
+    #[Route('/api/events', name: 'api_events', methods: ['GET'])]
     public function index(TournamentRepository $tournamentRepository): Response
     {
-        $events = $tournamentRepository->findValidatedOrRunning();
-        
-        return $this->render('events/index.html.twig', ['events' => $events,]);
+        $events = $tournamentRepository->findAll();
+
+        $eventsData = [];
+        foreach ($events as $event) {
+            $eventsData[] = [
+                'id' => $event->getId(),
+                'title' => $event->getTitle(),
+                'tagline' => $event->getTagline(),
+                'description' => $event->getDescription(),
+                'startsAt' => $event->getStartAt()?->format(\DateTime::ATOM),
+                'endsAt' => $event->getEndAt()?->format(\DateTime::ATOM),
+                'capacityGauge' => $event->getCapacityGauge(),
+                'organizerPseudo' => $event->getOrganizer()?->getPseudo(),
+                'status' => $event->getCurrentStatus()->label(),
+                'imagePath' => $event->getImagePath() ?: 'build/images/jpg/default-event.jpg',
+            ];
+        }
+
+        return $this->json($eventsData);
     }    
 }

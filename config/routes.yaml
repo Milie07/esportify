@@ -98,3 +98,9 @@ privacy:
   path: /confidentialite
   controller: App\Controller\LegalController::privacy
   methods: [GET]
+
+# Events valide JSON
+api_events:
+  path: api/events
+  controller: App\Controller\Api\EventApiController::index
+  methods: [GET]
