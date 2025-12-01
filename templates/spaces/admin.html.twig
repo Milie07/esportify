@@ -121,7 +121,8 @@
 
 									<!-- Valider -->
 									<form action="{{ path('admin_tournament_validate', { id: t['tournamentId'] }) }}" method="POST" onsubmit="return confirm('Valider ce tournoi ?');">
-										<button type="submit" class="btn btn-success btn-sm">
+										<input type="hidden" name="_token" value="{{ csrf_token('validate_tournament') }}">
+                    <button type="submit" class="btn btn-success btn-sm">
 											Valider
 										</button>
 									</form>

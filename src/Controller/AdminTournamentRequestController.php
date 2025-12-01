@@ -6,122 +6,136 @@ use App\Entity\Tournament;
 use App\Enum\CurrentStatus;
 use Doctrine\ORM\EntityManagerInterface;
 use MongoDB\Client;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\{Request, Response};
 
 final class AdminTournamentRequestController extends AbstractController
 {
-    /**
-     * Retourne une collection MongoDB proprement
-     */
-    private function getMongoCollection(string $collection)
-    {
-        $client = new Client($_ENV['MONGODB_URL']);
-        $db = $client->selectDatabase('esportify_messaging');
-        return $db->selectCollection($collection);
+  /**
+   * Retourne une collection MongoDB proprement
+   */
+  private function getMongoCollection(string $collection)
+  {
+    $client = new Client($_ENV['MONGODB_URL']);
+    $db = $client->selectDatabase('esportify_messaging');
+    return $db->selectCollection($collection);
+  }
+
+
+  public function index(Request $request): Response
+  {
+    $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+    // Messages Contact
+    $contactCollection = $this->getMongoCollection('contact_messages');
+    $messages = $contactCollection->find([], [
+      'sort' => ['createdAt' => -1]
+    ]);
+
+    // Demandes Tournois
+    $requestsCollection = $this->getMongoCollection('tournament_requests');
+    $requests = $requestsCollection->find(
+      ['status' => 'new'],
+      ['sort' => ['createdAt' => -1]]
+    );
+
+    return $this->render('spaces/admin.html.twig', [
+      'messages' => $messages,
+      'requests' => $requests,
+    ]);
+  }
+
+  public function show(int $id, EntityManagerInterface $em): Response
+  {
+    $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+    // Récup tournoi SQL
+    $tournament = $em->getRepository(Tournament::class)->find($id);
+
+    if (!$tournament) {
+      throw $this->createNotFoundException("Tournoi introuvable.");
     }
 
-    public function index(Request $request): Response
-    {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+    // Messages
+    $contactCollection = $this->getMongoCollection('contact_messages');
+    $messages = $contactCollection->find([], [
+      'sort' => ['createdAt' => -1]
+    ]);
 
-        // Messages Contact
-        $contactCollection = $this->getMongoCollection('contact_messages');
-        $messages = $contactCollection->find([], [
-            'sort' => ['createdAt' => -1]
-        ]);
+    // Demandes
+    $requestsCollection = $this->getMongoCollection('tournament_requests');
+    $requests = $requestsCollection->find(
+      ['status' => 'new'],
+      ['sort' => ['createdAt' => -1]]
+    );
 
-        // Demandes Tournois
-        $requestsCollection = $this->getMongoCollection('tournament_requests');
-        $requests = $requestsCollection->find(
-            ['status' => 'new'],
-            ['sort' => ['createdAt' => -1]]
-        );
+    return $this->render('spaces/admin.html.twig', [
+      'messages'   => $messages,
+      'requests'   => $requests,
+      'tournament' => $tournament
+    ]);
+  }
 
-        return $this->render('spaces/admin.html.twig', [
-            'messages' => $messages,
-            'requests' => $requests,
-        ]);
+  public function __construct(
+    private CsrfTokenManagerInterface $csrfTokenManager
+  ) {}
+
+  public function validate(int $id, Request $request, EntityManagerInterface $em): Response
+  {
+    // Vérification du token CSRF
+    $submittedToken = $request->request->get('_token');
+    $token = new CsrfToken('validate-tournament', $submittedToken);
+
+    if (!$this->csrfTokenManager->isTokenValid($token)) {
+      throw $this->createAccessDeniedException('Token CSRF invalide');
+    }
+    $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+    // SQL
+    $tournament = $em->getRepository(Tournament::class)->find($id);
+    if (!$tournament) {
+      throw $this->createNotFoundException("Tournoi introuvable.");
     }
 
-    public function show(int $id, EntityManagerInterface $em): Response
-    {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+    $tournament->setCurrentStatus(CurrentStatus::VALIDE);
+    $em->flush();
 
-        // Récup tournoi SQL
-        $tournament = $em->getRepository(Tournament::class)->find($id);
+    // MongoDB
+    $requestsCollection = $this->getMongoCollection('tournament_requests');
 
-        if (!$tournament) {
-            throw $this->createNotFoundException("Tournoi introuvable.");
-        }
+    $requestsCollection->updateOne(
+      ['tournamentId' => $id],
+      ['$set' => ['status' => 'validated']]
+    );
 
-        // Messages
-        $contactCollection = $this->getMongoCollection('contact_messages');
-        $messages = $contactCollection->find([], [
-            'sort' => ['createdAt' => -1]
-        ]);
+    $this->addFlash('success', 'Tournoi validé !');
+    return $this->redirectToRoute('admin_dashboard');
+  }
 
-        // Demandes
-        $requestsCollection = $this->getMongoCollection('tournament_requests');
-        $requests = $requestsCollection->find(
-            ['status' => 'new'],
-            ['sort' => ['createdAt' => -1]]
-        );
+  public function refuse(int $id, EntityManagerInterface $em): Response
+  {
+    $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        return $this->render('spaces/admin.html.twig', [
-            'messages'   => $messages,
-            'requests'   => $requests,
-            'tournament' => $tournament
-        ]);
+    // SQL
+    $tournament = $em->getRepository(Tournament::class)->find($id);
+    if (!$tournament) {
+      throw $this->createNotFoundException("Tournoi introuvable.");
     }
 
-    public function validate(int $id, EntityManagerInterface $em): Response
-    {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+    $tournament->setCurrentStatus(CurrentStatus::REFUSE);
+    $em->flush();
 
-        // SQL
-        $tournament = $em->getRepository(Tournament::class)->find($id);
-        if (!$tournament) {
-            throw $this->createNotFoundException("Tournoi introuvable.");
-        }
+    // MongoDB
+    $requestsCollection = $this->getMongoCollection('tournament_requests');
 
-        $tournament->setCurrentStatus(CurrentStatus::VALIDE);
-        $em->flush();
+    $requestsCollection->updateOne(
+      ['tournamentId' => $id],
+      ['$set' => ['status' => 'refused']]
+    );
 
-        // MongoDB
-        $requestsCollection = $this->getMongoCollection('tournament_requests');
-
-        $requestsCollection->updateOne(
-            ['tournamentId' => $id],
-            ['$set' => ['status' => 'validated']]
-        );
-
-        $this->addFlash('success', 'Tournoi validé !');
-        return $this->redirectToRoute('admin_dashboard');
-    }
-
-    public function refuse(int $id, EntityManagerInterface $em): Response
-    {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
-
-        // SQL
-        $tournament = $em->getRepository(Tournament::class)->find($id);
-        if (!$tournament) {
-            throw $this->createNotFoundException("Tournoi introuvable.");
-        }
-
-        $tournament->setCurrentStatus(CurrentStatus::REFUSE);
-        $em->flush();
-
-        // MongoDB
-        $requestsCollection = $this->getMongoCollection('tournament_requests');
-
-        $requestsCollection->updateOne(
-            ['tournamentId' => $id],
-            ['$set' => ['status' => 'refused']]
-        );
-
-        $this->addFlash('danger', 'Tournoi refusé.');
-        return $this->redirectToRoute('admin_dashboard');
-    }
+    $this->addFlash('danger', 'Tournoi refusé.');
+    return $this->redirectToRoute('admin_dashboard');
+  }
 }
