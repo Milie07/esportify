@@ -148,12 +148,14 @@
 											Voir
 										</a>
 
-										<form action="{{ path('admin_tournament_validate', { id: t['tournamentId'] }) }}" method="POST">
-											<button class="btn btn-success btn-sm">Valider</button>
+										<form action="{{ path('admin_tournament_validate', { id: t['tournamentId'] }) }}" method="POST" onsubmit="return confirm('Valider ce tournoi ?');">
+											<input type="hidden" name="_token" value="{{ csrf_token('validate-tournament') }}">
+											<button type="submit" class="btn btn-success btn-sm">Valider</button>
 										</form>
 
-										<form action="{{ path('admin_tournament_refuse', { id: t['tournamentId'] }) }}" method="POST">
-											<button class="btn btn-danger btn-sm">Refuser</button>
+										<form action="{{ path('admin_tournament_refuse', { id: t['tournamentId'] }) }}" method="POST" onsubmit="return confirm('Refuser ce tournoi ?');">
+											<input type="hidden" name="_token" value="{{ csrf_token('refuse-tournament') }}">
+											<button type="submit" class="btn btn-danger btn-sm">Refuser</button>
 										</form>
 
 									</td>
