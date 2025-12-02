@@ -7,6 +7,8 @@ use App\Service\TournamentService;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\{Request, Response};
+use Symfony\Component\Security\Csrf\CsrfToken;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 final class CreateEventController extends AbstractController
 {
@@ -15,7 +17,7 @@ final class CreateEventController extends AbstractController
     ) {
     }
 
-    public function create(Request $request, InputSanitizer $san): Response
+    public function create(Request $request, InputSanitizer $san, CsrfTokenManagerInterface $csrf): Response
     {
         if (!$this->isGranted('ROLE_ORGANIZER') && !$this->isGranted('ROLE_ADMIN')) {
             throw $this->createAccessDeniedException();
@@ -32,6 +34,15 @@ final class CreateEventController extends AbstractController
         }
 
         if ($request->isMethod('POST')) {
+            // Validation CSRF
+            $token = new CsrfToken('create_tournament', $request->request->get('_csrf_token'));
+            if (!$csrf->isTokenValid($token)) {
+                $this->addFlash('error', 'Token CSRF invalide. Veuillez réessayer.');
+                return $this->isGranted('ROLE_ADMIN')
+                    ? $this->redirectToRoute('admin_dashboard')
+                    : $this->redirectToRoute('organizer_space');
+            }
+
             $title = $san->sanitize($request->request->get('title'));
             $description = $san->sanitize($request->request->get('description'));
             $tagline = $san->sanitize($request->request->get('tagline'));

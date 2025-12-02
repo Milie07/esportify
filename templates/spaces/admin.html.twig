@@ -346,8 +346,7 @@
 
 				<!-- Formulaire de Création d'event -->
 				<form action="{{ path('event_create') }}" method="POST" class="form_contact bg-beige rounded-2 border border-lightBlue text_description text-lightBlue px-5 pt-4 pb-2" id="searchForm" enctype="multipart/form-data">
-					<input
-					type="hidden" name="_csrf_token" value="{{ csrf_token('event_create') }}">
+					<input type="hidden" name="_csrf_token" value="{{ csrf_token('create_tournament') }}">
 					<!-- Informations -->
 					<div class="mx-auto">
 						<label class="" for="title">Titre de l'évènement :</label>
