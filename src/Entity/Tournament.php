@@ -14,13 +14,13 @@ class Tournament
 {
   #[ORM\Id]
   #[ORM\GeneratedValue]
-  #[ORM\Column(name: "tournament_id", type: TYPES::INTEGER, options: ['unsigned' => true])]
+  #[ORM\Column(name: "tournament_id", type: Types::INTEGER, options: ['unsigned' => true])]
   private ?int $id = null;
 
-  #[ORM\Column(name: "title", type: TYPES::STRING, length: 250)]
+  #[ORM\Column(name: "title", type: Types::STRING, length: 250)]
   private ?string $title = null;
 
-  #[ORM\Column(name: "description", type: TYPES::TEXT)]
+  #[ORM\Column(name: "description", type: Types::TEXT)]
   private ?string $description = null;
 
   #[ORM\Column(name: "start_at", type: Types::DATETIME_IMMUTABLE)]
@@ -29,10 +29,10 @@ class Tournament
   #[ORM\Column(name: "end_at", type: Types::DATETIME_IMMUTABLE)]
   private ?\DateTimeImmutable $endAt = null;
 
-  #[ORM\Column(name: "capacity_gauge", type: TYPES::INTEGER, options: ["default" => 0])]
+  #[ORM\Column(name: "capacity_gauge", type: Types::INTEGER, options: ["default" => 0])]
   private ?int $capacityGauge = 0;
 
-  #[ORM\Column(name: "tagline", type: TYPES::STRING, length: 255, nullable: true)]
+  #[ORM\Column(name: "tagline", type: Types::STRING, length: 255, nullable: true)]
   private ?string $tagline = null;
 
   #[ORM\Column(name: "created_at", type: Types::DATETIME_IMMUTABLE)]
