@@ -107,11 +107,16 @@
     `docker exec -it esportify_web php bin/console doctrine:fixtures:load` à lancer pour regénérer les données en base dans un environnement local.
 9.  **Sécurité**
   - Formulaires : Validation serveur via contraintes Symfony Validator,CSRF activé sur les formulaires, auto‑escape Twig
-  - Mots de passe : Encodage via Password Hasher (jamais en clair)
+  - Mots de passe : Encodage via Password Hasher (jamais en clair), validation stricte (8+ caractères, majuscule, minuscule, chiffre)
+  - Injections SQL : Protection via Doctrine ORM avec requêtes paramétrées (QueryBuilder + setParameter)
   - Sanitization front : Fonctions JS de nettoyage (prévention XSS debase) en complément
-  - Accès : Access_control par rôle ; redirections post‑login selonrôle ; contrôles is_granted() dans les templates
-  - Sessions : Durée d’inactivité configurable (auto‑déconnexion à formaliser dans la config — voir feuille de route)
-  - Logs & erreurs : Environnement prod sans debug ; dev avec debug
+  - XSS : Service InputSanitizer dédié (strip_tags, validation email, etc.) + auto-escape Twig
+  - Upload de fichiers : Validation stricte via FileUploadService (whitelist MIME, taille max 5MB, suppression métadonnées EXIF, noms aléatoires sécurisés)
+  - Accès : Access_control par rôle (RBAC), hiérarchie ADMIN > ORGANIZER > PLAYER, contrôles is_granted() et denyAccessUnlessGranted()
+  - Sessions : Timeout 30min, cookie SameSite:lax (protection CSRF), remember_me 7 jours max
+  - Logs & erreurs : Monolog configuré, environnement prod sans debug
+  - Rate-limiter : Protection anti-brute-force sur connexion (5 tentatives/15min par IP via symfony/rate-limiter, politique sliding window)
+  - À améliorer : En-têtes HTTP de sécurité (CSP, HSTS, X-Frame-Options), logging d'audit, reset password
 10. **Déploiement**
   - Hébergement prévu sur Heroku 
 11. **Conteneurisation** 
@@ -141,7 +146,7 @@
     * Configuration utilisée :
     `volumes:`
     `.:/var/www/html # bind-mount du code`
-    `/var/www/html/vendor # volume anonyme isolant vendor/`
+    `/var/www/html/vendor # volume anonyme qui isole vendor/`
     - Avantages et Inconvénients :
       - Avantages
         * Modifications instantanées du code Symfony
