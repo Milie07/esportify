@@ -22,10 +22,10 @@ class MemberModerateRoles
   private ?MemberRoles $memberRole = null;
 
   // ENUM('Actif', 'Banni', 'Non-Actif')
-  #[ORM\Column(name: "member_label_status", enumType: MemberLabelStatus::class, type: TYPES::STRING, length: 20, options: ['default' => 'Actif'])]
+  #[ORM\Column(name: "member_label_status", enumType: MemberLabelStatus::class, type: Types::STRING, length: 20, options: ['default' => 'Actif'])]
   private string $memberLabelStatus = 'Actif';
 
-  #[ORM\Column(name: "assigned_at", type: TYPES::DATETIME_IMMUTABLE, nullable: true)]
+  #[ORM\Column(name: "assigned_at", type: Types::DATETIME_IMMUTABLE, nullable: true)]
   private ?\DateTimeImmutable $assignedAt = null;
 
 

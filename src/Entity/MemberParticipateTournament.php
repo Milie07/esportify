@@ -19,7 +19,7 @@ class MemberParticipateTournament
   #[ORM\JoinColumn(name: "tournament_id", referencedColumnName: "tournament_id", onDelete: "CASCADE")]
   private ?Tournament $tournament = null;
 
-  #[ORM\Column(name: "tournament_score", type: TYPES::INTEGER, options: ['default' => 0])]
+  #[ORM\Column(name: "tournament_score", type: Types::INTEGER, options: ['default' => 0])]
   private ?int $tournamentScore = null;
 
   public function getMember(): ?Member

@@ -11,10 +11,10 @@ class TournamentImages
 {
   #[ORM\Id]
   #[ORM\GeneratedValue]
-  #[ORM\Column(name: "tournament_image_id", type: TYPES::INTEGER, options: ['unsigned' => true])]
+  #[ORM\Column(name: "tournament_image_id", type: Types::INTEGER, options: ['unsigned' => true])]
   private ?int $id = null;
 
-  #[ORM\Column(name: "image_url", type: TYPES::STRING, length: 255, nullable: false)]
+  #[ORM\Column(name: "image_url", type: Types::STRING, length: 255, nullable: false)]
   private ?string $imageUrl = null;
 
   #[ORM\Column(name: "code", type: Types::INTEGER, unique: true)]
