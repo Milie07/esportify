@@ -5,6 +5,3 @@
     RewriteRule ^(.*)$ index.php [QSA,L]
 </IfModule>
 
-<FilesMatch "\.php$">
-    Deny from all
-</FilesMatch>
