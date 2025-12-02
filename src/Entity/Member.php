@@ -9,8 +9,12 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: MemberRepository::class)]
+#[UniqueEntity(fields: ['pseudo'], message: 'Ce pseudo est déjà utilisé.')]
+#[UniqueEntity(fields: ['email'], message: 'Cet email est déjà utilisé.')]
 #[ORM\Table(name: 'member')]
 #[ORM\UniqueConstraint(name: "uq_member_pseudo", columns: ["pseudo"])]
 #[ORM\UniqueConstraint(name: "uq_member_email", columns: ["email"])]
@@ -21,23 +25,58 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
   #[ORM\GeneratedValue]
   #[ORM\Column(name: 'member_id', type: Types::INTEGER, options: ['unsigned' => true])]
   private ?int $id = null;
-
+  
   #[ORM\Column(name: 'first_name', type: Types::STRING, length: 100)]
+  #[Assert\NotBlank(message: "Le nom est obligatoire.")]
+  #[Assert\Length(
+    min: 2,
+    max: 100,
+    message: "Le nom doit contenir entre {{ min }} et {{ max }} caractères."
+  )]
+  #[Assert\Regex(
+    pattern: '/^[a-zA-ZÀ-ÿ\-]+$/u',
+    message: "Le nom ne peut contenir que des lettres, les accents et les tirets."
+  )]
   private ?string $firstName = null;
 
   #[ORM\Column(name: 'last_name', type: Types::STRING, length: 100)]
+  #[Assert\NotBlank(message: "Le prénom est obligatoire.")]
+  #[Assert\Length(
+    min: 2,
+    max: 100,
+    message: "Le prénom doit contenir entre {{ min }} et {{ max }} caractères."
+  )]
+  #[Assert\Regex(
+    pattern: '/^[a-zA-ZÀ-ÿ\-]+$/u',
+    message: "Le prénom ne peut contenir que des lettres, les accents et les tirets."
+  )]
   private ?string $lastName = null;
 
   #[ORM\Column(name: 'pseudo', type: Types::STRING, length: 100, unique: true)]
+  #[Assert\NotBlank(message: "Le pseudo est obligatoire.")]
+  #[Assert\Length(
+    min: 3,
+    max: 20,
+    message: "Le pseudo doit contenir entre {{ min }} et {{ max }} caractères."
+  )]
+  #[Assert\Regex(
+    pattern: '/^[a-zA-Z0-9_-]+$/',
+    message: "Le pseudo ne peut contenir que des lettres, chiffres, underscores et tirets."
+  )]
   private ?string $pseudo = null;
 
   #[ORM\Column(name: 'email', type: Types::STRING, length: 100, unique: true)]
+  #[Assert\NotBlank(message: "L'email est obligatoire.")]
+  #[Assert\Email(message: "L'email '{{ value }}' n'est pas valide.")]
   private ?string $email = null;
 
   #[ORM\Column(name: 'password_hash', type: Types::STRING, length: 255)]
+  #[Assert\NotBlank(groups: ['registration'], message: "Le mot de passe est obligatoire.")]
   private ?string $passwordHash = null;
 
   #[ORM\Column(name: 'member_score', type: Types::INTEGER, options: ['default' => 0])]
+  #[Assert\NotNull]
+  #[Assert\PositiveOrZero]
   private ?int $memberScore = 0;
 
   // RELATIONS 
@@ -47,6 +86,7 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
 
   #[ORM\ManyToOne(targetEntity: MemberRoles::class)]
   #[ORM\JoinColumn(name: "member_role_id", referencedColumnName: "member_role_id", nullable: false)]
+  #[Assert\NotNull(message: "Le rôle de l'utilisateur est obligatoire.")]
   private ?MemberRoles $memberRole = null;
 
   // MEMBER_MODERATE_ROLES à venir

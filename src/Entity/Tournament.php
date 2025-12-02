@@ -8,6 +8,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[ORM\Entity(repositoryClass: TournamentRepository::class)]
 class Tournament
@@ -18,28 +20,60 @@ class Tournament
   private ?int $id = null;
 
   #[ORM\Column(name: "title", type: Types::STRING, length: 250)]
+  #[Assert\NotBlank(message: "Le titre est obligatoire.")]
+  #[Assert\Length(
+    min: 2,
+    max: 120,
+    minMessage: "Le titre doit contenir au moins {{ limit }} caractères.",
+    maxMessage: "Le titre ne peut pas dépasser {{ limit }} caractères."
+  )]
   private ?string $title = null;
 
   #[ORM\Column(name: "description", type: Types::TEXT)]
+  #[Assert\NotBlank(message: "La description est obligatoire.")]
+  #[Assert\Length(
+    min: 10,
+    max: 500,
+    minMessage: "La description doit contenir au moins {{ limit }} caractères.",
+    maxMessage: "La description ne peut pas dépasser {{ limit }} caractères."
+  )]
   private ?string $description = null;
 
   #[ORM\Column(name: "start_at", type: Types::DATETIME_IMMUTABLE)]
+  #[Assert\NotNull(message: "La date de début est obligatoire.")]
+  #[Assert\GreaterThan(value: "now", message: "La date de début doit être une date ultérieure.")]
   private ?\DateTimeImmutable $startAt = null;
 
   #[ORM\Column(name: "end_at", type: Types::DATETIME_IMMUTABLE)]
+  #[Assert\NotNull(message: "La date de fin est obligatoire.")]
+  #[Assert\GreaterThan(propertyPath: "startAt", message: "La date de fin doit être une date ultérieure.")]
   private ?\DateTimeImmutable $endAt = null;
 
   #[ORM\Column(name: "capacity_gauge", type: Types::INTEGER, options: ["default" => 0])]
+  #[Assert\NotNull(message: "La nombre de joueur max est obligatoire.")]
+  #[Assert\Positive(message: "La nombre de joueur max doit être supérieur à 0.")]
+  #[Assert\Range(
+    min: 1,
+    max: 100,
+    notInRangeMessage: "La nombre de joueur max doit être entre {{ min }} et {{ max }}."
+  )]
   private ?int $capacityGauge = 0;
 
-  #[ORM\Column(name: "tagline", type: Types::STRING, length: 255, nullable: true)]
+  #[ORM\Column(name: "tagline", type: Types::STRING, length: 60)]
+  #[Assert\NotBlank(message: "La Tagline est obligatoire.")]
+  #[Assert\Length(
+    max: 60,
+    maxMessage: "La Tagline ne peut pas dépasser {{ limit }} caractères."
+  )]
   private ?string $tagline = null;
 
   #[ORM\Column(name: "created_at", type: Types::DATETIME_IMMUTABLE)]
+  #[Assert\NotNull(message: "La date de création est obligatoire.")]
   private ?\DateTimeImmutable $createdAt = null;
 
   // ENUM('En Attente', 'Validé', 'En Cours', 'Terminé', 'Refusé')
   #[ORM\Column(name: "current_status", type: Types::STRING, enumType: CurrentStatus::class, length: 20, options: ['default' => CurrentStatus::EN_ATTENTE->value])]
+  #[Assert\NotNull(message: "Le statut est obligatoire.")]
   private CurrentStatus $currentStatus = CurrentStatus::EN_ATTENTE;
 
   //RELATIONS    
@@ -49,6 +83,7 @@ class Tournament
 
   #[ORM\ManyToOne]
   #[ORM\JoinColumn(name: 'member_id', referencedColumnName: 'member_id', nullable: false, options: ['unsigned' => true])]
+  #[Assert\NotNull(message: "L'organisateur est obligatoire.")]
   private ?Member $organizer = null;
 
   // MEMBER_REGISTER_TOURNAMENT
@@ -226,5 +261,30 @@ class Tournament
   public function isValidated(): bool
   {
     return $this->currentStatus->isValide();
+  }
+
+  /**
+   * Validation personnalisée : vérifier que le tournoi a une durée raisonnable
+   */
+  #[Assert\Callback]
+  public function validate(ExecutionContextInterface $context): void
+  {
+    if ($this->startAt && $this->endAt) {
+      $duration = $this->startAt->diff($this->endAt);
+      
+      // Vérifier que le tournoi dure au moins 1 heure
+      if ($duration->h < 1 && $duration->days === 0) {
+        $context->buildViolation('Le tournoi doit durer au moins 1 heure.')
+          ->atPath('endAt')
+          ->addViolation();
+      }
+      
+      // Vérifier que le tournoi ne dure pas plus de 5 jours
+      if ($duration->days > 5) {
+        $context->buildViolation('Le tournoi ne peut pas durer plus de 5 jours.')
+          ->atPath('endAt')
+          ->addViolation();
+      }
+    }
   }
 }

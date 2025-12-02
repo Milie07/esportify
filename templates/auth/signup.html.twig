@@ -27,7 +27,7 @@
 					<input class="form-control input_filter" id="lastName" name="lastName" type="text" minlength="2" maxlength="100" placeholder="Votre prénom" required>
 				</div>
 				<div class="w-75 mx-auto py-1">
-					<input class="form-control input_filter" id="pseudo" name="pseudo" type="text" minlength="2" maxlength="100" placeholder="Votre pseudo" required>
+					<input class="form-control input_filter" id="pseudo" name="pseudo" type="text" minlength="3" maxlength="20" placeholder="Votre pseudo" required>
 					{% if errors.pseudo is defined %}
 						<div class="text-danger small mt-1">{{ errors.pseudo }}</div>
 					{% endif %}
