@@ -17,7 +17,6 @@ class TournamentService
         private EntityManagerInterface $entityManager
     ) {
     }
-
     /**
      * Récupère toutes les demandes de tournois par statut
      */

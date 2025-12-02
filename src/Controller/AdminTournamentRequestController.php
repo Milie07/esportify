@@ -6,13 +6,17 @@ use App\Entity\Tournament;
 use App\Enum\CurrentStatus;
 use App\Service\TournamentService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class AdminTournamentRequestController extends AbstractController
 {
     public function __construct(
-        private TournamentService $tournamentService
+        private TournamentService $tournamentService,
+        private CsrfTokenManagerInterface $csrfTokenManager
     ) {
     }
 
@@ -68,9 +72,16 @@ class AdminTournamentRequestController extends AbstractController
         ]);
     }
 
-
-    public function validate(int $id, EntityManagerInterface $em): Response
+    public function validate(int $id, Request $request, EntityManagerInterface $em): Response
     {
+        // Vérification du token CSRF
+        $submittedToken = $request->request->get('_token');
+        $token = new CsrfToken('validate-tournament', $submittedToken);
+
+        if (!$this->csrfTokenManager->isTokenValid($token)) {
+            throw $this->createAccessDeniedException('Token CSRF invalide');
+        }
+
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $tournament = $em->getRepository(Tournament::class)->find($id);
@@ -87,8 +98,16 @@ class AdminTournamentRequestController extends AbstractController
         return $this->redirectToRoute('admin_dashboard');
     }
 
-    public function refuse(int $id, EntityManagerInterface $em): Response
+    public function refuse(int $id, Request $request, EntityManagerInterface $em): Response
     {
+        // Vérification du token CSRF
+        $submittedToken = $request->request->get('_token');
+        $token = new CsrfToken('refuse-tournament', $submittedToken);
+
+        if (!$this->csrfTokenManager->isTokenValid($token)) {
+            throw $this->createAccessDeniedException('Token CSRF invalide');
+        }
+
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $tournament = $em->getRepository(Tournament::class)->find($id);
@@ -105,8 +124,16 @@ class AdminTournamentRequestController extends AbstractController
         return $this->redirectToRoute('admin_dashboard');
     }
 
-    public function stopped(int $id, EntityManagerInterface $em): Response
+    public function stopped(int $id, Request $request, EntityManagerInterface $em): Response
     {
+        // Vérification du token CSRF
+        $submittedToken = $request->request->get('_token');
+        $token = new CsrfToken('stop-tournament', $submittedToken);
+
+        if (!$this->csrfTokenManager->isTokenValid($token)) {
+            throw $this->createAccessDeniedException('Token CSRF invalide');
+        }
+
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $tournament = $em->getRepository(Tournament::class)->find($id);

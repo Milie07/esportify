@@ -15,7 +15,10 @@ final class InputSanitizer
   {
     $v = trim($v);
     if ($allowBasic) {
+      // Supprimer les attributs dangereux
       $v = strip_tags($v, '<p><br><ul><ol><li><strong><em>');
+      // Supprimer tous les attributs (onclick, onerror, etc.)
+      $v = preg_replace('/<(\w+)[^>]*>/', '<$1>', $v);
     } else {
       $v = strip_tags($v);
     }

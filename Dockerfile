@@ -38,8 +38,9 @@ WORKDIR /var/www/html
 #
 RUN git config --global --add safe.directory /var/www/html
 
-# Pour Installer les dépendances Symfony 
-RUN composer install --no-interaction --optimize-autoloader --no-scripts
+# Pour Installer les dépendances Symfony et le composant rate-limiter
+RUN composer install --no-interaction --optimize-autoloader --no-scripts && \
+    composer require symfony/rate-limiter --no-interaction
 
 # Pour donner les droits à Apache
 RUN chown -R www-data:www-data /var/www/html
