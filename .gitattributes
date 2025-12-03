@@ -1,0 +1,4 @@
+# Force LF pour les scripts bash et crontab
+*.sh text eol=lf
+docker/start.sh text eol=lf
+docker/crontab text eol=lf
