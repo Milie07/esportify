@@ -13,7 +13,7 @@ primary_region = "cdg"
   PORT = "8080"
 
 [http_service]
-  internal_port = 80
+  internal_port = 8080
   force_https = true
   auto_stop_machines = true
   auto_start_machines = true
@@ -30,3 +30,10 @@ primary_region = "cdg"
   cpu_kind = "shared"
   cpus = 1
   memory_mb = 512
+
+# Pas de volume pour l'instant - simplification
+# Les uploads seront temporaires (perdus au redéploiement)
+# TODO: Configurer Cloudinary ou S3 pour la persistance
+# [mounts]
+#   source = "esportify_uploads"
+#   destination = "/var/www/html/var/uploads"

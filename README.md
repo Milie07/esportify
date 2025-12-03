@@ -86,9 +86,9 @@
     * aux demandes pour devenir organisateurs
     * aux futurs messages asynchrones liés aux tournois/évènements (chatasynchrone)
   - Base NOSQL
-    * nom de la base : esportify_messaging
-    * nom des tables : contact_messages
-                       tournaments_requests
+    * nom de la base : esportify
+    * nom des collections : contact_messages
+                            tournament_requests
   - Technologie
     * MongoDB (conteneurisé)
     * Driver PHP MongoDB via un service Symfony dédié

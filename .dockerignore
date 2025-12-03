@@ -5,8 +5,9 @@
 var/
 vendor/
 node_modules/
-public/build/
-public/uploads/
+# public/build/ - Ne pas ignorer pour inclure les assets compilés
+# Ignorer uniquement les uploads dynamiques des membres
+public/uploads/members/
 docs/
 README.md
 CONFIGURATION.md

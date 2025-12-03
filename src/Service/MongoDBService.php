@@ -8,7 +8,7 @@ use MongoDB\Collection;
 class MongoDBService
 {
     private Client $client;
-    private string $database = 'esportify_messaging';
+    private string $database = 'esportify';
 
     public function __construct()
     {

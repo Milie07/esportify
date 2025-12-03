@@ -6,11 +6,12 @@ RUN apt-get update && apt-get install -y \
   unzip \
   libicu-dev \
   libzip-dev \
+  libpq-dev \
   zip \
   openssl \
   libssl-dev \
   cron &&\
-  docker-php-ext-install intl pdo pdo_mysql zip
+  docker-php-ext-install intl pdo pdo_mysql pdo_pgsql zip
 
 # Mettre la TimeZone en corrélation
 RUN echo "date.timezone=Europe/Paris" > /usr/local/etc/php/conf.d/timezone.ini \
@@ -39,8 +40,23 @@ WORKDIR /var/www/html
 #
 RUN git config --global --add safe.directory /var/www/html
 
-# Pour Installer les dépendances Symfony
-RUN composer install --no-interaction --optimize-autoloader --no-scripts
+# Créer les répertoires nécessaires avant l'installation
+RUN mkdir -p var/cache var/log public/uploads && chmod -R 777 var
+
+# Pour Installer les dépendances Symfony avec les variables d'environnement minimales
+# DATABASE_URL est une fausse valeur juste pour passer l'installation
+ENV APP_ENV=prod \
+    APP_SECRET=dummysecretforbuildonlychangeatruntime \
+    DATABASE_URL=postgresql://dummy:dummy@localhost:5432/dummy \
+    COMPOSER_ALLOW_SUPERUSER=1
+
+RUN composer install --no-interaction --optimize-autoloader --no-dev --no-scripts
+
+# Copier le fichier autoload_runtime.php pré-généré
+COPY ./vendor_stub/autoload_runtime.php /var/www/html/vendor/autoload_runtime.php
+
+# Générer manuellement l'autoloader optimisé
+RUN composer dump-autoload --optimize --classmap-authoritative
 
 # Pour donner les droits à Apache
 RUN chown -R www-data:www-data /var/www/html
@@ -51,8 +67,15 @@ RUN chmod 0644 /etc/cron.d/symfony-cron && \
     crontab /etc/cron.d/symfony-cron && \
     touch /var/log/cron.log
 
-# POur exposer le port 80
-EXPOSE 80
+# POur exposer le port 8080
+EXPOSE 8080
 
-# Lancer Apache + Cron
-CMD service cron start && apache2-foreground
+# Configurer Apache pour écouter sur le port 8080
+RUN sed -i 's/Listen 80/Listen 8080/g' /etc/apache2/ports.conf
+
+# Script de démarrage pour cron + Apache
+COPY ./docker/start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
+
+# Lancer le script de démarrage
+CMD ["/usr/local/bin/start.sh"]

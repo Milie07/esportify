@@ -87,15 +87,15 @@ class AppFixtures extends Fixture
 
     // --- Images des Tournois ---
     $tournamentImageData = [
-      ['image_url' => 'uploads\tournaments\dernierCombo1-freepik-ia_resultat.jpg', 'code' => 1],
-      ['image_url' => 'uploads\tournaments\eclipseMasters1-freepik-ia_resultat.jpg', 'code' => 2],
-      ['image_url' => 'uploads\tournaments\ironArena1-freepik-ia_resultat.jpg', 'code' => 3],
-      ['image_url' => 'uploads\tournaments\neonRift1-bert-b-b6f7WaA-NZk-unsplash_resultat.jpg', 'code' => 4],
-      ['image_url' => 'uploads\tournaments\NextLevelCup.jpg', 'code' => 5],
-      ['image_url' => 'uploads\tournaments\noobGames1-freepik-ia_resultat.jpg', 'code' => 6],
-      ['image_url' => 'uploads\tournaments\pixelPanic4-freepik_resultat.jpg', 'code' => 7],
-      ['image_url' => 'uploads\tournaments\pixelWarzone1-freepik-ia_resultat.jpg', 'code' => 8],
-      ['image_url' => 'uploads\tournaments\quantumBash1-freepik-ia_resultat.jpg', 'code' => 9],
+      ['image_url' => 'uploads/tournaments/dernierCombo1-freepik-ia_resultat.jpg', 'code' => 1],
+      ['image_url' => 'uploads/tournaments/eclipseMasters1-freepik-ia_resultat.jpg', 'code' => 2],
+      ['image_url' => 'uploads/tournaments/ironArena1-freepik-ia_resultat.jpg', 'code' => 3],
+      ['image_url' => 'uploads/tournaments/neonRift1-bert-b-b6f7WaA-NZk-unsplash_resultat.jpg', 'code' => 4],
+      ['image_url' => 'uploads/tournaments/NextLevelCup.jpg', 'code' => 5],
+      ['image_url' => 'uploads/tournaments/noobGames1-freepik-ia_resultat.jpg', 'code' => 6],
+      ['image_url' => 'uploads/tournaments/pixelPanic4-freepik_resultat.jpg', 'code' => 7],
+      ['image_url' => 'uploads/tournaments/pixelWarzone1-freepik-ia_resultat.jpg', 'code' => 8],
+      ['image_url' => 'uploads/tournaments/quantumBash1-freepik-ia_resultat.jpg', 'code' => 9],
     ];
 
     $tournamentImages = [];
