@@ -114,7 +114,13 @@
   - Rate-limiter : Protection anti-brute-force sur connexion (5 tentatives/15min par IP via symfony/rate-limiter, politique sliding window)
   - À améliorer : En-têtes HTTP de sécurité (CSP, HSTS, X-Frame-Options), logging d'audit, reset password
 10. **Déploiement**
-  - Hébergement prévu sur Heroku 
+
+  - **APP_SECRET**
+    * En développement local : Le fichier `.env.local` contient un APP_SECRET sécurisé généré avec `openssl rand -hex 32`
+    * En production : Il faut créer un fichier `.env.local` qui est non committé, ou définir la variable d'environnement `APP_SECRET` sur le serveur
+    * Commande pour générer un nouveau secret : `openssl rand -hex 32`
+    * Ne JAMAIS utiliser `CHANGE_ME_IN_ENV_LOCAL` en production
+    * Ne JAMAIS committer `.env.local` dans Git (déjà présent dans .gitignore)
 11. **Conteneurisation** 
   - Contenu :
     * Dockerfile : image PHP 8.2 + extensions (pdo_mysql, mysqli)

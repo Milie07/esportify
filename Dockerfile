@@ -1,6 +1,6 @@
 FROM php:8.2-apache
 
-# Pour installer les extensions nécessaires à Symfony
+# Pour installer les extensions nécessaires à Symfony + cron
 RUN apt-get update && apt-get install -y \
   git \
   unzip \
@@ -8,7 +8,8 @@ RUN apt-get update && apt-get install -y \
   libzip-dev \
   zip \
   openssl \
-  libssl-dev &&\
+  libssl-dev \
+  cron &&\
   docker-php-ext-install intl pdo pdo_mysql zip
 
 # Mettre la TimeZone en corrélation
@@ -45,8 +46,14 @@ RUN composer install --no-interaction --optimize-autoloader --no-scripts && \
 # Pour donner les droits à Apache
 RUN chown -R www-data:www-data /var/www/html
 
+# Pour installer le cron de mise à jour des statuts des tournois
+COPY ./docker/crontab /etc/cron.d/symfony-cron
+RUN chmod 0644 /etc/cron.d/symfony-cron && \
+    crontab /etc/cron.d/symfony-cron && \
+    touch /var/log/cron.log
+
 # POur exposer le port 80
 EXPOSE 80
 
-# Lancer Apache
-CMD ["apache2-foreground"]
+# Lancer Apache + Cron
+CMD service cron start && apache2-foreground
