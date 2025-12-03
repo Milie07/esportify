@@ -72,27 +72,47 @@ class TournamentService
 
     /**
      * Convertit un curseur Mongo de demandes en tableau enrichi (image SQL incluse)
+     * Optimisé : fetch batch des tournois pour éviter N+1 queries
      */
     private function enrichRequests(iterable $cursor): array
     {
-        $out = [];
+        // 1. Collecter tous les IDs de tournois depuis MongoDB
+        $requests = iterator_to_array($cursor);
+        $tournamentIds = array_unique(array_map(fn($req) => $req['tournamentId'], $requests));
 
-        foreach ($cursor as $req) {
-            $tournament = $this->entityManager
+        // 2. Récupérer tous les tournois en UNE SEULE requête SQL
+        $tournaments = [];
+        if (!empty($tournamentIds)) {
+            $tournamentEntities = $this->entityManager
                 ->getRepository(Tournament::class)
-                ->find($req['tournamentId']);
+                ->findBy(['id' => $tournamentIds]);
 
-            $imageUrl = null;
-            if ($tournament && $tournament->getTournamentImage()) {
-                $imageUrl = $tournament->getTournamentImage()->getImageUrl();
+            // 3. Créer un tableau associatif [id => Tournament] pour lookup rapide
+            foreach ($tournamentEntities as $tournament) {
+                $tournaments[$tournament->getId()] = $tournament;
             }
+        }
 
+        // 4. Enrichir chaque demande avec l'image du tournoi
+        $out = [];
+        foreach ($requests as $req) {
             $row = iterator_to_array($req);
 
+            // Normaliser createdAt
             if (isset($row['createdAt']) && $row['createdAt'] instanceof UTCDateTime) {
                 $row['createdAt'] = $row['createdAt']->toDateTime();
             } else {
                 $row['createdAt'] = null;
+            }
+
+            // Récupérer l'image depuis le tournoi (pas de requête SQL supplémentaire)
+            $imageUrl = null;
+            $tournamentId = $req['tournamentId'];
+            if (isset($tournaments[$tournamentId])) {
+                $tournament = $tournaments[$tournamentId];
+                if ($tournament->getTournamentImage()) {
+                    $imageUrl = $tournament->getTournamentImage()->getImageUrl();
+                }
             }
 
             $row['imageUrl'] = $imageUrl;

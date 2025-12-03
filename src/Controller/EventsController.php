@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Repository\TournamentRepository;
 use App\Service\EventFormatterService;
-use App\Service\TournamentStatusService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\{Request, Response};
 use Symfony\Component\Routing\Annotation\Route;
@@ -19,10 +18,10 @@ class EventsController extends AbstractController
     #[Route('/events', name: 'app_events', methods: ['GET'])]
     public function index(
         Request $request,
-        TournamentRepository $tournamentRepository,
-        TournamentStatusService $statusService
+        TournamentRepository $tournamentRepository
     ): Response {
-        $statusService->updateAllStatus();
+        // Note: updateAllStatus() est désormais géré par un cron (voir UpdateTournamentStatusCommand)
+        // Cela évite d'exécuter findAll() + flush() à chaque requête HTTP
 
         $organizer = $request->query->get('organizer') ?: null;
         $dateAt = $request->query->get('dateAt') ?: null;

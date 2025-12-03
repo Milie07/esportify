@@ -121,7 +121,7 @@
 				<h2 class="text-center text-lightBlue fs-3 my-3">Créer un évenement 🎉</h2>
         <!-- Formulaire de Création -->
         <form class="form_contact bg-beige rounded-2 border border-lightBlue text_description text-lightBlue px-5 pt-4 pb-2" id="searchForm" action={{ path('event_create') }} method="POST" enctype="multipart/form-data">
-					<inputtype="hidden" name="_csrf_token" value="{{ csrf_token('event_create') }}">
+					<input type="hidden" name="_csrf_token" value="{{ csrf_token('create_tournament') }}">
           <!-- Informations -->
           <div class="mx-auto">
 							<label class="" for="title">Titre de l'évènement :</label>

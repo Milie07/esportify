@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
-use App\Service\InputSanitizer;
+use App\Entity\Tournament;
+use App\Form\TournamentType;
 use App\Service\TournamentService;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\{Request, Response};
 
@@ -15,80 +15,50 @@ final class CreateEventController extends AbstractController
     ) {
     }
 
-    public function create(Request $request, InputSanitizer $san): Response
+    public function create(Request $request): Response
     {
         if (!$this->isGranted('ROLE_ORGANIZER') && !$this->isGranted('ROLE_ADMIN')) {
             throw $this->createAccessDeniedException();
         }
 
-        if ($request->isMethod('GET')) {
-            if ($this->isGranted('ROLE_ORGANIZER')) {
-                return $this->render('spaces/organizer.html.twig');
-            }
+        $tournament = new Tournament();
+        $form = $this->createForm(TournamentType::class, $tournament);
+        $form->handleRequest($request);
 
-            if ($this->isGranted('ROLE_ADMIN')) {
-                return $this->render('spaces/admin.html.twig');
-            }
-        }
-
-        if ($request->isMethod('POST')) {
-            $title = $san->sanitize($request->request->get('title'));
-            $description = $san->sanitize($request->request->get('description'));
-            $tagline = $san->sanitize($request->request->get('tagline'));
-            $startAt = $request->request->get('startAt');
-            $endAt = $request->request->get('endAt');
-            $capacityGauge = (int) $request->request->get('capacityGauge');
-
-            /** @var UploadedFile|null $file */
-            $file = $request->files->get('tournamentImage');
-
-            if (
-                empty($title) || empty($description) ||
-                empty($startAt) || empty($endAt) ||
-                $capacityGauge <= 0 ||
-                !$file instanceof UploadedFile
-            ) {
-                $this->addFlash('error', 'Tous les champs doivent être remplis.');
-
-                return $this->isGranted('ROLE_ADMIN')
-                    ? $this->redirectToRoute('admin_dashboard')
-                    : $this->redirectToRoute('organizer_space');
-            }
-
-            $startDate = \DateTimeImmutable::createFromFormat('Y-m-d\TH:i', $startAt);
-            $endDate = \DateTimeImmutable::createFromFormat('Y-m-d\TH:i', $endAt);
-
-            if (!$startDate || !$endDate) {
-                $this->addFlash('error', 'Format de date invalide.');
-
-                return $this->isGranted('ROLE_ADMIN')
-                    ? $this->redirectToRoute('admin_dashboard')
-                    : $this->redirectToRoute('organizer_space');
-            }
-
+        if ($form->isSubmitted() && $form->isValid()) {
             /** @var \App\Entity\Member $user */
             $user = $this->getUser();
+            $file = $form->get('tournamentImage')->getData();
             $uploadDirectory = $this->getParameter('kernel.project_dir') . '/public/uploads/tournaments/';
 
-            $this->tournamentService->createTournament(
-                $title,
-                $description,
-                $tagline,
-                $startDate,
-                $endDate,
-                $capacityGauge,
-                $file,
-                $user,
-                $uploadDirectory
-            );
+            try {
+                $this->tournamentService->createTournament(
+                    $tournament->getTitle(),
+                    $tournament->getDescription(),
+                    $tournament->getTagline(),
+                    $tournament->getStartAt(),
+                    $tournament->getEndAt(),
+                    $tournament->getCapacityGauge(),
+                    $file,
+                    $user,
+                    $uploadDirectory
+                );
 
-            $this->addFlash('success', 'Le tournoi est créé et en attente de validation.');
+                $this->addFlash('success', 'Le tournoi est créé et en attente de validation.');
+            } catch (\Throwable $e) {
+                $this->addFlash('error', 'Erreur lors de la création du tournoi : ' . $e->getMessage());
+            }
 
             return $this->isGranted('ROLE_ADMIN')
                 ? $this->redirectToRoute('admin_dashboard')
                 : $this->redirectToRoute('organizer_space');
         }
 
-        return new Response('Méthode non autorisée.', 405);
+        // Affichage du formulaire (GET)
+        $template = $this->isGranted('ROLE_ADMIN') ? 'spaces/admin.html.twig' : 'spaces/organizer.html.twig';
+
+        return $this->render($template, [
+            'tournamentForm' => $form->createView(),
+        ]);
     }
 }

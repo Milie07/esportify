@@ -346,8 +346,7 @@
 
 				<!-- Formulaire de Création d'event -->
 				<form action="{{ path('event_create') }}" method="POST" class="form_contact bg-beige rounded-2 border border-lightBlue text_description text-lightBlue px-5 pt-4 pb-2" id="searchForm" enctype="multipart/form-data">
-					<input
-					type="hidden" name="_csrf_token" value="{{ csrf_token('event_create') }}">
+					<input type="hidden" name="_csrf_token" value="{{ csrf_token('create_tournament') }}">
 					<!-- Informations -->
 					<div class="mx-auto">
 						<label class="" for="title">Titre de l'évènement :</label>
@@ -366,7 +365,7 @@
 				<div class="mx-auto">
 					<label class="" for="endAt">Date et Heure de Fin :</label><input class="form-control input_filter mb-3" id="endAt" name="endAt" type="datetime-local" required></div>
 				<div class="mx-auto">
-					<label class="" for="capacityGauge">Nombre maximal de joueurs :</label><input class="form-control input_filter mb-3" id="capacityGauge" name="capacityGauge" type="number" min="10" max="100" required></div>
+					<label class="" for="capacityGauge">Nombre maximal de joueurs :</label><input class="form-control input_filter mb-3" id="capacityGauge" name="capacityGauge" type="number" min="1" max="100" required></div>
 				<div class="mx-auto">
 					<label class="" for="tournamentImage">Image ou photo de l'évènement :</label><input class="form-control input_filter mb-3" id="tournamentImage" name="tournamentImage" type="file" accept="image/png, image/jpeg" required></div>
 				<div class="d-flex justify-content-center">
