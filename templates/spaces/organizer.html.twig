@@ -159,7 +159,9 @@
 			<div class="bg-clair2 rounded-2 text-lightBlue text-center mx-auto p-3">
 				<h2>Mes informations personnelles ✏️</h2>
 				<!-- Formulaire d'Inscription -->
-				<formaction="#" method="POST" class="form_contact bg-beige rounded-2 border border-lightBlue text_description text-lightBlue px-5 pt-4 pb-2"><!-- Informations personnelles --><div class="w-75 mx-auto">
+				<form action="#" method="POST" class="form_contact bg-beige rounded-2 border border-lightBlue text_description text-lightBlue px-5 pt-4 pb-2">
+					<!-- Informations personnelles -->
+					<div class="w-75 mx-auto">
 						<label class="" for="name">Nom :</label><input id="name" name="name" type="text" class="form-control input_filter mb-3" minlength="2" maxlength="50" value="{{ app.user.lastName }}" disabled autocomplete required></div>
 					<div class="w-75 mx-auto">
 						<label class="" for="surname">Prénom :</label><input id="surname" name="surname" type="text" class="form-control input_filter mb-3" minlength="2" maxlength="50" value="{{ app.user.firstName }}" disabled required></div>
