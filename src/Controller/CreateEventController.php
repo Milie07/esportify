@@ -5,13 +5,15 @@ namespace App\Controller;
 use App\Entity\Tournament;
 use App\Form\TournamentType;
 use App\Service\TournamentService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\{Request, Response};
 
 final class CreateEventController extends AbstractController
 {
     public function __construct(
-        private TournamentService $tournamentService
+        private TournamentService $tournamentService,
+        private EntityManagerInterface $entityManager
     ) {
     }
 
@@ -59,11 +61,34 @@ final class CreateEventController extends AbstractController
 
         $data = ['tournamentForm' => $form->createView()];
 
-        // Pour l'organisateur, ajouter ses tournois et avatar
-        if (!$this->isGranted('ROLE_ADMIN')) {
+        if ($this->isGranted('ROLE_ADMIN')) {
+            // Pour l'admin, récupérer tous les tournois
+            $data['tournaments'] = $this->entityManager->getRepository(Tournament::class)->findBy(
+                [],
+                ['createdAt' => 'DESC']
+            );
+            try {
+                $data['messages'] = $this->tournamentService->getContactMessages();
+                $requests = $this->tournamentService->getAllRequestsGroupedByStatus();
+                $data['requestsPending'] = $requests['pending'];
+                $data['requestsValidated'] = $requests['validated'];
+                $data['requestsRefused'] = $requests['refused'];
+                $data['requestsStopped'] = $requests['stopped'];
+            } catch (\Throwable $e) {
+                $data['messages'] = [];
+                $data['requestsPending'] = [];
+                $data['requestsValidated'] = [];
+                $data['requestsRefused'] = [];
+                $data['requestsStopped'] = [];
+            }
+        } else {
+            // Pour l'organisateur, ajouter ses tournois et avatar
             /** @var \App\Entity\Member $user */
             $user = $this->getUser();
-            $data['tournaments'] = [];
+            $data['tournaments'] = $this->entityManager->getRepository(Tournament::class)->findBy(
+                ['organizer' => $user],
+                ['createdAt' => 'DESC']
+            );
             $data['avatarUrl'] = $user->getAvatarPath() ?: 'uploads/avatars/default-avatar.jpg';
         }
 
