@@ -1,0 +1,56 @@
+FROM php:8.2-apache
+
+# Installer les extensions nécessaires à Symfony + dépendances SSL pour MongoDB
+RUN apt-get update && apt-get install -y \
+  git \
+  unzip \
+  libicu-dev \
+  libzip-dev \
+  zip \
+  openssl \
+  libssl-dev \
+  pkg-config \
+  && docker-php-ext-install intl pdo pdo_mysql zip
+
+# Mettre la TimeZone en corrélation
+RUN echo "date.timezone=Europe/Paris" > /usr/local/etc/php/conf.d/timezone.ini \
+    && ln -snf /usr/share/zoneinfo/Europe/Paris /etc/localtime \
+    && echo "Europe/Paris" > /etc/timezone
+
+# Installer l'extension MongoDB avec support SSL
+RUN pecl install mongodb \
+  && docker-php-ext-enable mongodb
+
+# Installer Xdebug pour le debug (optionnel en dev)
+RUN pecl install xdebug \
+  && docker-php-ext-enable xdebug
+
+# Activer le mod_rewrite (nécessaire pour Symfony)
+RUN a2enmod rewrite
+
+# Installer composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Copier la config Apache personnalisée
+COPY ./docker/vhost.conf /etc/apache2/sites-available/000-default.conf
+
+# Configurer Apache pour écouter sur le port 8080 (comme en prod)
+RUN sed -i 's/Listen 80/Listen 8080/g' /etc/apache2/ports.conf
+
+# Définir le dossier de travail
+WORKDIR /var/www/html
+
+# Configurer Git
+RUN git config --global --add safe.directory /var/www/html
+
+# Créer les répertoires nécessaires
+RUN mkdir -p var/cache var/log public/uploads && chmod -R 777 var
+
+# Donner les droits à Apache
+RUN chown -R www-data:www-data /var/www/html
+
+# Exposer le port 8080
+EXPOSE 8080
+
+# Lancer Apache en premier plan
+CMD ["apache2-foreground"]

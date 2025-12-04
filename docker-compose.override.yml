@@ -1,0 +1,16 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    command: >
+      bash -c "
+        composer install --no-interaction &&
+        php bin/console doctrine:database:create --if-not-exists &&
+        php bin/console doctrine:migrations:migrate --no-interaction ||
+        true &&
+        php bin/console cache:clear &&
+        apache2-foreground
+        "
+    environment:
+      APP_ENV: dev

@@ -44,7 +44,7 @@ RUN git config --global --add safe.directory /var/www/html
 RUN mkdir -p var/cache var/log public/uploads && chmod -R 777 var
 
 # Pour Installer les dépendances Symfony avec les variables d'environnement minimales
-# DATABASE_URL est une fausse valeur juste pour passer l'installation
+# DATABASE_URL est une fausse valeur juste pour passerl'installation
 ENV APP_ENV=prod \
     APP_SECRET=dummysecretforbuildonlychangeatruntime \
     DATABASE_URL=postgresql://dummy:dummy@localhost:5432/dummy \
