@@ -24,14 +24,21 @@ class AdminTournamentRequestController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        $user = $this->getUser();
+        // Un admin voit TOUS les tournois, pas seulement les siens
         $tournaments = $em->getRepository(Tournament::class)->findBy(
-            ['organizer' => $user],
+            [],
             ['createdAt' => 'DESC']
         );
 
-        $messages = $this->tournamentService->getContactMessages();
-        $requests = $this->tournamentService->getAllRequestsGroupedByStatus();
+        try {
+            $messages = $this->tournamentService->getContactMessages();
+            $requests = $this->tournamentService->getAllRequestsGroupedByStatus();
+        } catch (\Throwable $e) {
+            // Si MongoDB échoue, on affiche quand même la page
+            $this->addFlash('warning', 'Erreur MongoDB : ' . $e->getMessage());
+            $messages = [];
+            $requests = ['pending' => [], 'validated' => [], 'refused' => [], 'stopped' => []];
+        }
 
         return $this->render('spaces/admin.html.twig', [
             'tournaments' => $tournaments,

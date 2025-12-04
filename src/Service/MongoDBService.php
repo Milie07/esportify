@@ -10,9 +10,9 @@ class MongoDBService
     private Client $client;
     private string $database = 'esportify';
 
-    public function __construct()
+    public function __construct(string $mongodbUrl)
     {
-        $this->client = new Client($_ENV['MONGODB_URL']);
+        $this->client = new Client($mongodbUrl);
     }
 
     public function getCollection(string $collectionName): Collection

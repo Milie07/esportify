@@ -68,8 +68,8 @@
     * compte Organisateur (rôle ORGANIZER) -> pseudo: AlexOrga / mdp:OrgaAlex2025
     * compte Joueur (rôle PLAYER) -> pseudo: NicoPlayer / mdp PlayNico2025
 5.  **Configuration**
-  `APP_ENV=dev`
-  `APP_DEBUG=1`
+  `APP_ENV=prod`
+  `APP_DEBUG=0`
 6.  **Base de Données SQL (Mode conteneurisé)**
   La base MariaDB est gérée automatiquement par Docker.
   - Au lancement du service web, les commandas suivantes s'exécutent :
@@ -118,7 +118,8 @@
   - Rate-limiter : Protection anti-brute-force sur connexion (5 tentatives/15min par IP via symfony/rate-limiter, politique sliding window)
   - À améliorer : En-têtes HTTP de sécurité (CSP, HSTS, X-Frame-Options), logging d'audit, reset password
 10. **Déploiement**
-
+  - Déploiement sur fly.io
+  - Adresse de déploiement : https://esportify.fly.dev/
   - **APP_SECRET**
     * En développement local : Le fichier `.env.local` contient un APP_SECRET sécurisé généré avec `openssl rand -hex 32`
     * En production : Il faut créer un fichier `.env.local` qui est non committé, ou définir la variable d'environnement `APP_SECRET` sur le serveur

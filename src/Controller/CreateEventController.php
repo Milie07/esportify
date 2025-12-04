@@ -46,7 +46,7 @@ final class CreateEventController extends AbstractController
 
                 $this->addFlash('success', 'Le tournoi est créé et en attente de validation.');
             } catch (\Throwable $e) {
-                $this->addFlash('error', 'Erreur lors de la création du tournoi : ' . $e->getMessage());
+                $this->addFlash('danger', 'Erreur lors de la création du tournoi : ' . $e->getMessage());
             }
 
             return $this->isGranted('ROLE_ADMIN')

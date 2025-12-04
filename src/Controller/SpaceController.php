@@ -28,6 +28,7 @@ class SpaceController extends AbstractController
   {
     $this->denyAccessUnlessGranted('ROLE_ORGANIZER');
 
+    /** @var \App\Entity\Member $user */
     $user = $this->getUser();
 
     $tournaments = $em->getRepository(Tournament::class)->findBy(
