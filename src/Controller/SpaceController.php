@@ -37,7 +37,8 @@ class SpaceController extends AbstractController
     );
 
     return $this->render('spaces/organizer.html.twig', [
-      'tournaments' => $tournaments
+      'tournaments' => $tournaments,
+      'avatarUrl' => $user->getAvatarPath() ?: 'uploads/avatars/default-avatar.jpg'
     ]);
   }
 }

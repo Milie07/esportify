@@ -57,8 +57,16 @@ final class CreateEventController extends AbstractController
         // Affichage du formulaire (GET)
         $template = $this->isGranted('ROLE_ADMIN') ? 'spaces/admin.html.twig' : 'spaces/organizer.html.twig';
 
-        return $this->render($template, [
-            'tournamentForm' => $form->createView(),
-        ]);
+        $data = ['tournamentForm' => $form->createView()];
+
+        // Pour l'organisateur, ajouter ses tournois et avatar
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            /** @var \App\Entity\Member $user */
+            $user = $this->getUser();
+            $data['tournaments'] = [];
+            $data['avatarUrl'] = $user->getAvatarPath() ?: 'uploads/avatars/default-avatar.jpg';
+        }
+
+        return $this->render($template, $data);
     }
 }
