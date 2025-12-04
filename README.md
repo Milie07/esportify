@@ -118,14 +118,38 @@
   - Rate-limiter : Protection anti-brute-force sur connexion (5 tentatives/15min par IP via symfony/rate-limiter, politique sliding window)
   - À améliorer : En-têtes HTTP de sécurité (CSP, HSTS, X-Frame-Options), logging d'audit, reset password
 10. **Déploiement**
-  - Déploiement sur fly.io
+  - Déploiement sur fly.io (https://fly.io/)
   - Adresse de déploiement : https://esportify.fly.dev/
-  - **APP_SECRET**
-    * En développement local : Le fichier `.env.local` contient un APP_SECRET sécurisé généré avec `openssl rand -hex 32`
-    * En production : Il faut créer un fichier `.env.local` qui est non committé, ou définir la variable d'environnement `APP_SECRET` sur le serveur
-    * Commande pour générer un nouveau secret : `openssl rand -hex 32`
-    * Ne JAMAIS utiliser `CHANGE_ME_IN_ENV_LOCAL` en production
-    * Ne JAMAIS committer `.env.local` dans Git (déjà présent dans .gitignore)
+  - **Architecture de production**
+    * Application : Conteneur Docker (PHP 8.2 + Apache) sur Fly.io
+    * Base de données SQL : PostgreSQL hébergée sur Fly.io
+    * Base de données NoSQL : MongoDB Atlas (plan gratuit)
+    * Fichiers statiques : Uploads éphémères (non persistants)
+    * Tâches planifiées : Cron intégré au conteneur (mise à jour automatique des statuts)
+    * HTTPS : Certificat Let's Encrypt automatique via Fly.io
+  - **Variables d'environnement en production**
+    * `APP_ENV=prod`
+    * `APP_DEBUG=0`
+    * `APP_SECRET` : Généré avec `openssl rand -hex 32` et configuré via `fly secrets`
+    * `DATABASE_URL` : PostgreSQL Fly.io (automatique via `fly postgres attach`)
+    * `MONGODB_URL` : MongoDB Atlas connection string
+  - **Déploiement rapide**
+    ```bash
+    * Installer Fly CLI
+    pwsh -Command "iwr https://fly.io/install.ps1 -useb | iex"
+    
+    * Se connecter
+    fly auth login
+    
+    * Déployer
+    fly deploy
+    ```
+  - **Les Limitations du plan gratuit**
+    * Uploads non persistants (perdus au redéploiement)
+    * 512 MB RAM par machine
+    * Auto-stop après inactivité (démarrage automatique à la première requête)
+  
+  - **Note importante** : Ne JAMAIS committer `.env.local` ou des secrets dans Git
 11. **Conteneurisation** 
   - Contenu :
     * Dockerfile : image PHP 8.2 + extensions (pdo_mysql, mysqli)
