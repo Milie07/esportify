@@ -1,0 +1,39 @@
+name: Update Tournament Status (Cron)
+
+on:
+  schedule:
+    # Toutes les 5 minutes
+    # Format: minute hour day month day-of-week
+    - cron: '*/5 * * * *'
+
+  # Permet de déclencher manuellement depuis l'interface GitHub
+  workflow_dispatch:
+
+jobs:
+  update-tournament-status:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Call tournament status update endpoint
+        run: |
+          response=$(curl -s -w "\n%{http_code}" -X GET \
+            "https://esportify.fly.dev/admin/update-tournaments-status?token=${{ secrets.CRON_SECRET_TOKEN }}")
+
+          http_code=$(echo "$response" | tail -n1)
+          body=$(echo "$response" | sed '$d')
+
+          echo "HTTP Status: $http_code"
+          echo "Response Body: $body"
+
+          if [ "$http_code" != "200" ]; then
+            echo "Failed to update tournament statuses"
+            exit 1
+          fi
+
+          echo "Tournament statuses updated successfully"
+
+      - name: Log execution time
+        if: always()
+        run: |
+          echo "Workflow executed at: $(date -u +"%Y-%m-%d %H:%M:%S UTC")"
+          echo "Europe/Paris time: $(TZ=Europe/Paris date +"%Y-%m-%d %H:%M:%S %Z")"

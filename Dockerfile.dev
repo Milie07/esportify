@@ -1,6 +1,6 @@
 FROM php:8.2-apache
 
-# Installer les extensions nécessaires à Symfony + dépendances SSL pour MongoDB
+# Installer les extensions nécessaires à Symfony + dépendances SSL pour MongoDB + cron
 RUN apt-get update && apt-get install -y \
   git \
   unzip \
@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y \
   openssl \
   libssl-dev \
   pkg-config \
+  cron \
   && docker-php-ext-install intl pdo pdo_mysql zip
 
 # Mettre la TimeZone en corrélation
@@ -49,8 +50,18 @@ RUN mkdir -p var/cache var/log public/uploads && chmod -R 777 var
 # Donner les droits à Apache
 RUN chown -R www-data:www-data /var/www/html
 
+# Installer le cron de mise à jour des statuts des tournois
+COPY ./docker/crontab /etc/cron.d/symfony-cron
+RUN chmod 0644 /etc/cron.d/symfony-cron && \
+    crontab /etc/cron.d/symfony-cron && \
+    touch /var/log/cron.log
+
 # Exposer le port 8080
 EXPOSE 8080
 
-# Lancer Apache en premier plan
-CMD ["apache2-foreground"]
+# Script de démarrage pour cron + Apache
+COPY ./docker/start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
+
+# Lancer le script de démarrage
+CMD ["/usr/local/bin/start.sh"]
