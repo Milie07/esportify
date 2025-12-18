@@ -16,21 +16,41 @@ jobs:
     steps:
       - name: Call tournament status update endpoint
         run: |
-          response=$(curl -s -w "\n%{http_code}" -X GET \
-            "https://esportify.fly.dev/admin/update-tournaments-status?token=${{ secrets.CRON_SECRET_TOKEN }}")
+          # Retry jusqu'à 3 fois avec délai de 10 secondes entre chaque tentative
+          # pour gérer le cas où la machine Fly.dev doit redémarrer
+          max_attempts=3
+          attempt=1
+          success=false
 
-          http_code=$(echo "$response" | tail -n1)
-          body=$(echo "$response" | sed '$d')
+          while [ $attempt -le $max_attempts ] && [ "$success" = "false" ]; do
+            echo "Tentative $attempt/$max_attempts..."
 
-          echo "HTTP Status: $http_code"
-          echo "Response Body: $body"
+            response=$(curl -s -w "\n%{http_code}" --max-time 30 -X GET \
+              "https://esportify.fly.dev/admin/update-tournaments-status?token=${{ secrets.CRON_SECRET_TOKEN }}")
 
-          if [ "$http_code" != "200" ]; then
-            echo "Failed to update tournament statuses"
+            http_code=$(echo "$response" | tail -n1)
+            body=$(echo "$response" | sed '$d')
+
+            echo "HTTP Status: $http_code"
+            echo "Response Body: $body"
+
+            if [ "$http_code" = "200" ]; then
+              echo "✅ Tournament statuses updated successfully"
+              success=true
+            else
+              echo "❌ Tentative $attempt échouée (HTTP $http_code)"
+              if [ $attempt -lt $max_attempts ]; then
+                echo "⏳ Attente de 10 secondes avant nouvelle tentative..."
+                sleep 10
+              fi
+              attempt=$((attempt + 1))
+            fi
+          done
+
+          if [ "$success" = "false" ]; then
+            echo "💥 Échec après $max_attempts tentatives"
             exit 1
           fi
-
-          echo "Tournament statuses updated successfully"
 
       - name: Log execution time
         if: always()
