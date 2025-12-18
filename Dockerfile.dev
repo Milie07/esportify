@@ -1,6 +1,6 @@
 FROM php:8.2-apache
 
-# Installer les extensions nécessaires à Symfony + dépendances SSL pour MongoDB + cron
+# Installer les extensions nécessaires à Symfony + dépendances SSL pour MongoDB + cron + GD pour images
 RUN apt-get update && apt-get install -y \
   git \
   unzip \
@@ -11,7 +11,12 @@ RUN apt-get update && apt-get install -y \
   libssl-dev \
   pkg-config \
   cron \
-  && docker-php-ext-install intl pdo pdo_mysql zip
+  libpng-dev \
+  libjpeg-dev \
+  libfreetype6-dev \
+  libwebp-dev \
+  && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
+  && docker-php-ext-install intl pdo pdo_mysql zip gd
 
 # Mettre la TimeZone en corrélation
 RUN echo "date.timezone=Europe/Paris" > /usr/local/etc/php/conf.d/timezone.ini \

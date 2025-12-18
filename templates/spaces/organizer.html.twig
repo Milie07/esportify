@@ -142,6 +142,13 @@
 						{{ form_row(tournamentForm.capacityGauge, {'label': 'Nombre maximal de joueurs :', 'attr': {'class': 'form-control input_filter mb-3'}}) }}
 					</div>
 					<div class="mx-auto">
+						{% if app.environment == 'prod' %}
+							<div class="alert alert-warning text-center mb-3" role="alert">
+								<i class="fa-solid fa-triangle-exclamation"></i>
+								<strong>Attention :</strong> Les images uploadées sont temporaires et seront perdues lors du prochain déploiement.
+								L'intégration Cloudinary pour le stockage permanent est en cours.
+							</div>
+						{% endif %}
 						{{ form_row(tournamentForm.tournamentImage, {'label': 'Image ou photo de l\'évènement :', 'attr': {'class': 'form-control input_filter mb-3'}}) }}
 					</div>
 					<div class="d-flex justify-content-center">

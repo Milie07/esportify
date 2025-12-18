@@ -1,6 +1,6 @@
 FROM php:8.2-apache
 
-# Pour installer les extensions nécessaires à Symfony + cron
+# Pour installer les extensions nécessaires à Symfony + cron + GD pour images
 RUN apt-get update && apt-get install -y \
   git \
   unzip \
@@ -10,8 +10,13 @@ RUN apt-get update && apt-get install -y \
   zip \
   openssl \
   libssl-dev \
-  cron &&\
-  docker-php-ext-install intl pdo pdo_mysql pdo_pgsql zip
+  cron \
+  libpng-dev \
+  libjpeg-dev \
+  libfreetype6-dev \
+  libwebp-dev &&\
+  docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp && \
+  docker-php-ext-install intl pdo pdo_mysql pdo_pgsql zip gd
 
 # Mettre la TimeZone en corrélation
 RUN echo "date.timezone=Europe/Paris" > /usr/local/etc/php/conf.d/timezone.ini \
