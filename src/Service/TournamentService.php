@@ -14,7 +14,8 @@ class TournamentService
 {
     public function __construct(
         private MongoDBService $mongoDBService,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private FileUploadService $fileUploadService
     ) {
     }
     /**
@@ -146,6 +147,7 @@ class TournamentService
 
     /**
      * Crée un nouveau tournoi
+     * L'image est uploadée dans le dossier "pending" tant que le tournoi n'est pas validé
      */
     public function createTournament(
         string $title,
@@ -158,15 +160,20 @@ class TournamentService
         Member $organizer,
         string $uploadDirectory
     ): Tournament {
-        $extension = $file->guessExtension() ?: 'bin';
-        $filename = uniqid('tournament_', true) . '.' . $extension;
+        // Uploader l'image dans le dossier pending avec compression
+        // isPending = true car le tournoi n'est pas encore validé
+        $imageRelativePath = $this->fileUploadService->uploadTournamentImage(
+            $file,
+            $uploadDirectory,
+            isPending: true
+        );
 
-        $file->move($uploadDirectory, $filename);
-
+        // Créer l'entité TournamentImages avec le chemin en pending
         $tImg = new TournamentImages();
-        $tImg->setImageUrl('uploads/tournaments/' . $filename);
+        $tImg->setImageUrl($imageRelativePath);
         $tImg->setCode(random_int(100000, 999999));
 
+        // Créer le tournoi
         $tournament = new Tournament();
         $tournament->setTitle($title);
         $tournament->setDescription($description);
@@ -186,6 +193,68 @@ class TournamentService
         $this->createTournamentRequest($tournament, $organizer);
 
         return $tournament;
+    }
+
+    /**
+     * Valide un tournoi : change son statut et déplace l'image de pending vers permanent
+     */
+    public function validateTournament(Tournament $tournament, string $publicDirectory): void
+    {
+        // Changer le statut
+        $tournament->setCurrentStatus(CurrentStatus::VALIDE);
+
+        // Déplacer l'image de pending vers permanent si elle existe
+        $tournamentImage = $tournament->getTournamentImage();
+        if ($tournamentImage) {
+            $currentPath = $tournamentImage->getImageUrl();
+
+            // Vérifier si l'image est dans pending
+            if (str_contains($currentPath, '/pending/')) {
+                try {
+                    $newPath = $this->fileUploadService->moveToPermanent($currentPath, $publicDirectory);
+                    $tournamentImage->setImageUrl($newPath);
+                    $this->entityManager->persist($tournamentImage);
+                } catch (\RuntimeException $e) {
+                    // Si l'image n'existe pas ou ne peut pas être déplacée, continuer sans erreur
+                    // Le tournoi sera validé mais conservera son chemin actuel
+                }
+            }
+        }
+
+        $this->entityManager->flush();
+
+        // Mettre à jour le statut dans MongoDB
+        $this->updateRequestStatus($tournament->getId(), 'validé');
+    }
+
+    /**
+     * Refuse un tournoi : change son statut et supprime l'image
+     */
+    public function refuseTournament(Tournament $tournament, string $publicDirectory): void
+    {
+        // Changer le statut
+        $tournament->setCurrentStatus(CurrentStatus::REFUSE);
+
+        // Supprimer l'image si elle existe
+        $tournamentImage = $tournament->getTournamentImage();
+        if ($tournamentImage) {
+            $imagePath = $tournamentImage->getImageUrl();
+
+            try {
+                $this->fileUploadService->deleteTournamentImage($imagePath, $publicDirectory);
+            } catch (\RuntimeException $e) {
+                // Si l'image n'existe pas ou ne peut pas être supprimée, continuer sans erreur
+            }
+
+            // Supprimer la relation avec l'image
+            $tournament->setTournamentImage(null);
+            $this->entityManager->remove($tournamentImage);
+        }
+
+        $this->entityManager->flush();
+
+        // Mettre à jour le statut dans MongoDB
+        $this->updateRequestStatus($tournament->getId(), 'refusé');
     }
 
     /**

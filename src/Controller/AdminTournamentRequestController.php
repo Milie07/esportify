@@ -89,12 +89,11 @@ class AdminTournamentRequestController extends AbstractController
             throw $this->createNotFoundException("Tournoi introuvable.");
         }
 
-        $tournament->setCurrentStatus(CurrentStatus::VALIDE);
-        $em->flush();
+        // Utiliser la méthode validateTournament qui gère le déplacement de l'image
+        $publicDirectory = $this->getParameter('kernel.project_dir') . '/public';
+        $this->tournamentService->validateTournament($tournament, $publicDirectory);
 
-        $this->tournamentService->updateRequestStatus($id, 'validé');
-
-        $this->addFlash('success', 'Tournoi validé !');
+        $this->addFlash('success', 'Tournoi validé ! L\'image a été déplacée vers le dossier permanent.');
         return $this->redirectToRoute('admin_dashboard');
     }
 
@@ -115,12 +114,11 @@ class AdminTournamentRequestController extends AbstractController
             throw $this->createNotFoundException("Tournoi introuvable.");
         }
 
-        $tournament->setCurrentStatus(CurrentStatus::REFUSE);
-        $em->flush();
+        // Utiliser la méthode refuseTournament qui gère la suppression de l'image
+        $publicDirectory = $this->getParameter('kernel.project_dir') . '/public';
+        $this->tournamentService->refuseTournament($tournament, $publicDirectory);
 
-        $this->tournamentService->updateRequestStatus($id, 'refusé');
-
-        $this->addFlash('danger', 'Tournoi refusé.');
+        $this->addFlash('danger', 'Tournoi refusé et image supprimée.');
         return $this->redirectToRoute('admin_dashboard');
     }
 
