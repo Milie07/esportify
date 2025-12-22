@@ -50,9 +50,11 @@
     `cd esportify`
     * Les fichiers envoyés dans `public/uploads` ne sont pas versionnésdans Git. Pour le rendu, un dossier complet `uploads/` est fourni àpart dans le projet. Ainsi il faut décompresser le fichier `uploadszip` situé à la racine du projet dans le dossier `docs/` nommé`uploads` puis le glisser dans le dossier `public/`
   - Lancement de l'application
-    `docker compose build`
-    `docker compose up -d`
+    - `docker compose build`
+    - `docker compose up -d`
     ou `docker-compose up --build`
+    - `docker exec -it esportify_web php bin/console doctrine:fixtures:load` à lancer pour regénérer les données en base dans un environnement local.
+    - Les images de tests sont dans un dossier nommé `uploads.zip` situé dans le dossier `docs/upload/` à décompresser et à charger en local dans le dossier `public`pour les initialiser via la BDD.
   - Accès
     * Accès à l'application Symfony -> conteneur esportify_web (http:/localhost:8080)
     * Accès à la base de donnée phpmyadmin -> conteneuresportify_phpmyadmin (http://localhost:8081)
@@ -66,15 +68,16 @@
     * compte Organisateur (rôle ORGANIZER) -> pseudo: AlexOrga / mdp:OrgaAlex2025
     * compte Joueur (rôle PLAYER) -> pseudo: NicoPlayer / mdp PlayNico2025
 5.  **Configuration**
-  `APP_ENV=dev`
-  `APP_DEBUG=1`
+  `APP_ENV=prod`
+  `APP_DEBUG=0`
 6.  **Base de Données SQL (Mode conteneurisé)**
   La base MariaDB est gérée automatiquement par Docker.
   - Au lancement du service web, les commandas suivantes s'exécutent :
   `php bin/console doctrine:database:create --if-not-exists`
   `php bin/console doctrine:migrations:migrate --no-interaction`
   - Les données de démonstration proviennent de : 
-  `src/DataFixtures/AppFixtures.php` et sont chargées en BDD
+  `src/DataFixtures/AppFixtures.php` et sont chargées en BDD 
+  `docker exec -it esportify_web php bin/console doctrine:fixtures:load` à lancer pour regénérer les données en base dans un environnement local.
 7. **Base de Données NoSQL (Mode conteneurisé)** 
   - L'application intègre une base NoSQL MongoDB dédiée à la messagerie et aux intéractions utilisateurs:
   - L'objectif est d'isoler toutes les données liées :
@@ -83,9 +86,9 @@
     * aux demandes pour devenir organisateurs
     * aux futurs messages asynchrones liés aux tournois/évènements (chatasynchrone)
   - Base NOSQL
-    * nom de la base : esportify_messaging
-    * nom des tables : contact_messages
-                       tournaments_requests
+    * nom de la base : esportify
+    * nom des collections : contact_messages
+                            tournament_requests
   - Technologie
     * MongoDB (conteneurisé)
     * Driver PHP MongoDB via un service Symfony dédié
@@ -101,6 +104,7 @@
     `docker compose up --build`
     `npm install`
     `npm run dev`
+    `docker exec -it esportify_web php bin/console doctrine:fixtures:load` à lancer pour regénérer les données en base dans un environnement local.
 9.  **Sécurité**
   - Formulaires : Validation serveur via contraintes Symfony Validator,CSRF activé sur les formulaires, auto‑escape Twig
   - Mots de passe : Encodage via Password Hasher (jamais en clair), validation stricte (8+ caractères, majuscule, minuscule, chiffre)
@@ -114,13 +118,38 @@
   - Rate-limiter : Protection anti-brute-force sur connexion (5 tentatives/15min par IP via symfony/rate-limiter, politique sliding window)
   - À améliorer : En-têtes HTTP de sécurité (CSP, HSTS, X-Frame-Options), logging d'audit, reset password
 10. **Déploiement**
-
-  - **APP_SECRET**
-    * En développement local : Le fichier `.env.local` contient un APP_SECRET sécurisé généré avec `openssl rand -hex 32`
-    * En production : Il faut créer un fichier `.env.local` qui est non committé, ou définir la variable d'environnement `APP_SECRET` sur le serveur
-    * Commande pour générer un nouveau secret : `openssl rand -hex 32`
-    * Ne JAMAIS utiliser `CHANGE_ME_IN_ENV_LOCAL` en production
-    * Ne JAMAIS committer `.env.local` dans Git (déjà présent dans .gitignore)
+  - Déploiement sur fly.io (https://fly.io/)
+  - Adresse de déploiement : https://esportify.fly.dev/
+  - **Architecture de production**
+    * Application : Conteneur Docker (PHP 8.2 + Apache) sur Fly.io
+    * Base de données SQL : PostgreSQL hébergée sur Fly.io
+    * Base de données NoSQL : MongoDB Atlas (plan gratuit)
+    * Fichiers statiques : Uploads éphémères (non persistants)
+    * Tâches planifiées : Cron intégré au conteneur (mise à jour automatique des statuts)
+    * HTTPS : Certificat Let's Encrypt automatique via Fly.io
+  - **Variables d'environnement en production**
+    * `APP_ENV=prod`
+    * `APP_DEBUG=0`
+    * `APP_SECRET` : Généré avec `openssl rand -hex 32` et configuré via `fly secrets`
+    * `DATABASE_URL` : PostgreSQL Fly.io (automatique via `fly postgres attach`)
+    * `MONGODB_URL` : MongoDB Atlas connection string
+  - **Déploiement rapide**
+    ```bash
+    * Installer Fly CLI
+    pwsh -Command "iwr https://fly.io/install.ps1 -useb | iex"
+    
+    * Se connecter
+    fly auth login
+    
+    * Déployer
+    fly deploy
+    ```
+  - **Les Limitations du plan gratuit**
+    * Uploads non persistants (perdus au redéploiement)
+    * 512 MB RAM par machine
+    * Auto-stop après inactivité (démarrage automatique à la première requête)
+  
+  - **Note importante** : Ne JAMAIS committer `.env.local` ou des secrets dans Git
 11. **Conteneurisation** 
   - Contenu :
     * Dockerfile : image PHP 8.2 + extensions (pdo_mysql, mysqli)
@@ -176,7 +205,7 @@
       .   MCD ou diagramme de classe,
       .   Diagramme de cas d’utilisation, Diagrammes de séquence
   - A venir :
-    - Documentation du déploiement
+    - En cours sur IONOS je pense.
     - Lien de l'application déployée (URL) 
 13. **Crédits et Licence**  
   Freepik : Images et icones d'avatars téléchargées en licence gratuite.

@@ -34,7 +34,7 @@ class ContactController extends AbstractController
                 $this->contactService->saveContactMessage($pseudo, $role, $email, $subject, $message);
                 $this->addFlash('success', 'Message envoyé !');
             } catch (\Throwable $e) {
-                $this->addFlash('error', 'Erreur lors de l\'envoi du message : ' . $e->getMessage());
+                $this->addFlash('danger', 'Erreur MongoDB : ' . $e->getMessage());
             }
 
             return $this->redirectToRoute('contact');

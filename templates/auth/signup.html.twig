@@ -12,6 +12,13 @@
 		</div>
 		<!-- Titre de la page -->
 		<h1 class="text-clair2 text-center pt-2">Inscription</h1>
+		{% for type, messages in app.flashes %}
+			{% for message in messages %}
+				<div class="alert alert-{{ type }} text-center my-3">
+					{{ message }}
+				</div>
+			{% endfor %}
+		{% endfor %}
 
 		<!-- Formulaire d'Inscription -->
 		<section class="container-lg section_contact d-flex text_description justify-content-center my-4 mt-4">

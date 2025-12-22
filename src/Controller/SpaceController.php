@@ -31,6 +31,7 @@ class SpaceController extends AbstractController
   {
     $this->denyAccessUnlessGranted('ROLE_ORGANIZER');
 
+    /** @var \App\Entity\Member $user */
     $user = $this->getUser();
 
     $tournaments = $em->getRepository(Tournament::class)->findBy(
@@ -41,13 +42,9 @@ class SpaceController extends AbstractController
     // Afficher les favoris
     $favoritesCollection = $user->getMemberAddFavorites();
     return $this->render('spaces/organizer.html.twig', [
-<<<<<<< Updated upstream
-      'tournaments' => $tournaments
-=======
       'tournaments' => $tournaments,
       'avatarUrl' => $user->getAvatarPath() ?: 'uploads/avatars/default-avatar.jpg',
       'favorites' => $favoritesCollection,
->>>>>>> Stashed changes
     ]);
   }
 

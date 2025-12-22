@@ -2,13 +2,12 @@ services:
   web:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     container_name: esportify_web
     ports:
-      - "8080:80"
+      - "8080:8080"
     volumes:
       - .:/var/www/html
-      - /var/www/html/vendor
     depends_on:
       db:
         condition: service_healthy
@@ -18,13 +17,15 @@ services:
       TZ: Europe/Paris
       DATABASE_URL: "mysql://esportify_user:esportify_pass@db:3306/esportify?serverVersion=8.0&charset=utf8mb4"
       MONGODB_URL: "mongodb://root:rootpass@mongo:27017"
+      CRON_SECRET_TOKEN: "dev_secret_token_change_in_production"
     command: >
       bash -c "
+        composer install --no-interaction &&
         php bin/console doctrine:database:create --if-not-exists &&
         php bin/console doctrine:migrations:migrate --no-interaction ||
         true &&
         php bin/console cache:clear &&
-        apache2-foreground
+        /usr/local/bin/start.sh
         "
   db:
     image: mysql:8.0

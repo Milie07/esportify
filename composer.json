@@ -12,6 +12,7 @@
         "doctrine/dbal": "3.7",
         "doctrine/deprecations": "1.1",
         "doctrine/doctrine-bundle": "2.10",
+        "doctrine/doctrine-fixtures-bundle": "^3.7",
         "doctrine/doctrine-migrations-bundle": "^3.4",
         "doctrine/orm": "2.16",
         "doctrine/persistence": "3",
@@ -99,7 +100,6 @@
         }
     },
     "require-dev": {
-        "doctrine/doctrine-fixtures-bundle": "^3.7",
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-symfony": "^2.0",
         "phpunit/phpunit": "^9.6",

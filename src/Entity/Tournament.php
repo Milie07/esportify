@@ -68,7 +68,6 @@ class Tournament
   private ?string $tagline = null;
 
   #[ORM\Column(name: "created_at", type: Types::DATETIME_IMMUTABLE)]
-  #[Assert\NotNull(message: "La date de création est obligatoire.")]
   private ?\DateTimeImmutable $createdAt = null;
 
   // ENUM('En Attente', 'Validé', 'En Cours', 'Terminé', 'Refusé')
@@ -83,7 +82,6 @@ class Tournament
 
   #[ORM\ManyToOne]
   #[ORM\JoinColumn(name: 'member_id', referencedColumnName: 'member_id', nullable: false, options: ['unsigned' => true])]
-  #[Assert\NotNull(message: "L'organisateur est obligatoire.")]
   private ?Member $organizer = null;
 
   // MEMBER_REGISTER_TOURNAMENT

@@ -114,3 +114,9 @@ api_events:
   path: api/events
   controller: App\Controller\Api\EventApiController::index
   methods: [GET]
+
+# Mise à jour automatique des statuts de tournois (cron)
+admin_update_tournament_status:
+  path: /admin/update-tournaments-status
+  controller: App\Controller\TournamentStatusUpdateController::update
+  methods: [GET, POST]

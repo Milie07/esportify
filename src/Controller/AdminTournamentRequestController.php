@@ -24,17 +24,12 @@ class AdminTournamentRequestController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        $user = $this->getUser();
+        // Un admin voit TOUS les tournois, pas seulement les siens
         $tournaments = $em->getRepository(Tournament::class)->findBy(
-            ['organizer' => $user],
+            [],
             ['createdAt' => 'DESC']
         );
 
-<<<<<<< Updated upstream
-        $messages = $this->tournamentService->getContactMessages();
-        $requests = $this->tournamentService->getAllRequestsGroupedByStatus();
-
-=======
         try {
             $messages = $this->tournamentService->getContactMessages();
             $requests = $this->tournamentService->getAllRequestsGroupedByStatus();
@@ -44,13 +39,12 @@ class AdminTournamentRequestController extends AbstractController
             $messages = [];
             $requests = ['pending' => [], 'validated' => [], 'refused' => [], 'stopped' => []];
         }
-        
+
         /** @var \App\Entity\Member $user */
         $user = $this->getUser();
         $favoritesCollection = $user->getMemberAddFavorites();
         $avatarPath = $user->getAvatarPath() ?: 'uploads/avatars/default-avatar.jpg';
-        
->>>>>>> Stashed changes
+
         return $this->render('spaces/admin.html.twig', [
             'tournaments' => $tournaments,
             'messages' => $messages,

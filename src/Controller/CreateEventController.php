@@ -5,13 +5,15 @@ namespace App\Controller;
 use App\Entity\Tournament;
 use App\Form\TournamentType;
 use App\Service\TournamentService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\{Request, Response};
 
 final class CreateEventController extends AbstractController
 {
     public function __construct(
-        private TournamentService $tournamentService
+        private TournamentService $tournamentService,
+        private EntityManagerInterface $entityManager
     ) {
     }
 
@@ -46,7 +48,7 @@ final class CreateEventController extends AbstractController
 
                 $this->addFlash('success', 'Le tournoi est créé et en attente de validation.');
             } catch (\Throwable $e) {
-                $this->addFlash('error', 'Erreur lors de la création du tournoi : ' . $e->getMessage());
+                $this->addFlash('danger', 'Erreur lors de la création du tournoi : ' . $e->getMessage());
             }
 
             return $this->isGranted('ROLE_ADMIN')
@@ -57,8 +59,39 @@ final class CreateEventController extends AbstractController
         // Affichage du formulaire (GET)
         $template = $this->isGranted('ROLE_ADMIN') ? 'spaces/admin.html.twig' : 'spaces/organizer.html.twig';
 
-        return $this->render($template, [
-            'tournamentForm' => $form->createView(),
-        ]);
+        $data = ['tournamentForm' => $form->createView()];
+
+        if ($this->isGranted('ROLE_ADMIN')) {
+            // Pour l'admin, récupérer tous les tournois
+            $data['tournaments'] = $this->entityManager->getRepository(Tournament::class)->findBy(
+                [],
+                ['createdAt' => 'DESC']
+            );
+            try {
+                $data['messages'] = $this->tournamentService->getContactMessages();
+                $requests = $this->tournamentService->getAllRequestsGroupedByStatus();
+                $data['requestsPending'] = $requests['pending'];
+                $data['requestsValidated'] = $requests['validated'];
+                $data['requestsRefused'] = $requests['refused'];
+                $data['requestsStopped'] = $requests['stopped'];
+            } catch (\Throwable $e) {
+                $data['messages'] = [];
+                $data['requestsPending'] = [];
+                $data['requestsValidated'] = [];
+                $data['requestsRefused'] = [];
+                $data['requestsStopped'] = [];
+            }
+        } else {
+            // Pour l'organisateur, ajouter ses tournois et avatar
+            /** @var \App\Entity\Member $user */
+            $user = $this->getUser();
+            $data['tournaments'] = $this->entityManager->getRepository(Tournament::class)->findBy(
+                ['organizer' => $user],
+                ['createdAt' => 'DESC']
+            );
+            $data['avatarUrl'] = $user->getAvatarPath() ?: 'uploads/avatars/default-avatar.jpg';
+        }
+
+        return $this->render($template, $data);
     }
 }

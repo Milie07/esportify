@@ -1,0 +1,39 @@
+
+# fly.toml app configuration file generated for esportify
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+
+app = "esportify"
+primary_region = "cdg"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  APP_ENV = "prod"
+  PORT = "8080"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+
+  [[http_service.checks]]
+    interval = "30s"
+    timeout = "5s"
+    grace_period = "10s"
+    method = "GET"
+    path = "/"
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 512
+
+# Pas de volume pour l'instant - simplification
+# Les uploads seront temporaires (perdus au redéploiement)
+# TODO: Configurer Cloudinary ou S3 pour la persistance
+# [mounts]
+#   source = "esportify_uploads"
+#   destination = "/var/www/html/var/uploads"
