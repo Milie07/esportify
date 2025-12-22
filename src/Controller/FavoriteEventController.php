@@ -31,7 +31,8 @@ class FavoriteEventController extends AbstractController
             $this->addFlash('danger', 'Erreur lors de l\'ajout aux favoris : ' . $e->getMessage());
         }
       } else {
-          return $this->redirectToRoute('signup', []);
+          $this->addFlash('warning', 'Vous devez être connecté pour ajouter un évènement aux favoris.');
+          return $this->redirectToRoute('app_login');
       }
       return $this->redirectToRoute('events');
     }
@@ -50,8 +51,11 @@ class FavoriteEventController extends AbstractController
         } catch (\Throwable $e) {
             $this->addFlash('danger', 'Erreur lors du retrait des favoris : ' . $e->getMessage());
         }
-      } 
-      return $this->redirectToRoute('player_space');
+        return $this->redirectToRoute('player_space');
+      } else {
+          $this->addFlash('warning', 'Vous devez être connecté pour gérer vos favoris.');
+          return $this->redirectToRoute('app_login');
+      }
     }
 }
 
