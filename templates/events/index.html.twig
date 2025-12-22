@@ -90,11 +90,11 @@
 
 								<div class="mt-2 w-100 d-flex justify-content-between">
 									<a class="register_icone btn" href="{{ path('app_login') }}">
-										<i class="fa-solid fa-user-plus fa-lg text-lightBlue"></i>
+										<i class="fa-solid fa-user-plus fa-lg"></i>
 									</a>
-									<button class="favoris_icone btn">
-										<i class="fa-solid fa-star fa-lg text-lightBlue"></i>
-									</button>
+									<a class="favoris_icone btn" href="{{ path('add_favorite_event' , {'tournamentId': event.id}) }}">
+										<i class="fa-solid fa-star fa-lg {% if event.id in userFavoriteIds %}text-greenFluo{% else %}text-lightBlue{% endif %}"></i>
+									</a>
 								</div>
 							</div>
 						</div>
@@ -138,9 +138,9 @@
 										</a>
 										{# Normalement présent qu'à partir du moment où l'organisateur démarre l'évènement #}
 										{# <button class="btn-custom-sm-green btn btn-greenFluo mb-3" type="button">Rejoindre</button>#}
-										<button class="btn favoris_icone" type="button">
-											<i class="fa-solid fa-star fa-lg text-lightBlue"></i>
-										</button> 
+										<a class="btn favoris_icone" href="{{ path('add_favorite_event' , {'tournamentId': event.id}) }}">
+											<i class="fa-solid fa-star fa-lg {% if event.id in userFavoriteIds %}text-greenFluo{% else %}text-lightBlue{% endif %}"></i>
+										</a> 
 									</div>
 
 									<button class="btn btn-close mb-3" data-bs-dismiss="modal" aria-label="Fermer la fenêtre"></button>

@@ -7,36 +7,43 @@ $theme-colors: map.merge($theme-colors, $custom-theme-colors);
 @import "~bootstrap/scss/bootstrap";
 @import "custom";
 
+
 // MAIN GENERAL
 // boutons
 .btn-custom-lg-green {
-	@include bouton(lg);
+	@include bouton(xl);
 	@include btn-hover($lightBlue, $greenFluo);
 }
 .btn-custom-lg-clair {
-	@include bouton(lg);
+	@include bouton(xl);
 	@include btn-hover($lightBlue, $beige);
 }
 
 .btn-custom-md-green {
-	@include bouton(md);
+	@include bouton(lg);
 	@include btn-hover($lightBlue, $greenFluo);
 }
 
 .btn-custom-md-clair {
-	@include bouton(md);
+	@include bouton(lg);
 	@include btn-hover($lightBlue, $beige);
 }
 
 .btn-custom-sm-green {
-	@include bouton(sm);
+	@include bouton(md);
 	@include btn-hover($lightBlue, $greenFluo);
 }
 
 .btn-custom-sm-clair {
-	@include bouton(sm);
+	@include bouton(md);
 	@include btn-hover($lightBlue, $beige);
 }
+
+.btn-custom {
+  @include bouton(sm);
+  @include btn-hover($lightBlue, $beige);
+}
+
 
 // HEADER
 .navbar .navbar-collapse {
@@ -186,13 +193,13 @@ $theme-colors: map.merge($theme-colors, $custom-theme-colors);
 
 .register_icone i,
 .favoris_icone i {
-	color: $lightBlue !important;
+	color: $lightBlue;
 	transition: all 0.5s ease-in-out;
 
 	&:hover,
 	&:focus {
 		background-color: transparent;
-		color: $greenFluo !important;
+		color: $greenFluo;
 		transform: scale(120%);
 	}
 }
@@ -217,7 +224,6 @@ $theme-colors: map.merge($theme-colors, $custom-theme-colors);
 	max-width: 100%;
 }
 
-
 textarea {
 	min-height: 150px !important;
 }
@@ -238,3 +244,23 @@ textarea {
 	}
 }
 
+// SPACES
+.favorite_list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.favorite_card {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  border-radius: 10px;
+} 
+
+.details_favorites {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+} 

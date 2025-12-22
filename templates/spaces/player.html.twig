@@ -25,9 +25,8 @@
 		<section class="container-lg my-3 my-lg-3 py-2 py-lg-3">
 			<div
 				class="row text_description text-center gap-2 gap-lg-0 mx-auto">
-
 				<!-- Scores  -->
-				<div class="col-12 col-lg-4">
+				<div class="col-12 col-lg-6 mx-auto">
 					<div class="card bg-clair2 rounded-2 text-lightBlue p-3">
 						<h2 class="card-title">Mes Scores 🏆</h2>
 						{# Favoris A venir #}
@@ -35,18 +34,37 @@
 				</div>
 
 				<!-- Favoris -->
-				<div class="col-12 col-lg-4">
-					<div class="card bg-clair2 rounded-2 text-lightBlue p-3">
+				<div class="col-12 col-lg-6 mx-auto">
+					<div class="card bg-clair2 rounded-2 text-lightBlue p-1">
 						<h2 class="card-title">Mes Favoris ⭐</h2>
-						{# Favoris A venir #}
-					</div>
-				</div>
-
-				<!-- Historique -->
-				<div class="col-12 col-lg-4">
-					<div class="card bg-clair2 rounded-2 gap-2 text-lightBlue p-3">
-						<h2>Mon Historique 📜</h2>
-						{# Historique A venir #}
+						{% if favorites is empty %}
+							<p>Tu n'as pas encore ajouté d'évènements en favoris.</p>
+						{% else %}
+							<div class="favorites_list mb-2">
+								{% for favorite in favorites %}
+									{# favorite est un objet MemberAddFavoritesTournament #}
+									{# Pour accéder au tournoi, utilise favorite.tournament #}
+										<div class="favorite_card pb-2"> <img class="thumbnails_spaces" src="{{ asset(favorite.tournament.imagePath ?: 'uploads/tournaments/default-tournament.jpg') }}" alt="Image du tournoi {{ favorite.tournament.title }}">
+										<div class="details_favorites">
+											<h3 class="justify-content-start">{{ favorite.tournament.title }}</h3>
+											<p>Date :
+												{{ favorite.tournament.startAt|date('d/m/Y') }}</p>
+											<div>
+												<a class="btn btn-greenFluo btn-custom" href="{{ path('events', {'id': favorite.tournament.id}) }}">
+													Voir
+												</a>
+												<a class="btn btn-greenFluo btn-custom" href="{{ path('events', {'id': favorite.tournament.id}) }}">
+													<i class="fa-solid fa-user-plus fa-lg text-lightBlue"></i>
+												</a>
+												<a class="btn btn-danger btn-custom" href="{{ path('remove_favorite_event', {'tournamentId': favorite.tournament.id}) }}">
+													<i class="fa-solid fa-trash-can fa-lg text-lightBlue"></i>
+												</a>
+											</div>
+										</div>
+									</div>
+								{% endfor %}
+							</div>
+						{% endif %}
 					</div>
 				</div>
 
@@ -123,6 +141,6 @@
 		<div class="text-center mt-4">
 			<a class="btn-custom-lg-clair btn btn-clair2 mb-4" href="{{ path('app_home') }}">Retour à l'accueil</a>
 		</div>
-    
+
 	</div>
 {% endblock %}

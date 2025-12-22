@@ -6,7 +6,6 @@ use App\Entity\Tournament;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use MongoDB\Client;
 
 class SpaceController extends AbstractController
 {
@@ -18,9 +17,13 @@ class SpaceController extends AbstractController
     $user = $this->getUser();
     $avatarPath = $user->getAvatarPath() ?: 'uploads/avatars/default-avatar.jpg';
 
+    // Afficher les favoris
+    $favoritesCollection = $user->getMemberAddFavorites();
+
     return $this->render('spaces/player.html.twig', [
       'user' => $user,
       'avatarUrl' => $avatarPath,
+      'favorites' => $favoritesCollection,
     ]);
   }
 
@@ -34,10 +37,19 @@ class SpaceController extends AbstractController
       ['organizer' => $user],
       ['createdAt' => 'DESC']
     );
-
+    
+    // Afficher les favoris
+    $favoritesCollection = $user->getMemberAddFavorites();
     return $this->render('spaces/organizer.html.twig', [
+<<<<<<< Updated upstream
       'tournaments' => $tournaments
+=======
+      'tournaments' => $tournaments,
+      'avatarUrl' => $user->getAvatarPath() ?: 'uploads/avatars/default-avatar.jpg',
+      'favorites' => $favoritesCollection,
+>>>>>>> Stashed changes
     ]);
   }
+
 }
   

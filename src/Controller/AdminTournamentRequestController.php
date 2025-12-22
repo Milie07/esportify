@@ -30,9 +30,27 @@ class AdminTournamentRequestController extends AbstractController
             ['createdAt' => 'DESC']
         );
 
+<<<<<<< Updated upstream
         $messages = $this->tournamentService->getContactMessages();
         $requests = $this->tournamentService->getAllRequestsGroupedByStatus();
 
+=======
+        try {
+            $messages = $this->tournamentService->getContactMessages();
+            $requests = $this->tournamentService->getAllRequestsGroupedByStatus();
+        } catch (\Throwable $e) {
+            // Si MongoDB échoue, on affiche quand même la page
+            $this->addFlash('warning', 'Erreur MongoDB : ' . $e->getMessage());
+            $messages = [];
+            $requests = ['pending' => [], 'validated' => [], 'refused' => [], 'stopped' => []];
+        }
+        
+        /** @var \App\Entity\Member $user */
+        $user = $this->getUser();
+        $favoritesCollection = $user->getMemberAddFavorites();
+        $avatarPath = $user->getAvatarPath() ?: 'uploads/avatars/default-avatar.jpg';
+        
+>>>>>>> Stashed changes
         return $this->render('spaces/admin.html.twig', [
             'tournaments' => $tournaments,
             'messages' => $messages,
@@ -40,6 +58,8 @@ class AdminTournamentRequestController extends AbstractController
             'requestsValidated' => $requests['validated'],
             'requestsRefused' => $requests['refused'],
             'requestsStopped' => $requests['stopped'],
+            'favorites' => $favoritesCollection,
+            'avatarUrl' => $avatarPath,
         ]);
     }
 
@@ -147,4 +167,9 @@ class AdminTournamentRequestController extends AbstractController
         $this->addFlash('danger', 'Tournoi terminé.');
         return $this->redirectToRoute('admin_dashboard');
     }
+
+  
+
+
+
 }

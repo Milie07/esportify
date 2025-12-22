@@ -79,7 +79,6 @@ class TournamentRepository extends ServiceEntityRepository
     return $qb->getQuery()->getResult();
   }
 
-
   public function findValidatedFiltered(?string $organizerPseudo, ?string $dateAtIso, ?int $playersCountMin): array
   {
     $statusValue = \App\Enum\CurrentStatus::VALIDE->value;

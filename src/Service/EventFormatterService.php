@@ -70,7 +70,7 @@ class EventFormatterService
         $end = $tournament->getEndAt();
 
         return [
-            'id' => $tournament->getId(),
+            'id' => (int) $tournament->getId(),
             'title' => $tournament->getTitle(),
             'tagline' => $tournament->getTagline(),
             'description' => $tournament->getDescription(),

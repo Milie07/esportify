@@ -54,13 +54,15 @@ h3 {
 
 // BOUTONS ET LIENS
 
-@mixin bouton($size: lg, $txt-color: $lightBlue) {
-	@if $size == lg {
+@mixin bouton($size, $txt-color: $lightBlue) {
+	@if $size == xl {
 		width: 210px;
-	} @else if $size == md {
+	} @else if $size == lg {
 		width: 130px;
-	} @else if $size == sm {
+	} @else if $size == md {
 		width: 100px;
+	} @else if $size == sm {
+		width: 70px;
 	} @else {
 		width: auto;
 	}
@@ -107,4 +109,20 @@ h3 {
 .input_filter::placeholder {
 	color: $lightBlue;
 	opacity: 0.5;
+}
+
+// THUMBNAILS FOR SPACES
+.thumbnails_spaces {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border: solid 1px $darkBlue;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease-in-out;
+
+  &:hover {
+    box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.25);
+    transform: scale(100%);
+  }
 }

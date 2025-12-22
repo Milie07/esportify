@@ -3,117 +3,135 @@
 {% block title %}Espace Organisateur — Esportify
 {% endblock %}
 {% block body %}
-	<div class="container-fluid mx-auto">
-		{% for type, flashes in app.flashes() %}
-			{% for msg in flashes %}
-				<div class="alert alert-{{ type }} text-center">
-					{{ msg }}
-				</div>
-			{% endfor %}
-		{% endfor %}
-		<!-- Avatar Joueur -->
-		{% block img %}
-			<img class="avatar avatar_player d-block mx-auto" src="{{ asset(avatarUrl) }}" alt="avatar">
-		{% endblock %}
-
-		<!-- Titre de la page -->
-		<h1 class="text-center text-beige">Bienvenue
-			<span>{{ app.user.pseudo }}
-				<br>
-				{{ app.user.memberScore}}
-				🏆</span>
-		</h1>
-
-		<!-- Section rapports évènements -->
-		<section class="container-lg my-3 my-lg-3 py-2 py-lg-3">
-			<div
-				class="row text_description text-center gap-2 gap-lg-0 mx-auto">
-
-				<!-- Scores  -->
-				<div class="col-12 col-lg-4">
-					<div class="card bg-clair2 rounded-2 text-lightBlue p-3">
-						<h2 class="card-title">Mes Scores 🏆</h2>
-						{# Favoris A venir #}
-					</div>
-				</div>
-
-				<!-- Favoris -->
-				<div class="col-12 col-lg-4">
-					<div class="card bg-clair2 rounded-2 text-lightBlue p-3">
-						<h2 class="card-title">Mes Favoris ⭐</h2>
-						{# Favoris A venir #}
-					</div>
-				</div>
-
-				<!-- Historique -->
-				<div class="col-12 col-lg-4">
-					<div class="card bg-clair2 rounded-2 gap-2 text-lightBlue p-3">
-						<h2>Mon Historique 📜</h2>
-						{# Historique A venir #}
-					</div>
-				</div>
-
+<div class="container-fluid mx-auto">
+	{% for type, flashes in app.flashes() %}
+		{% for msg in flashes %}
+			<div class="alert alert-{{ type }} text-center">
+				{{ msg }}
 			</div>
-		</section>
+		{% endfor %}
+	{% endfor %}
+	<!-- Avatar Joueur -->
+	{% block img %}
+		<img class="avatar avatar_player d-block mx-auto" src="{{ asset(avatarUrl) }}" alt="avatar">
+	{% endblock %}
 
-		<!-- Section gestion évènements -->
-		<section class="container-lg  my-3 my-lg-3 py-2 py-lg-3">
-			<div class="bg-clair2 rounded-2 justify-content-center p-3 mx-auto">
-				<h2 class="text-center text-lightBlue mb-3">Mes Evènements</h2>
-				<div class="row g-4">
-					{% for tournament in tournaments %}
-						<div class="col-12 col-md-6 col-lg-4">
-							<div class="card align-items-center mx-auto shadow-lg">
-								<div class="ratio ratio-4x3 overflow-hidden">
-									<img class="card-img-top object-fit-cover" src="{{ asset(tournament.getImagePath()) }}" alt="Image de {{ tournament.title }}">
-								</div>
-								<div class="card-body">
-									<h3 class="card-title text-center text-lightBlue">{{ tournament.title }}</h3>
-									<p class="text-description text-center text-darkBlue p-0 m-0">Démarre le
-										<span>{{ tournament.startAt|date('d/m/Y H:i', 'Europe/Paris') }}</span>
-									</p>
-									<p class="text-description text-center text-darkBlue p-0 mb-3">Se termine le
-										<span>{{ tournament.endAt|date('d/m/Y H:i', 'Europe/Paris') }}</span>
-									</p>
+	<!-- Titre de la page -->
+	<h1 class="text-center text-beige">Bienvenue
+		<span>{{ app.user.pseudo }}
+			<br>
+			{{ app.user.memberScore}}
+			🏆</span>
+	</h1>
 
-									{# BADGE DE STATUT #}
-									<span class="badge rounded-pill d-block mx-auto w-50 p-2 mb-3
-										{% if tournament.currentStatus.value == 'En Attente' %} bg-warning text-dark
-										{% elseif tournament.currentStatus.value == 'Validé' %} bg-success
-										{% elseif tournament.currentStatus.value == 'En Cours' %} bg-primary
-										{% elseif tournament.currentStatus.value == 'Terminé' %} bg-secondary
-										{% elseif tournament.currentStatus.value == 'Refusé' %} bg-danger
-										{% endif %}">
-										{{ tournament.currentStatus.value }}
-									</span>
+	<!-- Section rapports évènements -->
+	<section class="container-lg my-3 my-lg-3 py-2 py-lg-3">
+		<div
+			class="row text_description text-center gap-2 gap-lg-0 mx-auto">
 
-									<div class="d-flex justify-content-between ">
-										<a class="btn btn-beige rounded-pill text-lightBlue" href="#">
-											<span class="d-inline-block" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-trigger="hover" data-bs-content="Liste des Inscrits">
-												<i class="fa-solid fa-people-group fa-2xl"></i>
-											</span>
-										</a>
-										<a class="btn btn-beige rounded-pill text-lightBlue" href="#">
-											<span class="d-inline-block" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-trigger="hover" data-bs-content="Modifier l'event">
-												<i class="fa-solid fa-file-pen fa-xl"></i>
-											</span>
-										</a>
-										{# Bouton démarrer : affiché seulement si tournoi validé et dans les 30 min avant #}
-										{% set now = "now"|date("U") %}
-										{% set start = tournament.startAt|date("U") %}
-										{% set diff = start - now %}
-										{% if tournament.currentStatus.value == 'Validé' and diff <= 1800 and diff >= 0 %}
-											<a class="btn btn-greenFluo rounded-pill text-lightBlue" href="#">
-												<span class="d-inline-block" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-trigger="hover" data-bs-content="Démarrer l'event">
-													<i class="fa-solid fa-play fa-xl"></i>
-												</span>
+			<!-- Scores  -->
+			<div class="col-12 col-lg-6 mx-auto">
+				<div class="card bg-clair2 rounded-2 text-lightBlue p-3">
+					<h2 class="card-title">Mes Scores 🏆</h2>
+					{# Favoris A venir #}
+				</div>
+			</div>
+
+			<!-- Favoris -->
+			<div class="col-12 col-lg-6 mx-auto">
+				<div class="card bg-clair2 rounded-2 text-lightBlue p-1">
+					<h2 class="card-title">Mes Favoris ⭐</h2>
+					{% if favorites is empty %}
+						<p>Tu n'as pas encore ajouté d'évènements en favoris.</p>
+					{% else %}
+						<div class="favorites_list pb-2">
+							{% for favorite in favorites %}
+								{# favorite est un objet MemberAddFavoritesTournament #}
+								{# Pour accéder au tournoi, utilise favorite.tournament #}
+									<div class="favorite_card mb-2"> <img class="thumbnails_spaces" src="{{ asset(favorite.tournament.imagePath ?: 'uploads/tournaments/default-tournament.jpg') }}" alt="Image du tournoi {{ favorite.tournament.title }}">
+									<div class="details_favorites">
+										<h3 class="justify-content-start">{{ favorite.tournament.title }}</h3>
+										<p>Date :
+											{{ favorite.tournament.startAt|date('d/m/Y') }}</p>
+										<div>
+											<a class="btn btn-greenFluo btn-custom" href="{{ path('events', {'id': favorite.tournament.id}) }}">
+												Voir
 											</a>
-										{% endif %}
+											<a class="btn btn-greenFluo btn-custom" href="{{ path('events', {'id': favorite.tournament.id}) }}">
+												<i class="fa-solid fa-user-plus fa-lg text-lightBlue"></i>
+											</a>
+											<a class="btn btn-danger btn-custom" href="{{ path('remove_favorite_event', {'tournamentId': favorite.tournament.id}) }}">
+												<i class="fa-solid fa-trash-can fa-lg text-lightBlue"></i>
+											</a>
+										</div>
 									</div>
-
 								</div>
+							{% endfor %}
+						</div>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Section gestion évènements -->
+	<section class="container-lg  my-3 my-lg-3 py-2 py-lg-3">
+		<div class="bg-clair2 rounded-2 justify-content-center p-3 mx-auto">
+			<h2 class="text-center text-lightBlue mb-3">Mes Evènements</h2>
+			<div class="row g-4">
+				{% for tournament in tournaments %}
+					<div class="col-12 col-md-6 col-lg-4">
+						<div class="card align-items-center mx-auto shadow-lg">
+							<div class="ratio ratio-4x3 overflow-hidden">
+								<img class="card-img-top object-fit-cover" src="{{ asset(tournament.getImagePath()) }}" alt="Image de {{ tournament.title }}">
+							</div>
+							<div class="card-body">
+								<h3 class="card-title text-center text-lightBlue">{{ tournament.title }}</h3>
+								<p class="text-description text-center text-darkBlue p-0 m-0">Démarre le
+									<span>{{ tournament.startAt|date('d/m/Y H:i', 'Europe/Paris') }}</span>
+								</p>
+								<p class="text-description text-center text-darkBlue p-0 mb-3">Se termine le
+									<span>{{ tournament.endAt|date('d/m/Y H:i', 'Europe/Paris') }}</span>
+								</p>
+
+								{# BADGE DE STATUT #}
+								<span class="badge rounded-pill d-block mx-auto w-50 p-2 mb-3
+																				{% if tournament.currentStatus.value == 'En Attente' %} bg-warning text-dark
+																				{% elseif tournament.currentStatus.value == 'Validé' %} bg-success
+																				{% elseif tournament.currentStatus.value == 'En Cours' %} bg-primary
+																				{% elseif tournament.currentStatus.value == 'Terminé' %} bg-secondary
+																				{% elseif tournament.currentStatus.value == 'Refusé' %} bg-danger
+																				{% endif %}">
+									{{ tournament.currentStatus.value }}
+								</span>
+
+								<div class="d-flex justify-content-between ">
+									<a class="btn btn-beige rounded-pill text-lightBlue" href="#">
+										<span class="d-inline-block" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-trigger="hover" data-bs-content="Liste des Inscrits">
+											<i class="fa-solid fa-people-group fa-2xl"></i>
+										</span>
+									</a>
+									<a class="btn btn-beige rounded-pill text-lightBlue" href="#">
+										<span class="d-inline-block" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-trigger="hover" data-bs-content="Modifier l'event">
+											<i class="fa-solid fa-file-pen fa-xl"></i>
+										</span>
+									</a>
+									{# Bouton démarrer : affiché seulement si tournoi validé et dans les 30 min avant #}
+									{% set now = "now"|date("U") %}
+									{% set start = tournament.startAt|date("U") %}
+									{% set diff = start - now %}
+									{% if tournament.currentStatus.value == 'Validé' and diff <= 1800 and diff >= 0 %}
+										<a class="btn btn-greenFluo rounded-pill text-lightBlue" href="#">
+											<span class="d-inline-block" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-trigger="hover" data-bs-content="Démarrer l'event">
+												<i class="fa-solid fa-play fa-xl"></i>
+											</span>
+										</a>
+									{% endif %}
+								</div>
+
 							</div>
 						</div>
+<<<<<<< Updated upstream
 					{% else %}
 						<p class="text-center text-lightBlue">Aucun évènement créé pour le moment.</p>
 					{% endfor %}
@@ -134,6 +152,20 @@
 							<label class="" for="tagline">Tagline :
 							</label>
 							<input class="form-control input_filter mb-3" name="tagline" type="text" id="tagline" minlength="15" maxlength="60"></input>
+=======
+					</div>
+				{% else %}
+					<p class="text-center text-lightBlue">Aucun évènement créé pour le moment.</p>
+				{% endfor %}
+			</div>
+			<h2 class="text-center text-lightBlue fs-3 my-3">Créer un évenement 🎉</h2>
+			<!-- Formulaire de Création -->
+			{% if tournamentForm is defined %}
+				{{ form_start(tournamentForm, {'attr': {'class': 'form_contact bg-beige rounded-2 border border-lightBlue text_description text-lightBlue px-5 pt-4 pb-2', 'id': 'searchForm'}}) }}
+				{{ form_errors(tournamentForm) }}
+				<div class="mx-auto">
+					{{ form_row(tournamentForm.title, {'label': 'Titre de l\'évènement :', 'attr': {'class': 'form-control input_filter mb-3'}}) }}
+>>>>>>> Stashed changes
 					</div>
 					<div class="mx-auto">
 						<label class="" for="startAt">Date et Heure de Début :</label><input id="startAt" name="startAt" type="datetime-local" class="form-control input_filter mb-3" required></div>
