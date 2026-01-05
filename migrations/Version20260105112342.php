@@ -21,9 +21,13 @@ final class Version20260105112342 extends AbstractMigration
     {
         // Ajouter l'image du nouveau tournoi "L'Overload" si elle n'existe pas déjà (PostgreSQL compatible)
         $this->addSql("
-            INSERT INTO tournament_images (image_url, code)
-            VALUES ('uploads/tournaments/loverload.jpg', 10)
-            ON CONFLICT (code) DO NOTHING
+            DO $$
+            BEGIN
+                IF NOT EXISTS (SELECT 1 FROM tournament_images WHERE code = 10) THEN
+                    INSERT INTO tournament_images (image_url, code)
+                    VALUES ('uploads/tournaments/loverload.jpg', 10);
+                END IF;
+            END $$;
         ");
 
         // Mettre à jour les dates des tournois existants
@@ -39,33 +43,40 @@ final class Version20260105112342 extends AbstractMigration
 
         // Ajouter le nouveau tournoi "L'Overload" si il n'existe pas déjà (PostgreSQL compatible)
         $this->addSql("
-            INSERT INTO tournament (
-                tournament_image_id,
-                member_id,
-                title,
-                description,
-                start_at,
-                end_at,
-                capacity_gauge,
-                tagline,
-                created_at,
-                current_status
-            )
-            SELECT
-                ti.tournament_image_id,
-                m.member_id,
-                'L''Overload',
-                'Jeux de briques en solo. Dans ce tournoi dédié aux fans de Tétris, tout se joue dans l''ultime combo. Ultra technique, ultra nerveux, Dernier Combo met en scène les meilleurs fighters dans des duels millimétrés. Ici, une erreur, c''est le chaos. Une réussite, c''est l''extase.',
-                TIMESTAMP '2026-03-10 12:00:00',
-                TIMESTAMP '2026-03-11 18:00:00',
-                90,
-                'Une seule brique peut tout changer.',
-                TIMESTAMP '2025-01-02 10:00:00',
-                'Validé'
-            FROM tournament_images ti, member m
-            WHERE ti.code = 10
-              AND m.pseudo = 'HugoOrga'
-              AND NOT EXISTS (SELECT 1 FROM tournament WHERE title = 'L''Overload')
+            DO $$
+            DECLARE
+                v_image_id INT;
+                v_member_id INT;
+            BEGIN
+                IF NOT EXISTS (SELECT 1 FROM tournament WHERE title = 'L''Overload') THEN
+                    SELECT tournament_image_id INTO v_image_id FROM tournament_images WHERE code = 10;
+                    SELECT member_id INTO v_member_id FROM member WHERE pseudo = 'HugoOrga';
+
+                    INSERT INTO tournament (
+                        tournament_image_id,
+                        member_id,
+                        title,
+                        description,
+                        start_at,
+                        end_at,
+                        capacity_gauge,
+                        tagline,
+                        created_at,
+                        current_status
+                    ) VALUES (
+                        v_image_id,
+                        v_member_id,
+                        'L''Overload',
+                        'Jeux de briques en solo. Dans ce tournoi dédié aux fans de Tétris, tout se joue dans l''ultime combo. Ultra technique, ultra nerveux, Dernier Combo met en scène les meilleurs fighters dans des duels millimétrés. Ici, une erreur, c''est le chaos. Une réussite, c''est l''extase.',
+                        TIMESTAMP '2026-03-10 12:00:00',
+                        TIMESTAMP '2026-03-11 18:00:00',
+                        90,
+                        'Une seule brique peut tout changer.',
+                        TIMESTAMP '2025-01-02 10:00:00',
+                        'Validé'
+                    );
+                END IF;
+            END $$;
         ");
     }
 
