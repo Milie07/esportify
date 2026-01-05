@@ -1,23 +1,57 @@
-/* VALIDATION DES FORMULAIRES
-    Première couche de sécurité front 
-    sf Entité HTML MDN 
-*/
-
 // Activation des popovers de Bootstrap
 import * as bootstrap from "bootstrap";
 
 document.addEventListener("DOMContentLoaded", () => {
-	document.querySelectorAll('[data-bs-toggle="popover"]').forEach((element) => {
-		new bootstrap.Popover(element);
+  document.querySelectorAll('[data-bs-toggle="popover"]').forEach((element) => {
+    new bootstrap.Popover(element);
 	});
 });
 
+/* VALIDATION DES FORMULAIRES
+    Première couche de sécurité front 
+*/
 document.addEventListener("DOMContentLoaded", () => {
 	document.querySelectorAll("form.needs-validation").forEach((form) => {
 		// Exclure le formulaire d'inscription pour régler le conflit
 		if (form.id === "searchForm") {
 			return;
 		}
+
+    // Fonction qui gère trim() + la validation + les classes CSS
+    function setValidatedState(input, validationFn) {
+      const value = input.value.trim();
+      const isValid = validationFn(value);
+
+      if (isValid) {
+        input.classList.add("is-valid");
+        input.classList.remove("is-invalid");
+      } else {
+        input.classList.add("is-invalid");
+        input.classList.remove("is-valid");
+      }
+      return isValid;
+    }
+
+    // Validation mot de passe avec un regex
+    function validatePassword(pwdInput) {
+      const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+      return setValidatedState(pwdInput, (val) => regex.test(val));
+    }
+
+    // Validation email avec un regex
+    function validateEmail(emailInput) {
+      const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      return setValidatedState(emailInput, (val) => regex.test(val));
+    }
+
+    // Vérifier que le mot de passe soit égal sur les 2 champs
+    function validateConfirmationPassword(pwdInput, confirmPwdInput) {
+      const pwdVal = pwdInput.value.trim();
+      return setValidatedState(confirmPwdInput, (confirmVal) => {
+        return confirmVal !== "" && confirmVal === pwdVal;
+      });
+    }
+
 		form.addEventListener("submit", (e) => {
 			let isFormValid = true;
 			const pwdInput = form.querySelector("#password");
@@ -25,16 +59,10 @@ document.addEventListener("DOMContentLoaded", () => {
 			const inputs = form.querySelectorAll(
 				'input[type="text"], input[type="search"], input[type="email"], input[type="password"]'
 			);
+
 			inputs.forEach((input) => {
 				if (input.type === "email") {
-					if (!isValidEmail(input.value.trim())) {
-						input.classList.add("is-invalid");
-						input.classList.remove("is-valid");
-						isFormValid = false;
-					} else {
-						input.classList.add("is-valid");
-						input.classList.remove("is-invalid");
-					}
+					if (!validateEmail(input)) isFormValid = false;
 				}
 				if (input.id === "password" && pwdInput) {
 					if (!validatePassword(pwdInput)) isFormValid = false;
@@ -44,6 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
 						isFormValid = false;
 				}
 			});
+
 			if (!isFormValid) {
 				e.preventDefault();
 				e.stopPropagation();

@@ -19,16 +19,16 @@ final class Version20251223140000 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        // Créer la table sessions pour PdoSessionHandler (PostgreSQL)
+        // Créer la table sessions pour PdoSessionHandler (MySQL)
         $this->addSql('
             CREATE TABLE IF NOT EXISTS sessions (
                 sess_id VARCHAR(128) NOT NULL PRIMARY KEY,
-                sess_data BYTEA NOT NULL,
-                sess_time INTEGER NOT NULL,
-                sess_lifetime INTEGER NOT NULL
-            )
+                sess_data BLOB NOT NULL,
+                sess_time INT NOT NULL,
+                sess_lifetime INT NOT NULL,
+                INDEX sessions_sess_time_idx (sess_time)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         ');
-        $this->addSql('CREATE INDEX IF NOT EXISTS sessions_sess_time_idx ON sessions (sess_time)');
     }
 
     public function down(Schema $schema): void
