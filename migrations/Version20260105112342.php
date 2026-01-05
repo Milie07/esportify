@@ -33,16 +33,16 @@ final class Version20260105112342 extends AbstractMigration
             END $$;
         ");
 
-        // Mettre à jour les dates des tournois existants
-        $this->addSql("UPDATE tournament SET start_at = '2026-01-06 10:00:00', end_at = '2026-01-06 20:00:00' WHERE title = 'Iron Arena'");
-        $this->addSql("UPDATE tournament SET start_at = '2026-01-15 10:00:00', end_at = '2026-01-16 10:00:00' WHERE title = 'Neon Rift'");
-        $this->addSql("UPDATE tournament SET start_at = '2026-01-20 10:00:00', end_at = '2026-01-22 10:00:00' WHERE title = 'Pixel Panic'");
-        $this->addSql("UPDATE tournament SET start_at = '2026-01-25 10:00:00', end_at = '2026-01-27 10:00:00' WHERE title = 'Noob Games'");
-        $this->addSql("UPDATE tournament SET start_at = '2026-02-01 10:00:00', end_at = '2026-02-02 10:00:00' WHERE title = 'Eclipse Masters'");
-        $this->addSql("UPDATE tournament SET start_at = '2026-02-15 10:00:00', end_at = '2026-02-16 20:00:00' WHERE title = 'Quantum Bash'");
-        $this->addSql("UPDATE tournament SET start_at = '2026-02-20 10:00:00', end_at = '2026-02-20 20:00:00' WHERE title = 'Pixel Warzone'");
-        $this->addSql("UPDATE tournament SET start_at = '2026-02-25 10:00:00', end_at = '2026-02-26 20:00:00' WHERE title = 'Next Level Cup'");
-        $this->addSql("UPDATE tournament SET start_at = '2026-03-02 12:00:00', end_at = '2026-03-03 18:00:00' WHERE title = 'Dernier Combo'");
+        // Mettre à jour les dates des tournois existants et corriger les statuts
+        $this->addSql("UPDATE tournament SET start_at = '2026-01-06 10:00:00', end_at = '2026-01-06 20:00:00', current_status = 'Validé' WHERE title = 'Iron Arena'");
+        $this->addSql("UPDATE tournament SET start_at = '2026-01-15 10:00:00', end_at = '2026-01-16 10:00:00', current_status = 'Validé' WHERE title = 'Neon Rift'");
+        $this->addSql("UPDATE tournament SET start_at = '2026-01-20 10:00:00', end_at = '2026-01-22 10:00:00', current_status = 'Validé' WHERE title = 'Pixel Panic'");
+        $this->addSql("UPDATE tournament SET start_at = '2026-01-25 10:00:00', end_at = '2026-01-27 10:00:00', current_status = 'Validé' WHERE title = 'Noob Games'");
+        $this->addSql("UPDATE tournament SET start_at = '2026-02-01 10:00:00', end_at = '2026-02-02 10:00:00', current_status = 'Validé' WHERE title = 'Eclipse Masters'");
+        $this->addSql("UPDATE tournament SET start_at = '2026-02-15 10:00:00', end_at = '2026-02-16 20:00:00', current_status = 'Validé' WHERE title = 'Quantum Bash'");
+        $this->addSql("UPDATE tournament SET start_at = '2026-02-20 10:00:00', end_at = '2026-02-20 20:00:00', current_status = 'Validé' WHERE title = 'Pixel Warzone'");
+        $this->addSql("UPDATE tournament SET start_at = '2026-02-25 10:00:00', end_at = '2026-02-26 20:00:00', current_status = 'Validé' WHERE title = 'Next Level Cup'");
+        $this->addSql("UPDATE tournament SET start_at = '2026-03-02 12:00:00', end_at = '2026-03-03 18:00:00', current_status = 'Validé' WHERE title = 'Dernier Combo'");
 
         // Ajouter le nouveau tournoi "L'Overload" si il n'existe pas déjà (PostgreSQL compatible)
         $this->addSql("

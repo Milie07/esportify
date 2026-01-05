@@ -25,7 +25,9 @@ config/jwt/*.pem
 .php-cs-fixer.cache
 
 # Uploads et médias non suivis
-/public/uploads/
+/public/uploads/*
+# Garder les images des tournois (ressources statiques)
+!/public/uploads/tournaments/
 /backups/
 
 # Éditeur & OS
