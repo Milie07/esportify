@@ -10,6 +10,7 @@ node_modules/
 public/uploads/members/
 docs/
 README.md
+
 CONFIGURATION.md
 SCHEMA_ENV_FILES.md
 INSTALLATION_JURY.md
