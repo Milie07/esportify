@@ -25,16 +25,22 @@
     * Organisateur : Espace en dev => Espace Personnel avec historique d'évènements crées, favoris et scores - formulaire de création d'évènement à soumettre et la gestion de ses propres évènements (OK) plus la possibilité de démarrer un évènement.(à venir)
     * Admin : Espace en dev => Dashboard regroupant les mêmes fonctionalités, plus la possibilités de lister tous les inscrits (à venir), de visualiser les messages envoyés depuis la page contact (Ok), les demandes de joueurs pour devenir organisateur ainsi que les demandes d'évènements (modération, validation et refus Ok)
   - Evènements :
-    * CRUD et statuts (En Attente, En cours, Validé, Terminé ou Refusé)
+    * CRUD et statuts (En Attente, En Cours, Validé, Terminé ou Refusé)
+    * Mise à jour automatique des statuts via `TournamentStatusService`
+      - Un tournoi passe automatiquement en "En Cours" quand sa date de début est atteinte
+      - Il passe en "Terminé" quand sa date de fin est dépassée
+      - Service appelé régulièrement (cron ou requêtes utilisateur)
   - Filtre asynchrone :
-    * Filter les évènements par date et heure, organisateurs ou nombre de joueurs sur la page évènements
+    * Filtrer les évènements par date et heure, organisateurs ou nombre de joueurs sur la page évènements
 2.  **Architecture et Technologie**
   - Front-End
     * HTML/CSS/Bootstrap 5.3.6 et Sass 1.92.1, Javascript et WebPackEncore
   - Back-End
     * PHP 8.2, Symfony 5.4, Doctrine ORM, Twig
   - BDD Relationnelle
-    * MariaDB/MySQL (Doctrine Migrations)
+    * Développement : MySQL/MariaDB 8.0 (Docker)
+    * Production : PostgreSQL (Fly.io)
+    * Gestion du schéma : Doctrine Migrations
   - NoSQL
     * MongoDB pour la gestion des messages de la page contact et lagestion des demandes
   - Outils
@@ -42,13 +48,17 @@
 3.  **Pré-Requis**
   - Docker Desktop
   - Git
+  - Fly CLI (pour le déploiement en production)
   Tous les autres outils sont gérés par Docker
 4.  **Installation (Mode conteneurisé)**
-  - Installation Minimale 
+  - Installation Minimale
     * Cloner le repo
     `git clone - <https://github.com/Milie07/esportify.git>`
     `cd esportify`
-    * Les fichiers envoyés dans `public/uploads` ne sont pas versionnésdans Git. Pour le rendu, un dossier complet `uploads/` est fourni àpart dans le projet. Ainsi il faut décompresser le fichier `uploadszip` situé à la racine du projet dans le dossier `docs/` nommé`uploads` puis le glisser dans le dossier `public/`
+  - **Images et fichiers statiques**
+    * Les **images de tournois** (`public/uploads/tournaments/`) sont versionnées dans Git car ce sont des ressources statiques de l'application
+    * Les **uploads utilisateurs** (avatars, etc.) ne sont PAS versionnés et doivent être ajoutés manuellement en développement si nécessaire
+    * Pour restaurer les uploads complets : décompresser `docs/uploads.zip` dans `public/`
   - Lancement de l'application
     - `docker compose build`
     - `docker compose up -d`
@@ -72,12 +82,32 @@
   `APP_DEBUG=0`
 6.  **Base de Données SQL (Mode conteneurisé)**
   La base MariaDB est gérée automatiquement par Docker.
-  - Au lancement du service web, les commandas suivantes s'exécutent :
-  `php bin/console doctrine:database:create --if-not-exists`
-  `php bin/console doctrine:migrations:migrate --no-interaction`
-  - Les données de démonstration proviennent de : 
-  `src/DataFixtures/AppFixtures.php` et sont chargées en BDD 
-  `docker exec -it esportify_web php bin/console doctrine:fixtures:load` à lancer pour regénérer les données en base dans un environnement local.
+
+  - **Migrations (Structure de la base)**
+    * Les migrations créent et modifient la **structure** des tables (colonnes, index, clés étrangères)
+    * Fichiers : `migrations/Version*.php`
+    * Exécution automatique au démarrage du conteneur :
+      ```bash
+      php bin/console doctrine:database:create --if-not-exists
+      php bin/console doctrine:migrations:migrate --no-interaction
+      ```
+    * Les migrations s'appliquent en **développement ET en production**
+    * Pour créer une migration : `php bin/console make:migration`
+
+  - **Fixtures (Données de test)**
+    * Les fixtures insèrent des **données de démonstration** (membres, tournois, rôles, etc.)
+    * Fichier : `src/DataFixtures/AppFixtures.php`
+    * **Uniquement pour le développement** - JAMAIS en production
+    * Chargement manuel :
+      ```bash
+      docker exec -it esportify_web php bin/console doctrine:fixtures:load
+      ```
+    * ⚠️ **ATTENTION** : Cette commande **supprime** toutes les données existantes avant de charger les fixtures
+
+  - **Modifications de données en production**
+    * Pour modifier des données en production, il faut créer une **migration de données**
+    * Exemple : `migrations/Version20260105112342.php` met à jour les dates des tournois 2026
+    * Les migrations de données utilisent des requêtes SQL UPDATE/INSERT dans la méthode `up()`
 7. **Base de Données NoSQL (Mode conteneurisé)** 
   - L'application intègre une base NoSQL MongoDB dédiée à la messagerie et aux intéractions utilisateurs:
   - L'objectif est d'isoler toutes les données liées :
@@ -133,17 +163,54 @@
     * `APP_SECRET` : Généré avec `openssl rand -hex 32` et configuré via `fly secrets`
     * `DATABASE_URL` : PostgreSQL Fly.io (automatique via `fly postgres attach`)
     * `MONGODB_URL` : MongoDB Atlas connection string
-  - **Déploiement rapide**
-    ```bash
-    * Installer Fly CLI
-    pwsh -Command "iwr https://fly.io/install.ps1 -useb | iex"
-    
-    * Se connecter
-    fly auth login
-    
-    * Déployer
-    fly deploy
-    ```
+  - **Workflow de déploiement**
+    1. **Développement local** (MySQL/MariaDB)
+       ```bash
+       # Modifier le code et tester
+       docker-compose up -d
+
+       # Créer une migration si nécessaire
+       docker exec -it esportify_web php bin/console make:migration
+
+       # Tester la migration localement
+       docker exec -it esportify_web php bin/console doctrine:migrations:migrate
+       ```
+
+    2. **Commit et Push**
+       ```bash
+       git add .
+       git commit -m "Description des changements"
+       git push origin main
+       ```
+
+    3. **Déploiement sur Fly.io** (PostgreSQL)
+       ```bash
+       # Installer Fly CLI (première fois uniquement)
+       pwsh -Command "iwr https://fly.io/install.ps1 -useb | iex"
+
+       # Se connecter (première fois uniquement)
+       fly auth login
+
+       # Déployer l'application
+       fly deploy
+
+       # Les migrations s'exécutent automatiquement au démarrage
+       ```
+
+    4. **Vérification post-déploiement**
+       ```bash
+       # Se connecter en SSH à la production
+       flyctl ssh console -a esportify
+
+       # Vérifier les migrations appliquées
+       php bin/console doctrine:migrations:status
+
+       # Vérifier les données
+       php bin/console doctrine:query:sql "SELECT title, start_at, current_status FROM tournament"
+
+       # Quitter
+       exit
+       ```
   - **Les Limitations du plan gratuit**
     * Uploads non persistants (perdus au redéploiement)
     * 512 MB RAM par machine
