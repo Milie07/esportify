@@ -22,10 +22,13 @@ final class Version20260105112342 extends AbstractMigration
         // Ajouter l'image du nouveau tournoi "L'Overload" si elle n'existe pas déjà (PostgreSQL compatible)
         $this->addSql("
             DO $$
+            DECLARE
+                next_id INT;
             BEGIN
                 IF NOT EXISTS (SELECT 1 FROM tournament_images WHERE code = 10) THEN
-                    INSERT INTO tournament_images (image_url, code)
-                    VALUES ('uploads/tournaments/loverload.jpg', 10);
+                    SELECT COALESCE(MAX(tournament_image_id), 0) + 1 INTO next_id FROM tournament_images;
+                    INSERT INTO tournament_images (tournament_image_id, image_url, code)
+                    VALUES (next_id, 'uploads/tournaments/loverload.jpg', 10);
                 END IF;
             END $$;
         ");
