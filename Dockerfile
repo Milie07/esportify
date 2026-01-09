@@ -48,14 +48,18 @@ RUN git config --global --add safe.directory /var/www/html
 # Créer les répertoires nécessaires avant l'installation
 RUN mkdir -p var/cache var/log public/uploads && chmod -R 777 var
 
-# Pour Installer les dépendances Symfony avec les variables d'environnement minimales
-# DATABASE_URL est une fausse valeur juste pour passerl'installation
-ENV APP_ENV=prod \
-    APP_SECRET=dummysecretforbuildonlychangeatruntime \
-    DATABASE_URL=postgresql://dummy:dummy@localhost:5432/dummy \
-    COMPOSER_ALLOW_SUPERUSER=1
+# Variables temporaires pour le build uniquement (ne seront pas dans l'image finale)
+# DATABASE_URL est une fausse valeur juste pour passer l'installation
+ARG APP_ENV=prod
+ARG APP_SECRET=dummysecretforbuildonlychangeatruntime
+ARG DATABASE_URL=postgresql://dummy:dummy@localhost:5432/dummy
 
-RUN composer install --no-interaction --optimize-autoloader --no-dev --no-scripts
+# Seule variable système nécessaire pour Composer
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
+# Installer les dépendances avec les variables temporaires
+RUN APP_ENV=${APP_ENV} APP_SECRET=${APP_SECRET} DATABASE_URL=${DATABASE_URL} \
+    composer install --no-interaction --optimize-autoloader --no-dev --no-scripts
 
 # Copier le fichier autoload_runtime.php pré-généré
 COPY ./vendor_stub/autoload_runtime.php /var/www/html/vendor/autoload_runtime.php

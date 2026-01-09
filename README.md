@@ -158,11 +158,39 @@
     * Tâches planifiées : Cron intégré au conteneur (mise à jour automatique des statuts)
     * HTTPS : Certificat Let's Encrypt automatique via Fly.io
   - **Variables d'environnement en production**
+    ⚠️ **IMPORTANT** : Les variables d'environnement NE SONT PAS hardcodées dans le Dockerfile
+
+    Le Dockerfile utilise `ARG` (variables temporaires de build) au lieu de `ENV` pour respecter les bonnes pratiques Docker et les 12 factors apps. Les vraies credentials sont passées au runtime via :
+
+    * **Option 1 - Fly.io (déploiement actuel)** : Variables configurées via `fly secrets`
+      ```bash
+      fly secrets set APP_ENV=prod
+      fly secrets set APP_SECRET=$(openssl rand -hex 32)
+      fly secrets set DATABASE_URL="postgresql://user:pass@host:5432/db"
+      fly secrets set MONGODB_URL="mongodb://user:pass@host:27017"
+      fly secrets set CRON_SECRET_TOKEN=$(openssl rand -hex 32)
+      ```
+
+    * **Option 2 - Docker standard** : Variables passées au lancement du conteneur
+      ```bash
+      docker run -d \
+        -e APP_ENV=prod \
+        -e APP_SECRET=$(openssl rand -hex 32) \
+        -e DATABASE_URL="postgresql://user:pass@host:5432/db" \
+        -e MONGODB_URL="mongodb://user:pass@host:27017" \
+        -e CRON_SECRET_TOKEN=$(openssl rand -hex 32) \
+        -p 8080:8080 \
+        votre_image:tag
+      ```
+
+    * **Option 3 - Fichier .env.local sur le serveur** : Créer un fichier `.env.local` (non versionné) avec les vraies valeurs
+
+    **Variables requises** :
     * `APP_ENV=prod`
-    * `APP_DEBUG=0`
-    * `APP_SECRET` : Généré avec `openssl rand -hex 32` et configuré via `fly secrets`
-    * `DATABASE_URL` : PostgreSQL Fly.io (automatique via `fly postgres attach`)
-    * `MONGODB_URL` : MongoDB Atlas connection string
+    * `APP_SECRET` : Généré avec `openssl rand -hex 32`
+    * `DATABASE_URL` : URL de connexion à la base de données (PostgreSQL, MySQL, etc.)
+    * `MONGODB_URL` : URL de connexion à MongoDB
+    * `CRON_SECRET_TOKEN` : Token sécurisé pour les tâches planifiées
   - **Workflow de déploiement**
     1. **Développement local** (MySQL/MariaDB)
        ```bash
@@ -191,6 +219,15 @@
        # Se connecter (première fois uniquement)
        fly auth login
 
+       # Configurer les secrets (première fois ou si changement)
+       fly secrets set APP_ENV=prod
+       fly secrets set APP_SECRET=$(openssl rand -hex 32)
+       fly secrets set CRON_SECRET_TOKEN=$(openssl rand -hex 32)
+       # DATABASE_URL et MONGODB_URL sont déjà configurés
+
+       # Vérifier les secrets configurés
+       fly secrets list
+
        # Déployer l'application
        fly deploy
 
@@ -217,14 +254,21 @@
     * Auto-stop après inactivité (démarrage automatique à la première requête)
   
   - **Note importante** : Ne JAMAIS committer `.env.local` ou des secrets dans Git
-11. **Conteneurisation** 
+11. **Conteneurisation**
+  - **Bonnes pratiques Docker**
+    * ⚠️ Le Dockerfile utilise `ARG` au lieu de `ENV` pour les credentials
+    * Les variables d'environnement sensibles (APP_SECRET, DATABASE_URL, etc.) ne sont **pas hardcodées** dans l'image
+    * Les vraies valeurs sont passées au runtime via `docker run -e`, `docker-compose.yml`, ou `fly secrets`
+    * Cela permet de changer de base de données ou de configuration sans reconstruire l'image
+    * Conforme aux **12 factors apps** et aux bonnes pratiques de sécurité Docker
   - Contenu :
-    * Dockerfile : image PHP 8.2 + extensions (pdo_mysql, mysqli)
+    * Dockerfile : image PHP 8.2 + extensions (pdo_mysql, pdo_pgsql, mongodb)
     * docker-compose.yml avec :
       php-fpm (Dockerfile local)
       nginx (reverse proxy)
       mariadb (persistée avec volumes)
       phpmyadmin
+      mongo + mongo-express
       node-builder (build des assets)
   - Volumes partagés 
     * public/

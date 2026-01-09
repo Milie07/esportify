@@ -45,11 +45,9 @@ class FavoriteEventService
       }
 
       $removingFavorite = $this->memberAddFavoritesTournamentRepository->findOneBy(['member' => $member, 'tournament' => $tournament]);
-      
       if (!$removingFavorite) {
         throw new \InvalidArgumentException('Cet évènement n\'est pas dans vos favoris.');
       }
-
       $this->entityManager->remove($removingFavorite);
       $this->entityManager->flush();
     }
