@@ -7,6 +7,10 @@ printenv > /etc/environment || true
 # S'assurer que le fichier de log existe
 touch /var/log/cron.log || true
 
+# Créer les répertoires d'uploads nécessaires (le volume est monté après le build)
+mkdir -p /var/www/html/public/uploads/tournaments/pending
+chown -R www-data:www-data /var/www/html/public/uploads
+
 # Démarrer cron en arrière-plan
 cron || echo "Warning: cron failed to start"
 

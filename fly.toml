@@ -31,9 +31,7 @@ primary_region = "cdg"
   cpus = 1
   memory_mb = 512
 
-# Pas de volume pour l'instant - simplification
-# Les uploads seront temporaires (perdus au redéploiement)
-# TODO: Configurer Cloudinary ou S3 pour la persistance
-# [mounts]
-#   source = "esportify_uploads"
-#   destination = "/var/www/html/var/uploads"
+# Volume persistant pour les uploads
+[mounts]
+  source = "esportify_uploads"
+  destination = "/var/www/html/public/uploads/tournaments"

@@ -31,7 +31,7 @@ final class CreateEventController extends AbstractController
             /** @var \App\Entity\Member $user */
             $user = $this->getUser();
             $file = $form->get('tournamentImage')->getData();
-            $uploadDirectory = $this->getParameter('kernel.project_dir') . '/public/uploads/tournaments/';
+            $uploadDirectory = $this->getParameter('kernel.project_dir') . '/public/uploads/tournaments';
 
             try {
                 $this->tournamentService->createTournament(
@@ -45,7 +45,6 @@ final class CreateEventController extends AbstractController
                     $user,
                     $uploadDirectory
                 );
-
                 $this->addFlash('success', 'Le tournoi est créé et en attente de validation.');
             } catch (\Throwable $e) {
                 $this->addFlash('danger', 'Erreur lors de la création du tournoi : ' . $e->getMessage());

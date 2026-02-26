@@ -31,9 +31,7 @@ config/jwt/*.pem
 /backups/
 
 # Éditeur & OS
-/.idea/
 /.vscode/
-*.iml
 .DS_Store
 Thumbs.db
 ###> phpstan/phpstan ###

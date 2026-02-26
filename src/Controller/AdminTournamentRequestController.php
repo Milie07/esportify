@@ -20,14 +20,22 @@ class AdminTournamentRequestController extends AbstractController
     ) {
     }
 
-    public function index(EntityManagerInterface $em): Response
+    public function index(Request $request, EntityManagerInterface $em): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $limit = 10;
+        $page = max(1, $request->query->getInt('page', 1));
+        $total = $em->getRepository(Tournament::class)->count([]);
+        $totalPages = max(1, (int) ceil($total / $limit));
+        $page = min($page, $totalPages);
 
         // Un admin voit TOUS les tournois, pas seulement les siens
         $tournaments = $em->getRepository(Tournament::class)->findBy(
             [],
-            ['createdAt' => 'DESC']
+            ['createdAt' => 'DESC'],
+            $limit,
+            ($page - 1) * $limit
         );
 
         try {
@@ -45,7 +53,7 @@ class AdminTournamentRequestController extends AbstractController
         $favoritesCollection = $user->getMemberAddFavorites();
         $avatarPath = $user->getAvatarPath() ?: 'uploads/avatars/default-avatar.jpg';
 
-        return $this->render('spaces/admin.html.twig', [
+        $response = $this->render('spaces/admin.html.twig', [
             'tournaments' => $tournaments,
             'messages' => $messages,
             'requestsPending' => $requests['pending'],
@@ -54,7 +62,13 @@ class AdminTournamentRequestController extends AbstractController
             'requestsStopped' => $requests['stopped'],
             'favorites' => $favoritesCollection,
             'avatarUrl' => $avatarPath,
+            'currentPage' => $page,
+            'totalPages' => $totalPages,
         ]);
+
+        $response->headers->set('Cache-Control', 'no-store');
+
+        return $response;
     }
 
     public function show(int $id, EntityManagerInterface $em): Response

@@ -35,7 +35,6 @@ class RegisterControllerTest extends WebTestCase
         ]);
 
         $client->submit($form);
-
         $this->assertResponseRedirects('/login');
         $client->followRedirect();
         $this->assertSelectorExists('.alert-success');

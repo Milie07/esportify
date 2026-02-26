@@ -153,6 +153,31 @@
 				{% endfor %}
 			</div>
 
+			{% if totalPages > 1 %}
+			<nav aria-label="Navigation événements" class="d-flex justify-content-center mt-4">
+				<ul class="pagination mb-0">
+					{% if currentPage > 1 %}
+						<li class="page-item">
+							<a class="page-link bg-darkBlue text-clair2 border-0 rounded-start-pill"
+								href="{{ path('events', {page: currentPage - 1, organizer: filters.organizer, dateAt: filters.dateAt, playersCount: filters.playersCount}) }}">&laquo;</a>
+						</li>
+					{% endif %}
+					{% for p in 1..totalPages %}
+						<li class="page-item">
+							<a class="page-link border-0 {{ p == currentPage ? 'bg-greenFluo text-darkBlue fw-bold' : 'bg-darkBlue text-clair2' }}"
+								href="{{ path('events', {page: p, organizer: filters.organizer, dateAt: filters.dateAt, playersCount: filters.playersCount}) }}">{{ p }}</a>
+						</li>
+					{% endfor %}
+					{% if currentPage < totalPages %}
+						<li class="page-item">
+							<a class="page-link bg-darkBlue text-clair2 border-0 rounded-end-pill"
+								href="{{ path('events', {page: currentPage + 1, organizer: filters.organizer, dateAt: filters.dateAt, playersCount: filters.playersCount}) }}">&raquo;</a>
+						</li>
+					{% endif %}
+				</ul>
+			</nav>
+			{% endif %}
+
 			<div class="text-center mt-4">
 				<a class="btn-custom-lg-clair btn btn-clair2 mb-4" href="{{ path('app_home') }}">Retour à l'accueil</a>
 			</div>

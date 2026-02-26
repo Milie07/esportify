@@ -191,7 +191,6 @@ class TournamentService
         $this->entityManager->flush();
 
         $this->createTournamentRequest($tournament, $organizer);
-
         return $tournament;
     }
 

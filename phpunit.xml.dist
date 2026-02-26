@@ -34,7 +34,17 @@
         <include>
             <directory suffix=".php">src</directory>
         </include>
+        <report>
+            <html outputDirectory="var/coverage" lowUpperBound="50" highLowerBound="80"/>
+            <text outputFile="var/log/coverage.txt" showUncoveredFiles="true"/>
+        </report>
     </coverage>
+
+    <logging>
+        <junit outputFile="var/log/junit.xml"/>
+        <testdoxHtml outputFile="var/log/testdox.html"/>
+        <testdoxText outputFile="var/log/testdox.txt"/>
+    </logging>
 
     <listeners>
         <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener" />

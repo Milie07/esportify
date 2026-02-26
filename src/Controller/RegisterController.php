@@ -37,11 +37,7 @@ final class RegisterController extends AbstractController
 
         // Validation basique
         $errors = $this->userService->validateRegistration(
-            $pseudo,
-            $email,
-            $password,
-            $confirmPassword,
-            (bool) $conditions
+            $pseudo,$email, $password, $confirmPassword,(bool) $conditions
         );
 
         if (!empty($errors)) {
@@ -54,14 +50,7 @@ final class RegisterController extends AbstractController
         // Création de l'utilisateur
         try {
             $this->userService->createUser(
-                $firstName,
-                $lastName,
-                $pseudo,
-                $email,
-                $password,
-                $avatarCode
-            );
-
+                $firstName, $lastName, $pseudo, $email, $password, $avatarCode);
             $this->addFlash('success', 'Compte créé avec succès ! Vous pouvez maintenant vous connecter.');
             return $this->redirectToRoute('app_login');
         } catch (\Throwable $e) {

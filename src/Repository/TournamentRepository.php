@@ -40,7 +40,7 @@ class TournamentRepository extends ServiceEntityRepository
       ->getResult();
   }
 
-  public function findValidatedOrRunning(?string $organizerPseudo = null, ?string $dateAtIso = null, ?int $playersCountMin = null): array
+  public function findValidatedOrRunning(?string $organizerPseudo = null, ?string $dateAtIso = null, ?int $playersCountMin = null, ?int $limit = null, ?int $offset = null): array
   {
     $status = [
       CurrentStatus::VALIDE->value,
@@ -66,7 +66,7 @@ class TournamentRepository extends ServiceEntityRepository
         $dateAtObj = new \DateTimeImmutable($dateAtIso);
         $qb->andWhere('t.startAt >= :dateAt')
           ->setParameter('dateAt', $dateAtObj);
-      } catch (\Throwable $e) {
+      } catch (\Throwable) {
         // date invalide → on ignore (comme tu fais)
       }
     }
@@ -76,7 +76,45 @@ class TournamentRepository extends ServiceEntityRepository
       $qb->andWhere('t.capacityGauge >= :playersCountMin')
         ->setParameter('playersCountMin', $playersCountMin);
     }
+
+    if ($limit !== null) {
+      $qb->setMaxResults($limit);
+    }
+    if ($offset !== null) {
+      $qb->setFirstResult($offset);
+    }
+
     return $qb->getQuery()->getResult();
+  }
+
+  public function countValidatedOrRunning(?string $organizerPseudo = null, ?string $dateAtIso = null, ?int $playersCountMin = null): int
+  {
+    $status = [
+      CurrentStatus::VALIDE->value,
+      CurrentStatus::EN_COURS->value
+    ];
+    $qb = $this->createQueryBuilder('t')
+      ->select('COUNT(t.id)')
+      ->leftJoin('t.organizer', 'o')
+      ->andWhere('t.currentStatus IN (:status)')
+      ->setParameter('status', $status);
+    if ($organizerPseudo) {
+      $qb->andWhere('o.pseudo = :organizerPseudo')
+        ->setParameter('organizerPseudo', $organizerPseudo);
+    }
+    if ($dateAtIso) {
+      try {
+        $dateAtObj = new \DateTimeImmutable($dateAtIso);
+        $qb->andWhere('t.startAt >= :dateAt')
+          ->setParameter('dateAt', $dateAtObj);
+      } catch (\Throwable) {
+      }
+    }
+    if (is_int($playersCountMin)) {
+      $qb->andWhere('t.capacityGauge >= :playersCountMin')
+        ->setParameter('playersCountMin', $playersCountMin);
+    }
+    return (int) $qb->getQuery()->getSingleScalarResult();
   }
 
   public function findValidatedFiltered(?string $organizerPseudo, ?string $dateAtIso, ?int $playersCountMin): array
@@ -102,7 +140,7 @@ class TournamentRepository extends ServiceEntityRepository
         $dateAtObj = new \DateTimeImmutable($dateAtIso);
         $qb->andWhere('t.startAt >= :dateAt')
           ->setParameter('dateAt', $dateAtObj);
-      } catch (\Throwable $e) {
+      } catch (\Throwable) {
       }
     }
 

@@ -76,7 +76,6 @@ class UserService
         $user->setEmail($email);
         $user->setPassword($this->passwordHasher->hashPassword($user, $password));
         $user->setMemberScore(0);
-
         $role = $this->memberRolesRepository->findOneBy(['code' => 'ROLE_PLAYER'])
             ?? $this->memberRolesRepository->findOneBy(['code' => 'PLAYER']);
 
@@ -92,10 +91,8 @@ class UserService
         if ($avatar) {
             $user->setMemberAvatar($avatar);
         }
-
         $this->entityManager->persist($user);
         $this->entityManager->flush();
-
         return $user;
     }
 }

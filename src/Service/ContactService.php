@@ -7,8 +7,7 @@ class ContactService
     public function __construct(
         private MongoDBService $mongoDBService
     ) {
-    }
-
+}
     /**
      * Sauvegarde un message de contact dans MongoDB
      */
@@ -20,7 +19,6 @@ class ContactService
         string $message
     ): void {
         $collection = $this->mongoDBService->getCollection('contact_messages');
-
         $collection->insertOne([
             'pseudo' => $pseudo,
             'role' => $role,

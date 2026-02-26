@@ -256,7 +256,7 @@
   - **Note importante** : Ne JAMAIS committer `.env.local` ou des secrets dans Git
 11. **Conteneurisation**
   - **Bonnes pratiques Docker**
-    * ⚠️ Le Dockerfile utilise `ARG` au lieu de `ENV` pour les credentials
+    * Le Dockerfile utilise `ARG` au lieu de `ENV` pour les credentials
     * Les variables d'environnement sensibles (APP_SECRET, DATABASE_URL, etc.) ne sont **pas hardcodées** dans l'image
     * Les vraies valeurs sont passées au runtime via `docker run -e`, `docker-compose.yml`, ou `fly secrets`
     * Cela permet de changer de base de données ou de configuration sans reconstruire l'image

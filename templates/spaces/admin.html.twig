@@ -211,8 +211,6 @@
 									</td>
 									<td>
 										<strong>{{ t.title }}</strong><br>
-										ID :
-										{{ t.tournamentId }}
 									</td>
 									<td>
 										{{ t.pseudo }}<br>
@@ -266,8 +264,6 @@
 
 									<td>
 										<strong>{{ t.title }}</strong><br>
-										ID :
-										{{ t.tournamentId }}
 									</td>
 
 									<td>
@@ -360,6 +356,31 @@
 						<p class="text-center text-lightBlue">Aucun évènement créé pour le moment.</p>
 					{% endfor %}
 				</div>
+
+			{% if totalPages > 1 %}
+			<nav aria-label="Navigation tournois" class="d-flex justify-content-center mt-4">
+				<ul class="pagination mb-0">
+					{% if currentPage > 1 %}
+						<li class="page-item">
+							<a class="page-link bg-clair2 text-lightBlue border-0 rounded-start-pill"
+								href="{{ path('admin_dashboard', {page: currentPage - 1}) }}">&laquo;</a>
+						</li>
+					{% endif %}
+					{% for p in 1..totalPages %}
+						<li class="page-item">
+							<a class="page-link border-0 {{ p == currentPage ? 'bg-greenFluo text-darkBlue fw-bold' : 'bg-clair2 text-lightBlue' }}"
+								href="{{ path('admin_dashboard', {page: p}) }}">{{ p }}</a>
+						</li>
+					{% endfor %}
+					{% if currentPage < totalPages %}
+						<li class="page-item">
+							<a class="page-link bg-clair2 text-lightBlue border-0 rounded-end-pill"
+								href="{{ path('admin_dashboard', {page: currentPage + 1}) }}">&raquo;</a>
+						</li>
+					{% endif %}
+				</ul>
+			</nav>
+			{% endif %}
 				<h2 class="text-center text-lightBlue fs-3 my-3">Créer un évenement 🎉</h2>
 			<!-- Formulaire de Création -->
 			{% if tournamentForm is defined %}

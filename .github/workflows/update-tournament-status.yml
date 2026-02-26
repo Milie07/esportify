@@ -35,12 +35,12 @@ jobs:
             echo "Response Body: $body"
 
             if [ "$http_code" = "200" ]; then
-              echo "✅ Tournament statuses updated successfully"
+              echo "Tournament statuses updated successfully"
               success=true
             else
-              echo "❌ Tentative $attempt échouée (HTTP $http_code)"
+              echo "Tentative $attempt échouée (HTTP $http_code)"
               if [ $attempt -lt $max_attempts ]; then
-                echo "⏳ Attente de 10 secondes avant nouvelle tentative..."
+                echo "Attente de 10 secondes avant nouvelle tentative..."
                 sleep 10
               fi
               attempt=$((attempt + 1))
@@ -48,7 +48,7 @@ jobs:
           done
 
           if [ "$success" = "false" ]; then
-            echo "💥 Échec après $max_attempts tentatives"
+            echo "Échec après $max_attempts tentatives"
             exit 1
           fi
 

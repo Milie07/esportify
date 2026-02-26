@@ -40,8 +40,14 @@ final class Version20251203133333 extends AbstractMigration
 
         // Clés étrangères
         $this->addSql('ALTER TABLE `member` ADD CONSTRAINT FK_70E4FA78C610EDD5 FOREIGN KEY (member_avatar_id) REFERENCES member_avatars (member_avatar_id) ON DELETE SET NULL');
-        $this->addSql('ALTER TABLE `member` ADD CONSTRAINT FK_70E4FA7869F79538 FOREIGN KEY (member_role_id) REFERENCES member_roles (member_role_id)');
-        $this->addSql('ALTER TABLE tournament ADD CONSTRAINT FK_BD5FB8D9DD1BC388 FOREIGN KEY (tournament_image_id) REFERENCES tournament_images (tournament_image_id) ON DELETE SET NULL');
+        $this->addSql('
+        ALTER TABLE `member` 
+        ADD CONSTRAINT FK_70E4FA7869F79538 
+        FOREIGN KEY (member_role_id) 
+        REFERENCES member_roles (member_role_id)'
+        );
+        $this->addSql('
+        ALTER TABLE tournament ADD CONSTRAINT FK_BD5FB8D9DD1BC388 FOREIGN KEY (tournament_image_id) REFERENCES tournament_images (tournament_image_id) ON DELETE SET NULL');
         $this->addSql('ALTER TABLE tournament ADD CONSTRAINT FK_BD5FB8D97597D3FE FOREIGN KEY (member_id) REFERENCES `member` (member_id)');
         $this->addSql('ALTER TABLE member_participate_tournament ADD CONSTRAINT FK_89D6C1397597D3FE FOREIGN KEY (member_id) REFERENCES `member` (member_id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE member_participate_tournament ADD CONSTRAINT FK_89D6C13933D1A3E7 FOREIGN KEY (tournament_id) REFERENCES tournament (tournament_id) ON DELETE CASCADE');

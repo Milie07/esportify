@@ -29,7 +29,12 @@ class EventsController extends AbstractController
     $playersCount = $request->query->get('playersCount');
     $playersCount = ($playersCount !== null && $playersCount !== '') ? (int) $playersCount : null;
 
-    $tournaments = $tournamentRepository->findValidatedOrRunning($organizer, $dateAt, $playersCount);
+    $limit = 12;
+    $page = max(1, $request->query->getInt('page', 1));
+    $total = $tournamentRepository->countValidatedOrRunning($organizer, $dateAt, $playersCount);
+    $totalPages = max(1, (int) ceil($total / $limit));
+    $page = min($page, $totalPages);
+    $tournaments = $tournamentRepository->findValidatedOrRunning($organizer, $dateAt, $playersCount, $limit, ($page - 1) * $limit);
     $organizers = $tournamentRepository->findOrganizersForValidatedOrRunning();
 
     $eventsData = $this->eventFormatter->formatTournaments($tournaments);
@@ -51,7 +56,9 @@ class EventsController extends AbstractController
         'dateAt' => $dateAt,
         'playersCount' => $playersCount,
       ],
-      'userFavoriteIds' => $userFavoritesIds
+      'userFavoriteIds' => $userFavoritesIds,
+      'currentPage' => $page,
+      'totalPages' => $totalPages,
     ]);
   }
 }

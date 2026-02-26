@@ -1,12 +1,10 @@
 // Charte Graphique Couleurs
-
 $darkBlue: #043644;
 $lightBlue: #08556b;
 $greenFluo: #03c490;
 $beige: #dadaca;
 $clair1: #f5f5d9;
 $clair2: #fcfdf2;
-
 // Création d'un objet qui reprendra notre palette perso
 $custom-theme-colors: (
 	"darkBlue": $darkBlue,
@@ -16,7 +14,6 @@ $custom-theme-colors: (
 	"clair1": $clair1,
 	"clair2": $clair2,
 );
-
 // Boucle ForEach qui règle les bug concernant les customisations des couleurs des background et des textes.
 // Pour chaque paire clé/valeur dans custom-theme-colors alors je créé la classe bg et la classe texte ou seront égale la clé et la valeur
 @each $key, $val in $custom-theme-colors {
@@ -27,7 +24,6 @@ $custom-theme-colors: (
 		color: $val;
 	}
 }
-
 // Charte Graphique Polices
 $font-family: "Roboto Flex", sans-serif;
 $header-font-family: "Tektur", sans-serif;
