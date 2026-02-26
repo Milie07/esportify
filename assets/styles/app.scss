@@ -78,7 +78,7 @@ $theme-colors: map.merge($theme-colors, $custom-theme-colors);
 
 // Avatar
 .player_trigger {
-	display: inline-flex; /* pas block, pas column */
+	display: inline-flex; 
 	align-items: center;
 	gap: 0.5rem;
 	white-space: nowrap; /* évite les retours en tablette */

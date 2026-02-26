@@ -80,7 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		});
 	});
 
-	/* FILTRE ASYNCHRONE 
+	/* FILTRE ASYNCHRONE - Code "mort" remplacer par une version backend 
   via la BDD
 */
 	const ENDPOINT = "/api/events";
@@ -225,7 +225,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	}
 	initEvents();
 
-	// MODALE "DETAIL D'UN EVENEMENT"
+	// MODALE "DETAIL D'UN EVENEMENT" Code "mort" remplacé par une version backend
 	const modalEl = document.getElementById("modalEvent");
 	const elsModal = {
 		img: document.getElementById("modalEventImg"),

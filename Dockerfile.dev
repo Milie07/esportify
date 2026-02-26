@@ -27,10 +27,6 @@ RUN echo "date.timezone=Europe/Paris" > /usr/local/etc/php/conf.d/timezone.ini \
 RUN pecl install mongodb \
   && docker-php-ext-enable mongodb
 
-# Installer Xdebug pour le debug (optionnel en dev)
-RUN pecl install xdebug \
-  && docker-php-ext-enable xdebug
-
 # Activer le mod_rewrite (nécessaire pour Symfony)
 RUN a2enmod rewrite
 

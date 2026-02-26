@@ -23,7 +23,7 @@ class EventsController extends AbstractController
   ): Response {
     // Note: updateAllStatus() est désormais géré par un cron (voir UpdateTournamentStatusCommand)
     // Cela évite d'exécuter findAll() + flush() à chaque requête HTTP
-
+    // Filtre de recherche (organizer, dateAt, playersCount)
     $organizer = $request->query->get('organizer') ?: null;
     $dateAt = $request->query->get('dateAt') ?: null;
     $playersCount = $request->query->get('playersCount');
@@ -38,7 +38,9 @@ class EventsController extends AbstractController
     $organizers = $tournamentRepository->findOrganizersForValidatedOrRunning();
 
     $eventsData = $this->eventFormatter->formatTournaments($tournaments);
-
+    
+    
+    // Récupération des IDs des tournois favoris de l'utilisateur connecté
     /** @var \App\Entity\Member|null $user */
     $user = $this->getUser();
     $userFavoritesIds = [];
@@ -46,8 +48,7 @@ class EventsController extends AbstractController
       $favorites = $memberAddFavoritesTournamentRepository->findBy(['member' => $user]);
       $userFavoritesIds = array_map(fn($fav) => (int) $fav->getTournament()->getId(), $favorites);
     }
-
-
+    
     return $this->render('events/index.html.twig', [
       'events' => $eventsData,
       'organizers' => $organizers,
@@ -59,6 +60,7 @@ class EventsController extends AbstractController
       'userFavoriteIds' => $userFavoritesIds,
       'currentPage' => $page,
       'totalPages' => $totalPages,
-    ]);
-  }
-}
+      ]);
+      }
+      }
+      

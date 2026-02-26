@@ -29,7 +29,7 @@
     * Mise à jour automatique des statuts via `TournamentStatusService`
       - Un tournoi passe automatiquement en "En Cours" quand sa date de début est atteinte
       - Il passe en "Terminé" quand sa date de fin est dépassée
-      - Service appelé régulièrement (cron ou requêtes utilisateur)
+      - Service appelé régulièrement (cron)
   - Filtre asynchrone :
     * Filtrer les évènements par date et heure, organisateurs ou nombre de joueurs sur la page évènements
 2.  **Architecture et Technologie**
@@ -55,16 +55,11 @@
     * Cloner le repo
     `git clone - <https://github.com/Milie07/esportify.git>`
     `cd esportify`
-  - **Images et fichiers statiques**
-    * Les **images de tournois** (`public/uploads/tournaments/`) sont versionnées dans Git car ce sont des ressources statiques de l'application
-    * Les **uploads utilisateurs** (avatars, etc.) ne sont PAS versionnés et doivent être ajoutés manuellement en développement si nécessaire
-    * Pour restaurer les uploads complets : décompresser `docs/uploads.zip` dans `public/`
-  - Lancement de l'application
+  - Création des conteneurs et Lancement de l'application en developpement
     - `docker compose build`
     - `docker compose up -d`
     ou `docker-compose up --build`
     - `docker exec -it esportify_web php bin/console doctrine:fixtures:load` à lancer pour regénérer les données en base dans un environnement local.
-    - Les images de tests sont dans un dossier nommé `uploads.zip` situé dans le dossier `docs/upload/` à décompresser et à charger en local dans le dossier `public`pour les initialiser via la BDD.
   - Accès
     * Accès à l'application Symfony -> conteneur esportify_web (http:/localhost:8080)
     * Accès à la base de donnée phpmyadmin -> conteneuresportify_phpmyadmin (http://localhost:8081)
@@ -81,7 +76,8 @@
   `APP_ENV=prod`
   `APP_DEBUG=0`
 6.  **Base de Données SQL (Mode conteneurisé)**
-  La base MariaDB est gérée automatiquement par Docker.
+  - En developpement, la base MariaDB est gérée automatiquement par Docker.
+  - En Prod la base de donnée passe en PostGreSQL avec Fly.io, MySQL n'étant pas géré par Fly. (syntaxe qui diffère)
 
   - **Migrations (Structure de la base)**
     * Les migrations créent et modifient la **structure** des tables (colonnes, index, clés étrangères)
@@ -106,8 +102,7 @@
 
   - **Modifications de données en production**
     * Pour modifier des données en production, il faut créer une **migration de données**
-    * Exemple : `migrations/Version20260105112342.php` met à jour les dates des tournois 2026
-    * Les migrations de données utilisent des requêtes SQL UPDATE/INSERT dans la méthode `up()`
+
 7. **Base de Données NoSQL (Mode conteneurisé)** 
   - L'application intègre une base NoSQL MongoDB dédiée à la messagerie et aux intéractions utilisateurs:
   - L'objectif est d'isoler toutes les données liées :
@@ -121,13 +116,14 @@
                             tournament_requests
   - Technologie
     * MongoDB (conteneurisé)
-    * Driver PHP MongoDB via un service Symfony dédié
+    * Driver PHP MongoDB via un service Symfony dédié (MongoDBService.php)
     * Stockage flexible adapté aux données relationnelles
   - Collections 
     * contact_messages
     * tournaments_requests
     * admin_messages (à venir)
     * threads_events (optionnelle)  
+
 8.  **Lancement en développement**
   L'application est entièrement conteneurisée
   - Démarrage complet (Apache + PHP + MySQL + phpMyAdmin)
@@ -135,18 +131,18 @@
     `npm install`
     `npm run dev`
     `docker exec -it esportify_web php bin/console doctrine:fixtures:load` à lancer pour regénérer les données en base dans un environnement local.
+
 9.  **Sécurité**
   - Formulaires : Validation serveur via contraintes Symfony Validator,CSRF activé sur les formulaires, auto‑escape Twig
   - Mots de passe : Encodage via Password Hasher (jamais en clair), validation stricte (8+ caractères, majuscule, minuscule, chiffre)
-  - Injections SQL : Protection via Doctrine ORM avec requêtes paramétrées (QueryBuilder + setParameter)
+  - Injections SQL : Protection via Doctrine ORM avec des requêtes préparées (QueryBuilder + setParameter)
   - Sanitization front : Fonctions JS de nettoyage (prévention XSS debase) en complément
   - XSS : Service InputSanitizer dédié (strip_tags, validation email, etc.) + auto-escape Twig
   - Upload de fichiers : Validation stricte via FileUploadService (whitelist MIME, taille max 5MB, suppression métadonnées EXIF, noms aléatoires sécurisés)
   - Accès : Access_control par rôle (RBAC), hiérarchie ADMIN > ORGANIZER > PLAYER, contrôles is_granted() et denyAccessUnlessGranted()
-  - Sessions : Timeout 30min, cookie SameSite:lax (protection CSRF), remember_me 7 jours max
-  - Logs & erreurs : Monolog configuré, environnement prod sans debug
+  - Sessions : Timeout 30min, cookies (protection CSRF), remember_me 7 jours max
   - Rate-limiter : Protection anti-brute-force sur connexion (5 tentatives/15min par IP via symfony/rate-limiter, politique sliding window)
-  - À améliorer : En-têtes HTTP de sécurité (CSP, HSTS, X-Frame-Options), logging d'audit, reset password
+
 10. **Déploiement**
   - Déploiement sur fly.io (https://fly.io/)
   - Adresse de déploiement : https://esportify.fly.dev/
@@ -154,15 +150,17 @@
     * Application : Conteneur Docker (PHP 8.2 + Apache) sur Fly.io
     * Base de données SQL : PostgreSQL hébergée sur Fly.io
     * Base de données NoSQL : MongoDB Atlas (plan gratuit)
-    * Fichiers statiques : Uploads éphémères (non persistants)
-    * Tâches planifiées : Cron intégré au conteneur (mise à jour automatique des statuts)
+    * Volume persistant pour les images de tournois
+    * Tâches planifiées : Cron interne intégré au conteneur (mise à jour automatique des statuts)
+    * Cron défini via GitHub Actions pour palier à l'arrêt des machines et donc du Cron interne -> Vérif des statuts toutes les 5 minutes
     * HTTPS : Certificat Let's Encrypt automatique via Fly.io
   - **Variables d'environnement en production**
     ⚠️ **IMPORTANT** : Les variables d'environnement NE SONT PAS hardcodées dans le Dockerfile
 
-    Le Dockerfile utilise `ARG` (variables temporaires de build) au lieu de `ENV` pour respecter les bonnes pratiques Docker et les 12 factors apps. Les vraies credentials sont passées au runtime via :
+    Le Dockerfile utilise `ARG` (variables temporaires de build) au lieu de `ENV` pour respecter les bonnes pratiques Docker.
+    Les vraies credentials sont passées au runtime via :
 
-    * **Option 1 - Fly.io (déploiement actuel)** : Variables configurées via `fly secrets`
+    * **Production - Fly.io (déploiement actuel)** : Variables configurées via `fly secrets`
       ```bash
       fly secrets set APP_ENV=prod
       fly secrets set APP_SECRET=$(openssl rand -hex 32)
@@ -171,7 +169,7 @@
       fly secrets set CRON_SECRET_TOKEN=$(openssl rand -hex 32)
       ```
 
-    * **Option 2 - Docker standard** : Variables passées au lancement du conteneur
+    * **Developpement - Docker standard** : Variables passées au lancement du conteneur
       ```bash
       docker run -d \
         -e APP_ENV=prod \
@@ -253,15 +251,7 @@
     * 512 MB RAM par machine
     * Auto-stop après inactivité (démarrage automatique à la première requête)
   
-  - **Note importante** : Ne JAMAIS committer `.env.local` ou des secrets dans Git
 11. **Conteneurisation**
-  - **Bonnes pratiques Docker**
-    * Le Dockerfile utilise `ARG` au lieu de `ENV` pour les credentials
-    * Les variables d'environnement sensibles (APP_SECRET, DATABASE_URL, etc.) ne sont **pas hardcodées** dans l'image
-    * Les vraies valeurs sont passées au runtime via `docker run -e`, `docker-compose.yml`, ou `fly secrets`
-    * Cela permet de changer de base de données ou de configuration sans reconstruire l'image
-    * Conforme aux **12 factors apps** et aux bonnes pratiques de sécurité Docker
-  - Contenu :
     * Dockerfile : image PHP 8.2 + extensions (pdo_mysql, pdo_pgsql, mongodb)
     * docker-compose.yml avec :
       php-fpm (Dockerfile local)
@@ -275,50 +265,8 @@
     * var/
     * vendor/
     * node_modules/
-  - Environnement Docker 
-    DATABASE_URL
-    `DATABASE_URL="mysql://esportify_user:esportify_pass@db:3306esportify?serverVersion=8.0&charset=utf8mb4"`
-    MONGODB_URL
-    `MONGODB_URL: "mongodb://root:rootpass@mongo:27017"`
-  - Lancement en mode conteneurisé 
-    Voir la section 4. **Installation**
-  - Structure et choix
-  Fourniture d'une stack complète et reproductible PHP-FPM / Apache,MariaDB, phpMyAdmin. La stack utilise le bind-mount du code source mais isole le dossier `vendor/` dans un volume anonyme. 
-  J'ai fait ce choix car le volume.:/var/www/html de mon docker-composeinitial écrasait les vendor installés dans l'image. Ainsi pendant lebuild, Composer installait /var/www/html/vendor sauf qu'au moment delancer le conteneur Docker remplaçait tout par /var/www/html du dossier en local. Et comme il n'y était pas, Symfony plantait `Dependencies aremissing. Try running "composer install".`. En choisissant depositionner le dossier `vendor/` en volume anonyme, il n'est plus écrasé par la machine au moment du build et Symfony démarre sans problème. (Sf -> Bind‑mounts : https://docs.docker.com/storagebind-mounts/, Volumes : https://docs.docker.com/storage/volumes/)
-    * Configuration utilisée :
-    `volumes:`
-    `.:/var/www/html # bind-mount du code`
-    `/var/www/html/vendor # volume anonyme qui isole vendor/`
-    - Avantages et Inconvénients :
-      - Avantages
-        * Modifications instantanées du code Symfony
-        * vendor/ géré par Docker -> pas d'incohérence entre les  systèmes
-        * Composer fonctionne toujours dans le conteneur 
-        * ne pas avoir à exécuter `composer install` en local
-      -  Inconvénients
-        * Le dossier `vendor` n'apparait plus en local
-        * Toute mise à jour des dépendances doit se faire dans le  conteneur avec la commande: 
-        `docker exec -it esportify_web composer install`
-12. **Livrables RNCP**
-  - A la racine du projet
-    - README
-    - Fichier SQL de création de la base
-  - Dans le dossier `docs/maquettes/` à la racine du projet
-    -  Charte graphique (PDF : palette, polices)
-    -  Exports des maquettes : Wireframes (3 mobiles, 3 desktop) et  Mockups (3 mobiles, 3 desktop) 
-    - Diagrammes : MCD, MLD, MPD, Diagramme de Séquence et User_Case
-  - Sur la Copie à rendre
-    - Dépôt GitHub public
-    - Lien de gestion de projet
-    - Documentation technique : 
-      .   Réflexions initiales & choix techniques, 
-      .   Configuration de l’environnement, 
-      .   MCD ou diagramme de classe,
-      .   Diagramme de cas d’utilisation, Diagrammes de séquence
-  - A venir :
-    - En cours sur IONOS je pense.
-    - Lien de l'application déployée (URL) 
-13. **Crédits et Licence**  
+
+12. **Crédits et Licence**  
   Freepik : Images et icones d'avatars téléchargées en licence gratuite.
   https://fr.freepik.com/ 
   Font Awesome : Autres icônes 

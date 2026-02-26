@@ -175,9 +175,4 @@ class AdminTournamentRequestController extends AbstractController
         $this->addFlash('danger', 'Tournoi terminé.');
         return $this->redirectToRoute('admin_dashboard');
     }
-
-  
-
-
-
 }
