@@ -42,7 +42,7 @@ class ContactType extends AbstractType
                 'label' => 'Pseudo',
                 'attr' => [
                     'class' => 'form-control input_filter mb-3',
-                    'placeholder' => 'Votre pseudo',
+                    'placeholder' => 'Votre pseudo (facultatif)',
                     'minlength' => 2,
                     'maxlength' => 50,
                 ],
@@ -64,9 +64,9 @@ class ContactType extends AbstractType
             ->add('role', ChoiceType::class, [
                 'label' => 'Qui êtes-vous ?',
                 'choices' => [
-                    'Un visiteur' => 'visiteur',
-                    'Un joueur' => 'joueur',
-                    'Un organisateur' => 'organisateur',
+                    'Un visiteur' => 'Visiteur',
+                    'Un joueur' => 'Joueur',
+                    'Un organisateur' => 'Organisateur',
                 ],
                 'expanded' => true,
                 'multiple' => false,

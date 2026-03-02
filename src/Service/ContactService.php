@@ -12,7 +12,7 @@ class ContactService
      * Sauvegarde un message de contact dans MongoDB
      */
     public function saveContactMessage(
-        string $pseudo,
+        ?string $pseudo,
         string $role,
         string $email,
         string $subject,
