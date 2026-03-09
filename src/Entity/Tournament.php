@@ -224,12 +224,12 @@ class Tournament
     return $this;
   }
 
-  public function getTournamentImage(): TournamentImages
+  public function getTournamentImage(): ?TournamentImages
   {
     return $this->tournamentImage;
   }
 
-  public function setTournamentImage(TournamentImages $tournamentImage): static
+  public function setTournamentImage(?TournamentImages $tournamentImage): static
   {
     $this->tournamentImage = $tournamentImage;
 

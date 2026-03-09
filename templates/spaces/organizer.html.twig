@@ -81,7 +81,7 @@
 			<div class="row g-4">
 				{% for tournament in tournaments %}
 					<div class="col-12 col-md-6 col-lg-4">
-						<div class="card align-items-center mx-auto shadow-lg">
+						<div class="card align-items-center mx-auto">
 							<div class="ratio ratio-4x3 overflow-hidden">
 								<img class="card-img-top object-fit-cover" src="{{ asset(tournament.getImagePath()) }}" alt="Image de {{ tournament.title }}">
 							</div>
@@ -96,12 +96,12 @@
 
 								{# BADGE DE STATUT #}
 								<span class="badge rounded-pill d-block mx-auto w-50 p-2 mb-3
-																				{% if tournament.currentStatus.value == 'En Attente' %} bg-warning text-dark
-																				{% elseif tournament.currentStatus.value == 'Validé' %} bg-success
-																				{% elseif tournament.currentStatus.value == 'En Cours' %} bg-primary
-																				{% elseif tournament.currentStatus.value == 'Terminé' %} bg-secondary
-																				{% elseif tournament.currentStatus.value == 'Refusé' %} bg-danger
-																				{% endif %}">
+																														{% if tournament.currentStatus.value == 'En Attente' %} bg-warning text-dark
+																														{% elseif tournament.currentStatus.value == 'Validé' %} bg-success
+																														{% elseif tournament.currentStatus.value == 'En Cours' %} bg-primary
+																														{% elseif tournament.currentStatus.value == 'Terminé' %} bg-secondary
+																														{% elseif tournament.currentStatus.value == 'Refusé' %} bg-danger
+																														{% endif %}">
 									{{ tournament.currentStatus.value }}
 								</span>
 
@@ -136,10 +136,11 @@
 					<p class="text-center text-lightBlue">Aucun évènement créé pour le moment.</p>
 				{% endfor %}
 			</div>
-			<h2 class="text-center text-lightBlue fs-3 my-3">Créer un évenement 🎉</h2>
-			<!-- Formulaire de Création -->
-			{% if tournamentForm is defined %}
-				{{ form_start(tournamentForm, {'attr': {'class': 'form_contact bg-beige rounded-2 border border-lightBlue text_description text-lightBlue px-5 pt-4 pb-2', 'id': 'searchForm'}}) }}
+			<div class="bg-beige rounded-2 border border-lightBlue justify-content-center p-3 mx-auto my-2">
+				<h2 class="text-center text-lightBlue fs-3 my-3">Créer un évenement 🎉</h2>
+				<!-- Formulaire de Création -->
+				{% if tournamentForm is defined %}
+					{{ form_start(tournamentForm, {'attr': {'class': 'form_contact bg-clair2 rounded-2 border border-lightBlue text_description text-lightBlue px-5 pt-4 pb-2', 'id': 'searchForm'}}) }}
 					{{ form_errors(tournamentForm) }}
 					<div class="mx-auto">
 						{{ form_row(tournamentForm.title, {'label': 'Titre de l\'évènement :', 'attr': {'class': 'form-control input_filter mb-3'}}) }}
@@ -174,9 +175,9 @@
 					</div>
 				{{ form_end(tournamentForm) }}
 			{% else %}
-				<p class="text-center text-lightBlue"><a href="{{ path('event_create') }}" class="btn-custom-sm-green btn btn-greenFluo">Créer un tournoi</a></p>
+				<p class="text-center text-lightBlue"><a href="{{ path('event_create') }}" class="btn-custom-lg-green btn btn-greenFluo">Créer un tournoi</a></p>
 			{% endif %}
-			</div>
+      </div>
 		</section>
 
 		<!-- Section gestion infos perso -->

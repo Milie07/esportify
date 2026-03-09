@@ -167,7 +167,6 @@ class TournamentService
             $uploadDirectory,
             isPending: true
         );
-
         // Créer l'entité TournamentImages avec le chemin en pending
         $tImg = new TournamentImages();
         $tImg->setImageUrl($imageRelativePath);

@@ -34,6 +34,14 @@ h1 {
 	}
 }
 
+h2 {
+	font-size: 2rem; //48px
+
+	@media (max-width: 568px) {
+		font-size: 24px;
+	}
+}
+
 h3 {
 	font-size: 1.5rem; //24px
 
@@ -113,8 +121,8 @@ h3 {
 
 // THUMBNAILS FOR SPACES
 .thumbnails_spaces {
-  width: 150px;
-  height: 150px;
+  width: 100px;
+  height: 100px;
   object-fit: cover;
   border: solid 1px $darkBlue;
   border-radius: 10px;
@@ -124,5 +132,31 @@ h3 {
   &:hover {
     box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.25);
     transform: scale(100%);
+  }
+}
+// Responsivity Table Admin Request
+@media (max-width: 768px) {
+  .table-responsive-cards thead {
+    display: none;
+  }
+  .table-responsive-cards tr {
+    display: block;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 0.5rem;
+  }
+  .table-responsive-cards td {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.4rem 0.5rem;
+    border: none;
+    border-bottom: 1px solid #eee;
+  }
+  .table-responsive-cards td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    margin-right: 1rem;
+    flex-shrink: 0;
   }
 }
