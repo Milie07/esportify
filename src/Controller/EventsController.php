@@ -37,7 +37,7 @@ class EventsController extends AbstractController
     $tournaments = $tournamentRepository->findValidatedOrRunning($organizer, $dateAt, $playersCount, $limit, ($page - 1) * $limit);
     $organizers = $tournamentRepository->findOrganizersForValidatedOrRunning();
 
-    $eventsData = $this->eventFormatter->formatTournaments($tournaments);
+    $eventsData = $this->eventFormatter->listTournaments($tournaments);
     
     
     // Récupération des IDs des tournois favoris de l'utilisateur connecté

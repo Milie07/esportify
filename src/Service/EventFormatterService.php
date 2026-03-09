@@ -89,7 +89,7 @@ class EventFormatterService
     /**
      * Formate une liste de tournois
      */
-    public function formatTournaments(array $tournaments): array
+    public function listTournaments(array $tournaments): array
     {
         return array_map(
             fn(Tournament $t) => $this->formatTournament($t),

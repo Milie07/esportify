@@ -26,8 +26,13 @@ config/jwt/*.pem
 
 # Uploads et médias non suivis
 /public/uploads/*
-# Garder les images des tournois (ressources statiques)
 !/public/uploads/tournaments/
+/public/uploads/tournaments/*.jpg
+/public/uploads/tournaments/*.jpeg
+/public/uploads/tournaments/*.png
+/public/uploads/tournaments/*.gif
+/public/uploads/tournaments/*.webp
+/public/uploads/tournaments/pending/
 /backups/
 
 # Éditeur & OS
