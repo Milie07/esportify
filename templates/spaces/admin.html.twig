@@ -689,23 +689,23 @@
         <form action="#" method="POST" class="form_contact bg-clair2 rounded-2 border border-lightBlue text_description text-lightBlue px-5 pt-4 pb-2">
 				<!-- Informations personnelles -->
 				  <div class="w-75 mx-auto">
-					  <label class="" for="name">Nom :</label>
+					  <label class="visually-hidden" for="name">Nom :</label>
 					  <input class="form-control input_filter mb-3" id="name" name="name" type="text" minlength="2" maxlength="50" value="{{ app.user.lastName }}" disabled autocomplete required>
 				  </div>
 				  <div class="w-75 mx-auto">
-					  <label class="" for="surname">Prénom :  </label>
+					  <label class="visually-hidden" for="surname">Prénom :  </label>
 					  <input class="form-control input_filter mb-3" id="surname" name="surname" type="text" minlength="2" maxlength="50" value="{{ app.user.firstName }}" disabled required>
 				  </div>
 				  <div class="w-75 mx-auto">
-					  <label class="" for="pseudo">Pseudo :</label>
+					  <label class="visually-hidden" for="pseudo">Pseudo :</label>
 					  <input class="form-control input_filter mb-3" id="pseudo" name="pseudo" type="text" minlength="2" maxlength="50" value="{{ app.user.pseudo }}" disabled required>
 				  </div>
 				  <div class="w-75 mx-auto">
-					  <label class="" for="mail">Email :</label>
+					  <label class="visually-hidden" for="mail">Email :</label>
 					  <input class="form-control input_filter mb-3" id="mail" name="mail" type="email" value="{{ app.user.email }}" disabled required>
 				  </div>
 				  <div class="w-75 mx-auto">
-					  <label class="" for="password">Mot de Passe :</label>
+					  <label class="visually-hidden" for="password">Mot de Passe :</label>
 					  <input class="form-control input_filter mb-3" id="password" name="password" type="password" placeholder="*********" disabled required>
 				  </div>
         

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Tournament;
+use App\Form\TournamentType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -42,9 +43,10 @@ class SpaceController extends AbstractController
     // Afficher les favoris
     $favoritesCollection = $user->getMemberAddFavorites();
     return $this->render('spaces/organizer.html.twig', [
-      'tournaments' => $tournaments,
+      'myTournaments' => $tournaments,
       'avatarUrl' => $user->getAvatarPath() ?: 'uploads/avatars/default-avatar.jpg',
       'favorites' => $favoritesCollection,
+      'tournamentForm' => $this->createForm(TournamentType::class, new Tournament())->createView(),
     ]);
   }
 

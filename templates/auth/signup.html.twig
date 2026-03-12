@@ -28,30 +28,36 @@
 
 				<!-- Informations personnelles -->
 				<div class="w-75 mx-auto pb-2">
+          <label class="visually-hidden" for="firstName">Nom :</label>
 					<input class="form-control input_filter" id="firstName" name="firstName" type="text" minlength="2" maxlength="100" placeholder="Votre nom" required>
 				</div>
 				<div class="w-75 mx-auto py-1">
+          <label class="visually-hidden" for="lastName">Prénom :</label>
 					<input class="form-control input_filter" id="lastName" name="lastName" type="text" minlength="2" maxlength="100" placeholder="Votre prénom" required>
 				</div>
 				<div class="w-75 mx-auto py-1">
+          <label class="visually-hidden" for="pseudo">Pseudo :</label>
 					<input class="form-control input_filter" id="pseudo" name="pseudo" type="text" minlength="3" maxlength="20" placeholder="Votre pseudo" required>
 					{% if errors.pseudo is defined %}
 						<div class="text-danger small mt-1">{{ errors.pseudo }}</div>
 					{% endif %}
 				</div>
 				<div class="w-75 mx-auto py-1">
+          <label class="visually-hidden" for="email">Email :</label>
 					<input class="form-control input_filter" id="email" name="email" type="email" value="{{ old.email|default('') }}" placeholder="example@example.fr" required>
 					{% if errors.email is defined %}
 						<div class="text-danger small mt-1">{{ errors.email }}</div>
 					{% endif %}
 				</div>
 				<div class="w-75 mx-auto py-1">
+          <label class="visually-hidden" for="password">Mot de passe :</label>
 					<input class="form-control input_filter" id="password" name="password" type="password" placeholder="Votre mot de passe" required>
 					{% if errors.password is defined %}
 						<div class="text-danger small mt-1">{{ errors.password }}</div>
 					{% endif %}
 				</div>
 				<div class="w-75 mx-auto py-1">
+          <label class="visually-hidden" for="confirmPassword">Confirmer le mot de passe :</label>
 					<input class="form-control input_filter" id="confirmPassword" name="confirm_password" type="password" placeholder="Confirmer votre mot de passe" required>
 					{% if errors.confirm_password is defined %}
 						<div class="text-danger small mt-1">{{ errors.confirm_password }}</div>
@@ -85,7 +91,7 @@
 						<div class="text-danger small mt-1">{{ errors.conditions }}</div>
 					{% endif %}
 					<label for="conditions">J’accepte les
-						<a href="{{ path('cgu') }}" target="_blank">Conditions Générales d’Utilisation</a>
+						<a href="{{ path(‘cgu’) }}" target="_blank" rel="noopener noreferrer">Conditions Générales d’Utilisation</a>
 					</label>
 				</div>
 

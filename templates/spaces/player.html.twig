@@ -4,15 +4,10 @@
 {% endblock %}
 
 {% block body %}
-	<div
-		class="container-fluid mx-auto">
-		<!-- Avatar Joueur -->
+	<div class="container-fluid mx-auto">
 		{% block img %}
-			{% set fromEntity = app.user ? app.user.avatarPath : null %}
-			{% set safeAvatar = avatarUrl ?? 'uploads/avatars/default-avatar.jpg' %}
-			<img class="avatar avatar_player d-block mx-auto" src="{{ asset(safeAvatar) }}" alt="avatar">
+			<img class="avatar avatar_player d-block mx-auto" src="{{ asset(avatarUrl) }}" alt="avatar">
 		{% endblock %}
-
 		<!-- Titre de la page -->
 		<h1 class="text-center text-beige">Bienvenue
 			<span>{{ app.user.pseudo }}
@@ -21,35 +16,42 @@
 				🏆</span>
 		</h1>
 
+
 		<!-- Section rapports évènements -->
-		<section class="container-lg my-3 my-lg-3 py-2 py-lg-3">
+		<section class="container-lg mb-2 mb-lg-2 py-2 py-lg-3" aria-labelledby="section-rapports">
+			<h2 id="section-rapports" class="bg-greenFluo text-center text-darkBlue">Mes Stats 📊</h2>
 			<div
-				class="row text_description text-center gap-2 gap-lg-0 mx-auto">
+				class="bg-clair2 rounded row text_description text-center gap-2 gap-lg-0 mx-auto p-2">
 				<!-- Scores  -->
-				<div class="col-12 col-lg-6 mx-auto">
-					<div class="card bg-clair2 rounded-2 text-lightBlue p-3">
-						<h2 class="card-title">Mes Scores 🏆</h2>
+				<section class="col-12 col-lg-6" aria-labelledby="scores">
+					<h3 class="card-title bg-lightBlue text-clair2 mb-2" id="scores">Mes Scores 🏆</h3>
+					<div class="card bg-beige rounded-2 text-lightBlue p-2">
+						<div class="bg-clair2 border border-lightBlue">
+              <p class="text-description text-lightBlue fs-4">
+                {{ app.user.memberScore }}
+              </p>
+            </div>
 					</div>
-				</div>
+				</section>
 
 				<!-- Favoris -->
-				<div class="col-12 col-lg-6 mx-auto">
-					<div class="card bg-clair2 rounded-2 text-lightBlue p-1">
-						<h2 class="card-title">Mes Favoris ⭐</h2>
+				<section class="col-12 col-lg-6 mx-auto" aria-labelledby="favoris">
+					<h3 class="card-title bg-lightBlue text-clair2 mb-2" id="favoris">Mes Favoris ⭐</h3>
+					<div class="card bg-beige rounded-2 text-lightBlue p-2">
 						{% if favorites is empty %}
 							<p>Tu n'as pas encore ajouté d'évènements en favoris.</p>
 						{% else %}
-							<div class="favorites_list mb-2">
+							<div class="favorites_list">
 								{% for favorite in favorites %}
 									{# favorite est un objet MemberAddFavoritesTournament #}
 									{# Pour accéder au tournoi, utilise favorite.tournament #}
-										<div class="favorite_card pb-2"> <img class="thumbnails_spaces" src="{{ asset(favorite.tournament.imagePath ?: 'uploads/tournaments/default-tournament.jpg') }}" alt="Image du tournoi {{ favorite.tournament.title }}">
+										<div class="favorite_card bg-clair2 border border-lightBlue shadow mb-2 p-2"> <img class="thumbnails_spaces" src="{{ asset(favorite.tournament.imagePath ?: 'uploads/tournaments/default-tournament.jpg') }}" alt="Image du tournoi {{ favorite.tournament.title }}">
 										<div class="details_favorites">
-											<h3 class="justify-content-start">{{ favorite.tournament.title }}</h3>
-											<p>Date :
-												{{ favorite.tournament.startAt|date('d/m/Y') }}</p>
+											<h4 class="justify-content-start">{{ favorite.tournament.title }}</h4>
+											<p>Date de début :
+												{{ favorite.tournament.startAt|date('d/m/Y H:i') }}</p>
 											<div>
-												<a class="btn btn-greenFluo btn-custom" href="{{ path('events', {'id': favorite.tournament.id}) }}">
+												<a class="btn btn-greenFluo btn-custom" href="{{ path('admin_tournament_show', {'id': favorite.tournament.id}) }}">
 													Voir
 												</a>
 												<a class="btn btn-greenFluo btn-custom" href="{{ path('events', {'id': favorite.tournament.id}) }}">
@@ -65,16 +67,15 @@
 							</div>
 						{% endif %}
 					</div>
-				</div>
-
+				</section>
 			</div>
 		</section>
 
 		<!-- Section devenir organisateur -->
 		<section class="container-lg my-3 my-lg-3 py-2 py-lg-3" aria-labelledby="devenir-organisateur">
-			<div class="bg-clair2 rounded-2 text_description text-lightBlue text-center mx-auto p-3">
-				<h2 id="devenir-organisateur">Devenir Organisateur</h2>
-				<div class="bg-beige border border-lightBlue rounded-2 p-3 .alert-success">
+			<h2 class="bg-greenFluo text-center text-darkBlue" id="devenir-organisateur">Devenir Organisateur 🗒️</h2>
+			<div class="bg-beige rounded-2 text_description text-lightBlue text-center mx-auto p-3">
+				<div class="bg-clair2 border border-lightBlue rounded-2 p-3 .alert-success">
 					<h3>Fais passer ton jeu au niveau supérieur !</h3>
 					<p class="p-0 m-0">
 						Crée, coordonne, anime... Deviens l'architecte de l'arène !</p>
@@ -83,60 +84,56 @@
 					<p class="p-0 m-0">
 						L'espace organisateur t'ouvre ses portes :
 						<br>
-						C'est içi que commencent les avanetures des maitres du jeu. Prends les rènes, imagine ton format, choisis les règles et fais de ta vision un terrain de jeu colectif !</p>
+						C'est ici que commencent les aventures des maitres du jeu. Prends les rênes, imagine ton format, choisis les règles et fais de ta vision un terrain de jeu collectif !</p>
 					<h3>Envie de te lancer ?</h3>
 					<p>
 						Clique sur le bouton ci-dessous et commencer à bâtir des évènements inoubliables !</p>
-          <form method="post" action="{{ path('player_request_organizer') }}">
-            <input type="hidden" name="_token" value="{{ csrf_token('player_request_organizer') }}">
-            <button type="submit" class="btn-custom-md-green btn btn-greenFluo" onclick="return confirm('Êtes-vous sûr de vouloir devenir organisateur ?')">
-                C'est parti
-            </button>
-          </form>
+					<form method="post" action="{{ path('player_request_organizer') }}">
+						<input type="hidden" name="_token" value="{{ csrf_token('player_request_organizer') }}">
+						<button type="submit" class="btn-custom-md-green btn btn-greenFluo" onclick="return confirm('Êtes-vous sûr de vouloir devenir organisateur ?')">
+							C'est parti
+						</button>
+					</form>
 				</div>
 			</div>
 		</section>
 
 		<!-- Section gestion infos perso -->
-		<section class="container-lg my-3 my-lg-3 py-2 py-lg-3">
-			<div class="bg-clair2 rounded-2 text-lightBlue text-center mx-auto p-3">
-				<h2>Mes informations personnelles</h2>
-
+		<section class="container-lg my-2 my-lg-2 py-2 py-lg-3" aria-labelledby="infos-perso">
+			<h2 class="bg-greenFluo text-center text-darkBlue" id="infos-perso">Mes informations personnelles ✏️</h2>
+			<section
+				class="bg-beige rounded-2 text-lightBlue text-center mx-auto p-3">
 				<!-- Formulaire d'Inscription -->
 				<form
-					action="#" method="POST" class="form_contact bg-beige rounded-2 border border-lightBlue text_description text-lightBlue px-5 pt-4 pb-2">
-
+					action="#" method="POST" class="form_contact bg-clair2 rounded-2 border border-lightBlue text_description text-lightBlue px-5 pt-4 pb-2">
 					<!-- Informations personnelles -->
 					<div class="w-75 mx-auto">
-						<label class="" for="name">Nom :
-						</label>
-						<input id="name" name="name" type="text" class="form-control input_filter mb-3" minlength="2" maxlength="50" value="{{ app.user.lastName }}" disabled required>
+						<label class="visually-hidden" for="name">Nom :</label>
+						<input class="form-control input_filter mb-3" id="name" name="name" type="text" minlength="2" maxlength="50" value="{{ app.user.lastName }}" disabled autocomplete required>
 					</div>
 					<div class="w-75 mx-auto">
-						<label class="" for="surname">Prénom :
+						<label class="visually-hidden" for="surname">Prénom :
 						</label>
-						<input id="surname" name="surname" type="text" class="form-control input_filter mb-3" minlength="2" maxlength="50" value="{{ app.user.firstName }}" disabled required>
+						<input class="form-control input_filter mb-3" id="surname" name="surname" type="text" minlength="2" maxlength="50" value="{{ app.user.firstName }}" disabled required>
 					</div>
 					<div class="w-75 mx-auto">
-						<label class="" for="pseudo">Pseudo :
-						</label>
-						<input id="pseudo" name="pseudo" type="text" class="form-control input_filter mb-3" minlength="2" maxlength="50" value="{{ app.user.pseudo }}" disabled required>
+						<label class="visually-hidden" for="pseudo">Pseudo :</label>
+						<input class="form-control input_filter mb-3" id="pseudo" name="pseudo" type="text" minlength="2" maxlength="50" value="{{ app.user.pseudo }}" disabled required>
 					</div>
 					<div class="w-75 mx-auto">
-						<label class="" for="mail">Email :
-						</label>
-						<input id="mail" name="mail" type="email" class="form-control input_filter mb-3" value="{{ app.user.email }}" disabled required>
+						<label class="visually-hidden" for="mail">Email :</label>
+						<input class="form-control input_filter mb-3" id="mail" name="mail" type="email" value="{{ app.user.email }}" disabled required>
 					</div>
 					<div class="w-75 mx-auto">
-						<label class="" for="password">Mot de Passe :
-						</label>
-						<input id="password" name="password" type="password" class="form-control input_filter mb-3" placeholder="*********" disabled required>
+						<label class="visually-hidden" for="password">Mot de Passe :</label>
+						<input class="form-control input_filter mb-3" id="password" name="password" type="password" placeholder="*********" disabled required>
 					</div>
+
 					<div class="text-center">
 						<a class="btn-custom-md-green btn btn-greenFluo align-self-center my-2" href="{{ path('modifProfile') }}">Modifier ⚙️</a>
 					</div>
 				</form>
-			</div>
+			</section>
 		</section>
 
 		<div class="text-center mt-4">

@@ -26,8 +26,6 @@
 					<input class="form-control input_filter mb-3" placeholder="Votre mot de passe" id="password" name="password" type="password" required autocomplete="current-password"/>
 				</div>
 
-				<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-
 				<div class="d-flex justify-content-center mt-4 mb-2">
 					<button class="btn-custom-md-green btn btn-greenFluo" type="submit" value="Se Connecter">Se connecter</button>
 				</div>
@@ -53,7 +51,7 @@
 			<div class="text-beige border border-beige rounded p-2">
 				<p>Pas encore inscrit ?</p>
 				<a class="nav-link text-center fs-6" href="{{ path('signup_form') }}">
-					<span class="px-2">C'est par içi</span>
+					<span class="px-2">C'est par ici</span>
 					<i class="fa-solid fa-arrow-right fa-lg"></i>
 				</a>
 			</div>

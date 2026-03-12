@@ -18,10 +18,10 @@
 			{{ form_start(contactForm, {'attr': {'class': 'form_contact needs-validation bg-clair1 rounded-4 text-lightBlue px-5 py-4', 'id': 'searchForm'}}) }}
 
 			<!-- Informations personnelles -->
-			{{ form_row(contactForm.name, {'label': false}) }}
-			{{ form_row(contactForm.surname, {'label': false}) }}
-			{{ form_row(contactForm.pseudo, {'label': false}) }}
-			{{ form_row(contactForm.email, {'label': false}) }}
+			{{ form_row(contactForm.name, {'label': 'Nom :', 'label_attr': {'class': 'visually-hidden'}}) }}
+			{{ form_row(contactForm.surname, {'label': 'Prénom :', 'label_attr': {'class': 'visually-hidden'}}) }}
+			{{ form_row(contactForm.pseudo, {'label': 'Pseudo :', 'label_attr': {'class': 'visually-hidden'}}) }}
+			{{ form_row(contactForm.email, {'label': 'Email :', 'label_attr': {'class': 'visually-hidden'}}) }}
 
 			<!-- Rôle de l'utilisateur -->
 			<div class="role_user d-flex flex-column">
@@ -51,7 +51,7 @@
 
 			<!-- Message -->
 			<div class="mt-3">
-				{{ form_row(contactForm.message, {'label': false}) }}
+				{{ form_row(contactForm.message, {'label': 'Message :', 'label_attr': {'class': 'visually-hidden'}}) }}
 			</div>
 
 			<!-- Bouton d'envoi -->

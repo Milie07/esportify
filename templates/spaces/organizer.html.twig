@@ -4,11 +4,9 @@
 {% endblock %}
 {% block body %}
 <div class="container-fluid mx-auto">
-	<!-- Avatar Joueur -->
 	{% block img %}
 		<img class="avatar avatar_player d-block mx-auto" src="{{ asset(avatarUrl) }}" alt="avatar">
 	{% endblock %}
-
 	<!-- Titre de la page -->
 	<h1 class="text-center text-beige">Bienvenue
 		<span>{{ app.user.pseudo }}
@@ -18,36 +16,38 @@
 	</h1>
 
 	<!-- Section rapports évènements -->
-	<section class="container-lg my-3 my-lg-3 py-2 py-lg-3">
+	<section class="container-lg mb-2 mb-lg-2 py-2 py-lg-3" aria-labelledby="section-rapports">
+		<h2 id="section-rapports" class="bg-greenFluo text-center text-darkBlue">Mes Stats 📊</h2>
 		<div
-			class="row text_description text-center gap-2 gap-lg-0 mx-auto">
-
+			class="bg-beige rounded row text_description text-center gap-2 gap-lg-0 mx-auto p-2">
 			<!-- Scores  -->
-			<div class="col-12 col-lg-6 mx-auto">
-				<div class="card bg-clair2 rounded-2 text-lightBlue p-3">
-					<h2 class="card-title">Mes Scores 🏆</h2>
-					{# Favoris A venir #}
+			<section class="col-12 col-lg-6" aria-labelledby="scores">
+				<h3 class="card-title bg-lightBlue text-clair2 mb-2" id="scores">Mes Scores 🏆</h3>
+				<div class="card bg-clair2 rounded-2 text-lightBlue p-2">
+					<p class="text-description text-lightBlue fs-4">
+						{{ app.user.memberScore }}
+					</p>
 				</div>
-			</div>
+			</section>
 
 			<!-- Favoris -->
-			<div class="col-12 col-lg-6 mx-auto">
-				<div class="card bg-clair2 rounded-2 text-lightBlue p-1">
-					<h2 class="card-title">Mes Favoris ⭐</h2>
+			<section class="col-12 col-lg-6 mx-auto" aria-labelledby="favoris">
+				<h3 class="card-title bg-lightBlue text-clair2 mb-2" id="favoris">Mes Favoris ⭐</h3>
+				<div class="card bg-clair2 rounded-2 text-lightBlue p-2">
 					{% if favorites is empty %}
 						<p>Tu n'as pas encore ajouté d'évènements en favoris.</p>
 					{% else %}
-						<div class="favorites_list pb-2">
+						<div class="favorites_list">
 							{% for favorite in favorites %}
 								{# favorite est un objet MemberAddFavoritesTournament #}
 								{# Pour accéder au tournoi, utilise favorite.tournament #}
-									<div class="favorite_card mb-2"> <img class="thumbnails_spaces" src="{{ asset(favorite.tournament.imagePath ?: 'uploads/tournaments/default-tournament.jpg') }}" alt="Image du tournoi {{ favorite.tournament.title }}">
+									<div class="favorite_card border border-lightBlue shadow mb-2 p-2"> <img class="thumbnails_spaces" src="{{ asset(favorite.tournament.imagePath ?: 'uploads/tournaments/default-tournament.jpg') }}" alt="Image du tournoi {{ favorite.tournament.title }}">
 									<div class="details_favorites">
-										<h3 class="justify-content-start">{{ favorite.tournament.title }}</h3>
-										<p>Date :
-											{{ favorite.tournament.startAt|date('d/m/Y') }}</p>
+										<h4 class="justify-content-start">{{ favorite.tournament.title }}</h4>
+										<p>Date de début :
+											{{ favorite.tournament.startAt|date('d/m/Y H:i') }}</p>
 										<div>
-											<a class="btn btn-greenFluo btn-custom" href="{{ path('events', {'id': favorite.tournament.id}) }}">
+											<a class="btn btn-greenFluo btn-custom" href="{{ path('admin_tournament_show', {'id': favorite.tournament.id}) }}">
 												Voir
 											</a>
 											<a class="btn btn-greenFluo btn-custom" href="{{ path('events', {'id': favorite.tournament.id}) }}">
@@ -63,16 +63,18 @@
 						</div>
 					{% endif %}
 				</div>
-			</div>
+			</section>
 		</div>
 	</section>
 
-	<!-- Section gestion évènements -->
-	<section class="container-lg  my-3 my-lg-3 py-2 py-lg-3">
-		<div class="bg-clair2 rounded-2 justify-content-center p-3 mx-auto">
-			<h2 class="text-center text-lightBlue mb-3">Mes Evènements</h2>
-			<div class="row g-4">
-				{% for tournament in tournaments %}
+	<!-- events crées -->
+  <section class="container-lg mb-2 mb-lg-2 py-2 py-lg-3" aria-labelledby="section-evenements">
+		<h2 id="section-evenements" class="bg-greenFluo text-center text-darkBlue">Mes Evènements</h2>
+		<section class="bg-beige rounded-2 px-2 py-1" aria-labelledby="my-event">
+			<h3 class="card-title bg-lightBlue text-center text-clair2 mb-2" id="my-event">Mes Tournois</h3>
+				<div class="text-center my-2">
+					<div class="row g-4">
+					{% for tournament in myTournaments %}
 					<div class="col-12 col-md-6 col-lg-4">
 						<div class="card align-items-center mx-auto">
 							<div class="ratio ratio-4x3 overflow-hidden">
@@ -113,89 +115,108 @@
 									{% set now = "now"|date("U") %}
 									{% set start = tournament.startAt|date("U") %}
 									{% set diff = start - now %}
-									{% if tournament.currentStatus.value == 'Validé' and diff <= 1800 and diff >= 0 %}
+								{% if tournament.currentStatus.value == 'Validé' and diff <= 1800 and diff >= 0 %}
 										<a class="btn btn-greenFluo rounded-pill text-lightBlue" href="#">
 											<span class="d-inline-block" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-trigger="hover" data-bs-content="Démarrer l'event">
 												<i class="fa-solid fa-play fa-xl"></i>
 											</span>
 										</a>
-									{% endif %}
-								</div>
+								{% endif %}
+							</div>
 
 							</div>
 						</div>
 					</div>
-				{% else %}
-					<p class="text-center text-lightBlue">Aucun évènement créé pour le moment.</p>
-				{% endfor %}
-			</div>
-			<div class="bg-beige rounded-2 border border-lightBlue justify-content-center p-3 mx-auto my-2">
-				<h2 class="text-center text-lightBlue fs-3 my-3">Créer un évenement 🎉</h2>
-				<!-- Formulaire de Création -->
-				{% if tournamentForm is defined %}
-					{{ form_start(tournamentForm, {'attr': {'class': 'form_contact bg-clair2 rounded-2 border border-lightBlue text_description text-lightBlue px-5 pt-4 pb-2', 'id': 'searchForm'}}) }}
-					{{ form_errors(tournamentForm) }}
+					{% endfor %}
+					</div>
+					<button type="button" class="btn-custom-lg-green btn btn-greenFluo mt-3" data-bs-toggle="modal" data-bs-target="#createTournamentModal">
+						Créer un tournoi
+					</button>
+				</div>
+			</section>
+		</section>
+
+	{# Modale création tournoi #}
+	<div class="modal fade" id="createTournamentModal" tabindex="-1" aria-labelledby="createTournamentModalLabel" aria-modal="true" role="dialog">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content text-lightBlue">
+				<div class="modal-header">
+					<h5 class="modal-title text-center w-100" id="createTournamentModalLabel">Créer un tournoi</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+				</div>
+				<div class="modal-body">
+					{{ form_start(tournamentForm, {'action': path('event_create'), 'method': 'POST', 'attr': {'class': 'form_contact bg-clair2 rounded-2 border border-lightBlue text_description text-lightBlue px-4 pt-3 pb-2'}}) }}
 					<div class="mx-auto">
-						{{ form_row(tournamentForm.title, {'label': 'Titre de l\'évènement :', 'attr': {'class': 'form-control input_filter mb-3'}}) }}
+						{{ form_label(tournamentForm.title, 'Titre de l\'évènement :') }}
+						{{ form_widget(tournamentForm.title, {'attr': {'class': 'form-control input_filter mb-3'}}) }}
 					</div>
 					<div class="mx-auto">
-						{{ form_row(tournamentForm.description, {'label': 'Description :', 'attr': {'class': 'form-control input_filter mb-3'}}) }}
+						{{ form_label(tournamentForm.description, 'Description :') }}
+						{{ form_widget(tournamentForm.description, {'attr': {'class': 'form-control input_filter mb-3'}}) }}
 					</div>
 					<div class="mx-auto">
-						{{ form_row(tournamentForm.tagline, {'label': 'Tagline :', 'attr': {'class': 'form-control input_filter mb-3'}}) }}
+						{{ form_label(tournamentForm.tagline, 'Tagline :') }}
+						{{ form_widget(tournamentForm.tagline, {'attr': {'class': 'form-control input_filter mb-3'}}) }}
 					</div>
 					<div class="mx-auto">
-						{{ form_row(tournamentForm.startAt, {'label': 'Date et Heure de Début :', 'attr': {'class': 'form-control input_filter mb-3'}}) }}
+						{{ form_label(tournamentForm.startAt, 'Date et Heure de Début :') }}
+						{{ form_widget(tournamentForm.startAt, {'attr': {'class': 'form-control input_filter mb-3'}}) }}
 					</div>
 					<div class="mx-auto">
-						{{ form_row(tournamentForm.endAt, {'label': 'Date et Heure de Fin :', 'attr': {'class': 'form-control input_filter mb-3'}}) }}
+						{{ form_label(tournamentForm.endAt, 'Date et Heure de Fin :') }}
+						{{ form_widget(tournamentForm.endAt, {'attr': {'class': 'form-control input_filter mb-3'}}) }}
 					</div>
 					<div class="mx-auto">
-						{{ form_row(tournamentForm.capacityGauge, {'label': 'Nombre maximal de joueurs :', 'attr': {'class': 'form-control input_filter mb-3'}}) }}
+						{{ form_label(tournamentForm.capacityGauge, 'Nombre maximal de joueurs :') }}
+						{{ form_widget(tournamentForm.capacityGauge, {'attr': {'class': 'form-control input_filter mb-3'}}) }}
 					</div>
 					<div class="mx-auto">
-						{# {% if app.environment == 'prod' %}
-							<div class="alert alert-warning text-center mb-3" role="alert">
-								<i class="fa-solid fa-triangle-exclamation"></i>
-								<strong>Attention :</strong> Les images uploadées sont temporaires et seront perdues lors du prochain déploiement.
-								L'intégration Cloudinary pour le stockage permanent est en cours.
-							</div>
-						{% endif %} #}
-						{{ form_row(tournamentForm.tournamentImage, {'label': 'Image ou photo de l\'évènement :', 'attr': {'class': 'form-control input_filter mb-3'}}) }}
+						{{ form_label(tournamentForm.tournamentImage, 'Image ou photo de l\'évènement :') }}
+						{{ form_widget(tournamentForm.tournamentImage, {'attr': {'class': 'form-control input_filter mb-3'}}) }}
 					</div>
 					<div class="d-flex justify-content-center">
 						<button class="btn-custom-sm-green btn btn-greenFluo" type="submit">Créer</button>
 					</div>
-				{{ form_end(tournamentForm) }}
-			{% else %}
-				<p class="text-center text-lightBlue"><a href="{{ path('event_create') }}" class="btn-custom-lg-green btn btn-greenFluo">Créer un tournoi</a></p>
-			{% endif %}
-      </div>
-		</section>
-
-		<!-- Section gestion infos perso -->
-		<section class="container-lg my-3 my-lg-3 py-2 py-lg-3">
-			<div class="bg-clair2 rounded-2 text-lightBlue text-center mx-auto p-3">
-				<h2>Mes informations personnelles ✏️</h2>
-				<!-- Formulaire d'Inscription -->
-				<form action="#" method="POST" class="form_contact bg-beige rounded-2 border border-lightBlue text_description text-lightBlue px-5 pt-4 pb-2">
-					<!-- Informations personnelles -->
-					<div class="w-75 mx-auto">
-						<label class="" for="name">Nom :</label><input id="name" name="name" type="text" class="form-control input_filter mb-3" minlength="2" maxlength="50" value="{{ app.user.lastName }}" disabled autocomplete required></div>
-					<div class="w-75 mx-auto">
-						<label class="" for="surname">Prénom :</label><input id="surname" name="surname" type="text" class="form-control input_filter mb-3" minlength="2" maxlength="50" value="{{ app.user.firstName }}" disabled required></div>
-					<div class="w-75 mx-auto">
-						<label class="" for="pseudo">Pseudo :</label><input id="pseudo" name="pseudo" type="text" class="form-control input_filter mb-3" minlength="2" maxlength="50" value="{{ app.user.pseudo }}" disabled required></div>
-					<div class="w-75 mx-auto">
-						<label class="" for="mail">Email :</label><input id="mail" name="mail" type="email" class="form-control input_filter mb-3" value="{{ app.user.email }}" disabled required></div>
-					<div class="w-75 mx-auto">
-						<label class="" for="password">Mot de Passe :</label><input id="password" name="password" type="password" class="form-control input_filter mb-3" placeholder="*********" disabled required></div>
-					<div class="text-center">
-						<a class="btn-custom-md-green btn btn-greenFluo align-self-center my-2" href="{{ path('modifProfile') }}">Modifier ⚙️</a>
-					</div>
-				</form>
+					{{ form_end(tournamentForm) }}
+				</div>
 			</div>
-		</section>
+		</div>
+	</div>
+
+    <!-- Section gestion infos perso -->
+	  <section class="container-lg my-2 my-lg-2 py-2 py-lg-3" aria-labelledby="infos-perso">
+			<h2 class="bg-greenFluo text-center text-darkBlue" id="infos-perso">Mes informations personnelles ✏️</h2>
+		  <section class="bg-beige rounded-2 text-lightBlue text-center mx-auto p-3">
+        <!-- Formulaire d'Inscription -->
+        <form action="#" method="POST" class="form_contact bg-clair2 rounded-2 border border-lightBlue text_description text-lightBlue px-5 pt-4 pb-2">
+				<!-- Informations personnelles -->
+				  <div class="w-75 mx-auto">
+					  <label class="visually-hidden" for="name">Nom :</label>
+					  <input class="form-control input_filter mb-3" id="name" name="name" type="text" minlength="2" maxlength="50" value="{{ app.user.lastName }}" disabled autocomplete required>
+				  </div>
+				  <div class="w-75 mx-auto">
+					  <label class="visually-hidden" for="surname">Prénom :  </label>
+					  <input class="form-control input_filter mb-3" id="surname" name="surname" type="text" minlength="2" maxlength="50" value="{{ app.user.firstName }}" disabled required>
+				  </div>
+				  <div class="w-75 mx-auto">
+					  <label class="visually-hidden" for="pseudo">Pseudo :</label>
+					  <input class="form-control input_filter mb-3" id="pseudo" name="pseudo" type="text" minlength="2" maxlength="50" value="{{ app.user.pseudo }}" disabled required>
+				  </div>
+				  <div class="w-75 mx-auto">
+					  <label class="visually-hidden" for="mail">Email :</label>
+					  <input class="form-control input_filter mb-3" id="mail" name="mail" type="email" value="{{ app.user.email }}" disabled required>
+				  </div>
+				  <div class="w-75 mx-auto">
+					  <label class="visually-hidden" for="password">Mot de Passe :</label>
+					  <input class="form-control input_filter mb-3" id="password" name="password" type="password" placeholder="*********" disabled required>
+				  </div>
+        
+				  <div class="text-center">
+					<a class="btn-custom-md-green btn btn-greenFluo align-self-center my-2" href="{{ path('modifProfile') }}">Modifier ⚙️</a>
+				</div>
+			  </form>
+		  </section>
+	  </section>
 
 		<div class="text-center mt-4">
 			<a class="btn-custom-lg-clair btn btn-clair2 mb-4" href="{{ path('app_home') }}">Retour à l'accueil</a>
