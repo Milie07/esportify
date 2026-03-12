@@ -29,7 +29,6 @@
 				<div class="col-12 col-lg-6 mx-auto">
 					<div class="card bg-clair2 rounded-2 text-lightBlue p-3">
 						<h2 class="card-title">Mes Scores 🏆</h2>
-						{# Favoris A venir #}
 					</div>
 				</div>
 
@@ -71,11 +70,10 @@
 			</div>
 		</section>
 
-
 		<!-- Section devenir organisateur -->
-		<section class="container-lg my-3 my-lg-3 py-2 py-lg-3">
+		<section class="container-lg my-3 my-lg-3 py-2 py-lg-3" aria-labelledby="devenir-organisateur">
 			<div class="bg-clair2 rounded-2 text_description text-lightBlue text-center mx-auto p-3">
-				<h2>Devenir Organisateur</h2>
+				<h2 id="devenir-organisateur">Devenir Organisateur</h2>
 				<div class="bg-beige border border-lightBlue rounded-2 p-3">
 					<h3>Fais passer ton jeu au niveau supérieur !</h3>
 					<p class="p-0 m-0">
@@ -89,9 +87,12 @@
 					<h3>Envie de te lancer ?</h3>
 					<p>
 						Clique sur le bouton ci-dessous et commencer à bâtir des évènements inoubliables !</p>
-					<div>
-						<button type="submit" class="btn-custom-md-green btn btn-greenFluo">C'est parti !</button>
-					</div>
+          <form method="post" action="{{ path('player_request_organizer') }}">
+            <input type="hidden" name="_token" value="{{ csrf_token('player_request_organizer') }}">
+            <button type="submit" class="btn-custom-md-green btn btn-greenFluo" onclick="return confirm('Êtes-vous sûr de vouloir devenir organisateur ?')">
+                C'est parti
+            </button>
+          </form>
 				</div>
 			</div>
 		</section>

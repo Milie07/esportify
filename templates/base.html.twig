@@ -98,6 +98,13 @@
 		</header>
 		<!-- main -->
 		<main>
+      {% for type, flashes in app.flashes() %}
+        {% for msg in flashes %}
+          <div class="alert alert-{{ type }} text-center">
+            {{ msg }}
+          </div>
+        {% endfor %}
+      {% endfor %}
 			{% block body %}{% endblock %}
 		</main>
 

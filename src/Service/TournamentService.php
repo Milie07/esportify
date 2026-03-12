@@ -6,6 +6,8 @@ use App\Entity\Member;
 use App\Entity\Tournament;
 use App\Entity\TournamentImages;
 use App\Enum\CurrentStatus;
+use App\Service\FavoriteEventService;
+use App\Service\MongoDBService;
 use Doctrine\ORM\EntityManagerInterface;
 use MongoDB\BSON\UTCDateTime;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -15,11 +17,14 @@ class TournamentService
     public function __construct(
         private MongoDBService $mongoDBService,
         private EntityManagerInterface $entityManager,
-        private FileUploadService $fileUploadService
+        private FileUploadService $fileUploadService,
+        private FavoriteEventService $favoriteEventService
     ) {
     }
     /**
-     * Récupère toutes les demandes de tournois par statut
+     * Récupère toutes les demandes de tournois avec le statut 'new'
+     * Trie les résultats par DESC
+     * Retourne un Tableau PHP via enrichRequests() avec un curseur sur les résultats
      */
     public function getRequestsByStatus(string $status): array
     {
@@ -33,7 +38,8 @@ class TournamentService
     }
 
     /**
-     * Récupère toutes les demandes organisées par statut
+     * Appelle enrichRequests() avec chaque status possible
+     * Retourne un tableau organisé par status
      */
     public function getAllRequestsGroupedByStatus(): array
     {
@@ -46,7 +52,9 @@ class TournamentService
     }
 
     /**
-     * Récupère tous les messages de contact
+     * Récupère tous les messages de contact depuis MongoDB
+     * Trie du plus récent au plus ancien
+     * retourne un tableau PHP via normalizeMessages() avec un curseur sur le résultat
      */
     public function getContactMessages(): array
     {
@@ -60,14 +68,18 @@ class TournamentService
     }
 
     /**
-     * Met à jour le statut d'une demande de tournoi
+     * Met à jour le statut d'une demande de tournoi dans MongoDb
      */
-    public function updateRequestStatus(int $tournamentId, string $status): void
+    public function updateRequestStatus(int $tournamentId, string $status, ?string $treatedBy = null): void
     {
+        $fields = ['status' => $status];
+        if ($treatedBy !== null) {
+            $fields['treatedBy'] = $treatedBy;
+        }
         $collection = $this->mongoDBService->getCollection('tournament_requests');
         $collection->updateOne(
             ['tournamentId' => $tournamentId],
-            ['$set' => ['status' => $status]]
+            ['$set' => $fields]
         );
     }
 
@@ -75,7 +87,7 @@ class TournamentService
      * Convertit un curseur Mongo de demandes en tableau enrichi (image SQL incluse)
      * Optimisé : fetch batch des tournois pour éviter N+1 queries
      */
-    private function enrichRequests(iterable $cursor): array
+    private function enrichRequests($cursor): array
     {
         // 1. Collecter tous les IDs de tournois depuis MongoDB
         $requests = iterator_to_array($cursor);
@@ -126,7 +138,7 @@ class TournamentService
     /**
      * Convertit les messages contact en tableau normalisé
      */
-    private function normalizeMessages(iterable $cursor): array
+    private function normalizeMessages($cursor): array
     {
         $out = [];
 
@@ -196,7 +208,7 @@ class TournamentService
     /**
      * Valide un tournoi : change son statut et déplace l'image de pending vers permanent
      */
-    public function validateTournament(Tournament $tournament, string $publicDirectory): void
+    public function validateTournament(Tournament $tournament, string $publicDirectory, string $treatedBy = ''): void
     {
         // Changer le statut
         $tournament->setCurrentStatus(CurrentStatus::VALIDE);
@@ -222,37 +234,41 @@ class TournamentService
         $this->entityManager->flush();
 
         // Mettre à jour le statut dans MongoDB
-        $this->updateRequestStatus($tournament->getId(), 'validé');
+        $this->updateRequestStatus($tournament->getId(), 'validé', $treatedBy);
     }
 
     /**
-     * Refuse un tournoi : change son statut et supprime l'image
+     * Refuse un tournoi : change son statut et replace l'image en pending
+     * (suppression définitive après 30 jours via le cron de nettoyage)
      */
-    public function refuseTournament(Tournament $tournament, string $publicDirectory): void
+    public function refuseTournament(Tournament $tournament, string $publicDirectory, string $treatedBy = ''): void
     {
         // Changer le statut
         $tournament->setCurrentStatus(CurrentStatus::REFUSE);
 
-        // Supprimer l'image si elle existe
+        // Replacer l'image en pending si elle est dans le dossier permanent
         $tournamentImage = $tournament->getTournamentImage();
         if ($tournamentImage) {
-            $imagePath = $tournamentImage->getImageUrl();
+            $currentPath = $tournamentImage->getImageUrl();
 
-            try {
-                $this->fileUploadService->deleteTournamentImage($imagePath, $publicDirectory);
-            } catch (\RuntimeException $e) {
-                // Si l'image n'existe pas ou ne peut pas être supprimée, continuer sans erreur
+            if (!str_contains($currentPath, '/pending/')) {
+                try {
+                    $newPath = $this->fileUploadService->moveToPending($currentPath, $publicDirectory);
+                    $tournamentImage->setImageUrl($newPath);
+                    $this->entityManager->persist($tournamentImage);
+                } catch (\RuntimeException $e) {
+                    // Si l'image n'existe pas ou ne peut pas être déplacée, continuer sans erreur
+                }
             }
-
-            // Supprimer la relation avec l'image
-            $tournament->setTournamentImage(null);
-            $this->entityManager->remove($tournamentImage);
         }
 
         $this->entityManager->flush();
 
+        // Retirer le tournoi des favoris de tous les membres
+        $this->favoriteEventService->cleanFavoritesForTournament($tournament);
+
         // Mettre à jour le statut dans MongoDB
-        $this->updateRequestStatus($tournament->getId(), 'refusé');
+        $this->updateRequestStatus($tournament->getId(), 'refusé', $treatedBy);
     }
 
     /**

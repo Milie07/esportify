@@ -30,11 +30,11 @@ class FavoriteEventController extends AbstractController
         } catch (\Throwable $e) {
             $this->addFlash('danger', 'Erreur lors de l\'ajout aux favoris : ' . $e->getMessage());
         }
+        return $this->redirectToRoute('events');
       } else {
           $this->addFlash('warning', 'Vous devez être connecté pour ajouter un évènement aux favoris.');
           return $this->redirectToRoute('app_login');
       }
-      return $this->redirectToRoute('events');
     }
 
     #[Route('/favorite/event/remove/{tournamentId}', name: 'remove_favorite_event')]
@@ -51,7 +51,12 @@ class FavoriteEventController extends AbstractController
         } catch (\Throwable $e) {
             $this->addFlash('danger', 'Erreur lors du retrait des favoris : ' . $e->getMessage());
         }
-        return $this->redirectToRoute('player_space');
+        $route = match(true) {
+            $this->isGranted('ROLE_ADMIN')     => 'admin_dashboard',
+            $this->isGranted('ROLE_ORGANIZER') => 'organizer_space',
+            default                            => 'player_space',
+        };
+        return $this->redirectToRoute($route);
       } else {
           $this->addFlash('warning', 'Vous devez être connecté pour gérer vos favoris.');
           return $this->redirectToRoute('app_login');

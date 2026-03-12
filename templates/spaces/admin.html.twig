@@ -5,13 +5,6 @@
 
 {% block body %}
 	<div class="container-fluid mx-auto">
-		{% for type, flashes in app.flashes() %}
-			{% for msg in flashes %}
-				<div class="alert alert-{{ type }} text-center">
-					{{ msg }}
-				</div>
-			{% endfor %}
-		{% endfor %}
 		{% block img %}
 			<img class="avatar avatar_player d-block mx-auto" src="{{ asset(avatarUrl) }}" alt="avatar">
 		{% endblock %}
@@ -24,22 +17,22 @@
 		</h1>
 
 		<!-- Section rapports évènements -->
-		<section class="container-lg my-2 my-lg-2 py-2 py-lg-3" aria-labelledby="section-rapports">
+		<section class="container-lg mb-2 mb-lg-2 py-2 py-lg-3" aria-labelledby="section-rapports">
 			<h2 id="section-rapports" class="bg-greenFluo text-center text-darkBlue">Mes Stats 📊</h2>
 			<div
 				class="bg-beige rounded row text_description text-center gap-2 gap-lg-0 mx-auto p-2">
 				<!-- Scores  -->
-				<div class="col-12 col-lg-6">
+				<section class="col-12 col-lg-6" aria-labelledby="scores">
+					<h3 class="card-title bg-lightBlue text-clair2 mb-2" id="scores">Mes Scores 🏆</h3>
 					<div class="card bg-clair2 rounded-2 text-lightBlue p-2">
-						<h3 class="card-title text-lightBlue mb-2">Mes Scores 🏆</h3>
-						<p>Tu n'as pas encore de scores.</p>
+						<p class="text-description text-lightBlue fs-4"> {{ app.user.memberScore }} </p>
 					</div>
-				</div>
+				</section>
 
 				<!-- Favoris -->
-				<div class="col-12 col-lg-6 mx-auto">
+				<section class="col-12 col-lg-6 mx-auto" aria-labelledby="favoris">
+					<h3 class="card-title bg-lightBlue text-clair2 mb-2" id="favoris">Mes Favoris ⭐</h3>
 					<div class="card bg-clair2 rounded-2 text-lightBlue p-2">
-						<h3 class="card-title text-lightBlue mb-2">Mes Favoris ⭐</h3>
 						{% if favorites is empty %}
 							<p>Tu n'as pas encore ajouté d'évènements en favoris.</p>
 						{% else %}
@@ -47,13 +40,13 @@
 								{% for favorite in favorites %}
 									{# favorite est un objet MemberAddFavoritesTournament #}
 									{# Pour accéder au tournoi, utilise favorite.tournament #}
-										<div class="favorite_card mb-2"> <img class="thumbnails_spaces" src="{{ asset(favorite.tournament.imagePath ?: 'uploads/tournaments/default-tournament.jpg') }}" alt="Image du tournoi {{ favorite.tournament.title }}">
+										<div class="favorite_card border border-lightBlue shadow mb-2 p-2"> <img class="thumbnails_spaces" src="{{ asset(favorite.tournament.imagePath ?: 'uploads/tournaments/default-tournament.jpg') }}" alt="Image du tournoi {{ favorite.tournament.title }}">
 										<div class="details_favorites">
 											<h4 class="justify-content-start">{{ favorite.tournament.title }}</h4>
-											<p>Date :
-												{{ favorite.tournament.startAt|date('d/m/Y') }}</p>
+											<p>Date de début :
+												{{ favorite.tournament.startAt|date('d/m/Y H:i') }}</p>
 											<div>
-												<a class="btn btn-greenFluo btn-custom" href="{{ path('events', {'id': favorite.tournament.id}) }}">
+												<a class="btn btn-greenFluo btn-custom" href="{{ path('admin_tournament_show', {'id': favorite.tournament.id}) }}">
 													Voir
 												</a>
 												<a class="btn btn-greenFluo btn-custom" href="{{ path('events', {'id': favorite.tournament.id}) }}">
@@ -69,339 +62,590 @@
 							</div>
 						{% endif %}
 					</div>
-				</div>
+				</section>
 			</div>
 		</section>
 
 		<!-- Boite de réception -->
-
 		<section class="container-lg my-2 my-lg-2 py-2 py-lg-3" aria-labelledby="section-messagerie">
-
 			<h2 class="bg-greenFluo text-center text-darkBlue" id="section-messagerie">Boite de réception ✉️</h2>
-      <!-- messagerie -->
-			<section class="card bg-clair2 rounded-2 text_description text-center text-lightBlue gap-2 gap-lg-0 mx-auto" aria-labelledby="messagerie">
 
-				<h3 class="bg-beige text-center text-darkBlue" id="messagerie">Messagerie page Contact</h3>
-
-				<table class="table table-responsive-cards table-hover align-middle rounded-2">
-					<thead class="table-warning">
-						<tr class="text_description">
-							<th>Pseudo</th>
-							<th>Role</th>
-							<th>Email</th>
-							<th>Sujets</th>
-							<th>Message</th>
-							<th>Date</th>
-							<th rowscope>Actions</th>
-						</tr>
-					</thead>
-					<tbody>
-						{% for m in messages %}
-							<tr>
-								<td data-label="Pseudo">{{ m['pseudo'] }}</td>
-								<td data-label="Role">{{ m['role'] }}</td>
-								<td data-label="Email">{{ m['email'] }}</td>
-								<td data-label="Subject">{{ m['subject'] }}</td>
-								<td data-label="Message">{{ m['message'] }}</td>
-								<td data-label="Reçu le">
-									{% if m['createdAt'] %}
-										{{ m['createdAt']|date('d/m/Y H:i') }}
-									{% else %}
-										—
-									{% endif %}
-								</td>
-								<td></td>
-							</tr>
-						{% endfor %}
-					</tbody>
-				</table>
-			</section>
-
-			<!-- Demende en attente-->
-			<section class="card bg-clair2 rounded-2 text_description text-center text-lightBlue gap-2 gap-lg-0 mx-auto my-2" aria-labelledby="demande-attente">
-				<h3 class="bg-beige text-center text-darkBlue" id="demande-attente">Demandes en attente</h3>
-				{% if requestsPending is not empty %}
+			<!-- messagerie -->
+			<section class="bg-beige rounded-2 px-2 py-1 mb-2" aria-labelledby="contact">
+				<h3 class="bg-lightBlue text-center text-clair2 border border-greenFluo" id="contact">Messagerie page Contact</h3>
+				<section class="card bg-clair2 rounded-2 text_description text-center text-lightBlue gap-2 gap-lg-0 mx-auto" aria-labelledby="messagerie">
+					<h4 class="bg-beige text-center text-darkBlue" id="messagerie">Messages</h4>
 					<table class="table table-responsive-cards table-hover align-middle rounded-2">
-						<thead class="table-info">
-							<tr>
-								<th>Image</th>
-								<th>Tournoi</th>
-								<th>Organisateur</th>
-								{# <th>Email</th> #}
-								<th>Date création</th>
+						<thead class="table-warning">
+							<tr class="text_description text-center">
+								<th>Pseudo</th>
+								<th>Role</th>
+								<th>Email</th>
+								<th>Sujets</th>
+								<th>Message</th>
+								<th>Date</th>
 								<th>Actions</th>
 							</tr>
 						</thead>
-
 						<tbody>
-							{% for t in requestsPending %}
+							{% for m in messages %}
 								<tr>
-									<td data-label="Image">
-										{% if t.imageUrl %}
-											<img src="{{ asset(t.imageUrl) }}" class="thumbnails_spaces rounded">
-										{% else %}
-											<span class="text-muted small">Aucune image</span>
-										{% endif %}
-									</td>
-
-									<td data-label="Titre">
-										<strong>{{ t.title }}</strong>
-									</td>
-
-									<td data-label="Pseudo">
-										<strong>{{ t.pseudo }}</strong>
-									</td>
-
-									{# <td data-label="Email" class="wrap">
-										<strong>{{ t.organizerEmail }}</strong>
-									</td> #}
-
-									<td data-label="Créé le">
-										{% if t['createdAt'] %}
-											{{ t['createdAt']|date('d/m/Y H:i') }}
+									<td data-label="Pseudo">{{ m['pseudo'] }}</td>
+									<td data-label="Role">{{ m['role'] }}</td>
+									<td data-label="Email">{{ m['email'] }}</td>
+									<td data-label="Subject">{{ m['subject'] }}</td>
+									<td data-label="Message">{{ m['message'] }}</td>
+									<td data-label="Reçu le">
+										{% if m['createdAt'] %}
+											{{ m['createdAt']|date('d/m/Y H:i') }}
 										{% else %}
 											—
 										{% endif %}
 									</td>
-
-									<td class="justify-content-end">
-
-										<a href="{{ path('admin_tournament_show', { id: t['tournamentId'] }) }}" class="btn btn-info btn-sm my-1 mx-1">
-											Voir
-										</a>
-
-										<form action="{{ path('admin_tournament_validate', { id: t['tournamentId'] }) }}" method="POST" onsubmit="return confirm('Valider ce tournoi ?');">
-											<input type="hidden" name="_token" value="{{ csrf_token('validate-tournament') }}">
-											<button type="submit" class="btn btn-success btn-sm my-1 mx-1">Valider</button>
-										</form>
-
-										<form action="{{ path('admin_tournament_refuse', { id: t['tournamentId'] }) }}" method="POST" onsubmit="return confirm('Refuser ce tournoi ?');">
-											<input type="hidden" name="_token" value="{{ csrf_token('refuse-tournament') }}">
-											<button type="submit" class="btn btn-danger btn-sm my-1 mx-1">Refuser</button>
-										</form>
-
-									</td>
+									<td data-label="Actions"></td>
 								</tr>
 							{% endfor %}
 						</tbody>
 					</table>
-				{% else %}
-					<p class="text-lightBlue">Aucune demande en attente.</p>
-				{% endif %}
+				</section>
 			</section>
-			<!-- fin section demande en attente -->
-			<!-- Demandes validées-->
-			<section class="card bg-clair2 rounded-2 text-description text-center text-lightBlue gap-2 gap-lg-0 mx-auto mb-2" aria-labelledby="demandes-valid">
-        <h3 class="bg-beige text-center text-darkBlue" id="demandes-valid"> Demandes validées</h3> 
-        {% if requestsValidated is not empty %} 
-        <table class="table table-responsive-cards table-hover align-middle rounded-2"> 
-        <thead class="table-success"> 
-        <tr> 
-          <th>Image</th>
-				  <th>Tournoi</th>
-				  <th>Organisateur</th> 
-				  <th>Email</th>
-				  <th>Date création</th>
-				  <th>Actions</th>
-			  </tr>
-		</thead>
+			<!-- section demande de création de tournoi -->
+			<section class="bg-beige rounded-2 px-2 py-1 mb-2" aria-labelledby="demandes-creation-tournois">
+				<h3 class="bg-lightBlue text-center text-clair2 border border-greenFluo" id="demandes-creation-tournois">Demandes de Créations de Tournois</h3>
+				<!-- Demende en attente-->
+				<section class="card bg-clair2 rounded-2 text_description text-center text-lightBlue gap-2 gap-lg-0 mx-auto my-2" aria-labelledby="demande-attente">
+					<h4 class="bg-beige text-center text-darkBlue" id="demande-attente">Demandes en attente</h4>
+					{% if requestsPending is not empty %}
+						<table class="table table-responsive-cards table-hover align-middle rounded-2">
+							<thead class="table-info">
+								<tr>
+									<th>Image</th>
+									<th>Tournoi</th>
+									<th>Organisateur</th>
+									<th>Email</th>
+									<th>Date création</th>
+									<th>Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for t in requestsPending %}
+									<tr>
+										<td data-label="Image">
+											{% if t.imageUrl %}
+												<img src="{{ asset(t.imageUrl) }}" class="thumbnails_spaces rounded">
+											{% else %}
+												<span class="text-muted small">Aucune image</span>
+											{% endif %}
+										</td>
+										<td data-label="Titre">
+											<strong>{{ t.title }}</strong>
+										</td>
+										<td data-label="Pseudo">
+											<strong>{{ t.pseudo }}</strong>
+										</td>
+										<td data-label="Email" class="wrap">
+												<strong>{{ t.organizerEmail }}</strong>
+											</td>
+										<td data-label="Créé le">
+											{% if t['createdAt'] %}
+												{{ t['createdAt']|date('d/m/Y H:i') }}
+											{% else %}
+												—
+											{% endif %}
+										</td>
+										<td class="justify-content-start justify-content-end-lg" data-label="Actions">
+											<a href="{{ path('admin_tournament_show', { id: t['tournamentId'] }) }}" class="btn btn-info btn-sm my-1 mx-1 ">
+												Voir
+											</a>
+											<form action="{{ path('admin_tournament_validate', { id: t['tournamentId'] }) }}" method="POST" onsubmit="return confirm('Valider ce tournoi ?');">
+												<input type="hidden" name="_token" value="{{ csrf_token('validate-tournament') }}">
+												<button type="submit" class="btn btn-success btn-sm my-1 mx-1">Valider</button>
+											</form>
+											<form action="{{ path('admin_tournament_refuse', { id: t['tournamentId'] }) }}" method="POST" onsubmit="return confirm('Refuser ce tournoi ?');">
+												<input type="hidden" name="_token" value="{{ csrf_token('refuse-tournament') }}">
+												<button type="submit" class="btn btn-danger btn-sm my-1 mx-1">Refuser</button>
+											</form>
+										</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					{% else %}
+						<p class="text-info">Aucune demande en attente.</p>
+					{% endif %}
+				</section>
+				<!-- fin section demande en attente -->
+				<!-- Demandes validées-->
+				<section class="card bg-clair2 rounded-2 text-description text-center text-lightBlue gap-2 gap-lg-0 mx-auto mb-2" aria-labelledby="demandes-valid">
+					<h4 class="bg-beige text-center text-darkBlue" id="demandes-valid">
+						Demandes validées</h4>
+					{% if requestsValidated is not empty %}
+						<table class="table table-responsive-cards table-hover align-middle rounded-2">
+							<thead class="table-success">
+								<tr>
+									<th>Image</th>
+									<th>Tournoi</th>
+									<th>Organisateur</th>
+									<th>Email</th>
+									<th>Date création</th>
+									<th>Validé par</th>
+									<th>Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for t in requestsValidated %}
+									<tr>
+										<td data-label="Image">
+											{% if t.imageUrl %}
+												<img src="{{ asset(t.imageUrl) }}" class="thumbnails_spaces rounded">
+											{% else %}
+												<span class="text-muted small">Aucune image</span>
+											{% endif %}
+										</td>
+										<td data-label="Titre">
+											<strong>{{ t.title }}</strong>
+										</td>
+										<td data-label="Pseudo">
+											<strong>{{ t.pseudo }}</strong>
+										</td>
+										<td data-label="Email">
+											<strong>{{ t.organizerEmail }}</strong>
+										</td>
+										<td data-label="Créé le">
+											{% if t['createdAt'] %}
+												{{ t['createdAt']|date('d/m/Y H:i') }}
+											{% else %}
+												—
+											{% endif %}
+										</td>
+                    <td data-label="Validé par">
+											<strong>{{ t.treatedBy }}</strong>
+										</td>
 
-		<tbody>
-			{% for t in requestsValidated %}
-				<tr>
-					<td data-label="Image">
-						{% if t.imageUrl %}
-							<img src="{{ asset(t.imageUrl) }}" class="img-fluid rounded" style="max-height: 120px; object-fit: cover;">
-						{% else %}
-							<span class="text-muted small">Aucune image</span>
-						{% endif %}
-					</td>
-					<td data-label="Titre">
-						<strong>{{ t.title }}</strong><br>
-					</td>
-					<td data-label="Pseudo">
-						<strong>{{ t.pseudo }}</strong><br>
-					</td>
-					<td data-label="Email">
-						<strong>{{ t.organizerEmail }}</strong>
-					</td>
-					<td data-label="Créé le">
-						{% if t['createdAt'] %}
-							{{ t['createdAt']|date('d/m/Y H:i') }}
-						{% else %}
-							—
-						{% endif %}
-					</td>
-					<td data-label="Actions">
-						<a href="{{ path('admin_tournament_show', { id: t['tournamentId'] }) }}" class="btn btn-info btn-sm">Voir</a>
-						<button class="btn btn-success btn-sm" disabled>Validé</button>
-						<button class="btn btn-danger btn-sm" disabled>Refusé</button>
-					</td>
+										<td class="justify-content-start justify-content-end-lg" data-label="Actions">
+											<a href="{{ path('admin_tournament_show', { id: t['tournamentId'] }) }}" class="btn btn-info btn-sm my-1 mx-1 ">
+												Voir
+											</a>
+											<form action="{{ path('admin_tournament_validate', { id: t['tournamentId'] }) }}" method="POST" onsubmit="return confirm('Valider ce tournoi ?');">
+												<input type="hidden" name="_token" value="{{ csrf_token('validate-tournament') }}">
+												<button type="submit" class="btn btn-success btn-sm my-1 mx-1" disabled>Valider</button>
+											</form>
+											<form action="{{ path('admin_tournament_refuse', { id: t['tournamentId'] }) }}" method="POST" onsubmit="return confirm('Refuser ce tournoi ?');">
+												<input type="hidden" name="_token" value="{{ csrf_token('refuse-tournament') }}">
+												<button type="submit" class="btn btn-danger btn-sm my-1 mx-1">Refuser</button>
+											</form>
+										</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					{% else %}
+						<p class="text-success">Aucune demande validée.</p>
+					{% endif %}
+				</section>
+				<!-- Demandes refusées-->
+				<section class="card bg-clair2 rounded-2 text-description text-center text-lightBlue gap-2 gap-lg-0 mx-auto" aria-labelledby="demandes-refusees">
+					<h4 class="bg-beige text-center text-darkBlue" id="demandes-refusees">Demandes refusées</h4>
+					{% if requestsRefused is not empty %}
+						<table class="table table-responsive-cards table-hover align-middle rounded-2">
+							<thead class="table-danger">
+								<tr>
+									<th>Image</th>
+									<th>Tournoi</th>
+									<th>Organisateur</th>
+									<th>Email</th>
+									<th>Date création</th>
+									<th>Refusé par</th>
+									<th>Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for t in requestsRefused %}
+									<tr>
+										<td data-label="Image">
+											{% if t.imageUrl %}
+												<img src="{{ asset(t.imageUrl) }}" class="thumbnails_spaces rounded">
+											{% else %}
+												<span class="text-muted small">Aucune image</span>
+											{% endif %}
+										</td>
+										<td data-label="Titre">
+											<strong>{{ t.title }}</strong>
+										</td>
+										<td data-label="Pseudo">
+											<strong>{{ t.pseudo }}</strong>
+										</td>
+										<td data-label="Email">
+											<strong>{{ t.organizerEmail }}</strong>
+										</td>
+										<td data-label="Créé le">
+											{% if t['createdAt'] %}
+												{{ t['createdAt']|date('d/m/Y H:i') }}
+											{% else %}
+												—
+											{% endif %}
+										</td>
+                    <td data-label="Validé par">
+											<strong>{{ t.treatedBy }}</strong>
+										</td>
+										<td class="justify-content-start justify-content-end-lg" data-label="Actions">
+											<a href="{{ path('admin_tournament_show', { id: t['tournamentId'] }) }}" class="btn btn-info btn-sm my-1 mx-1 ">
+												Voir
+											</a>
+											<form action="{{ path('admin_tournament_validate', { id: t['tournamentId'] }) }}" method="POST" onsubmit="return confirm('Valider ce tournoi ?');">
+												<input type="hidden" name="_token" value="{{ csrf_token('validate-tournament') }}">
+												<button type="submit" class="btn btn-success btn-sm my-1 mx-1">Valider</button>
+											</form>
+											<form action="{{ path('admin_tournament_refuse', { id: t['tournamentId'] }) }}" method="POST" onsubmit="return confirm('Refuser ce tournoi ?');">
+												<input type="hidden" name="_token" value="{{ csrf_token('refuse-tournament') }}">
+												<button type="submit" class="btn btn-danger btn-sm my-1 mx-1" disabled>Refuser</button>
+											</form>
+										</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					{% else %}
+						<p class="text-danger">Aucune demande refusée.</p>
+					{% endif %}
+				</section>
+			</section>
 
-				</tr>
-			{% endfor %}
-		</tbody>
-	</table>
-{% else %}
-	<p class="text-success">Aucune demande validée.</p>
-{% endif %}
-</section>
-<!-- Demandes refusées-->
-<section class="card bg-clair2 rounded-2 text-description text-center text-lightBlue gap-2 gap-lg-0 mx-auto mb-2" aria-labelledby="demandes-refusees">
-  <h3 class="bg-beige text-center text-darkBlue" id="demandes-refusees">Demandes refusées</h3>
-{% if requestsRefused is not empty %}
-	<table class="table table-responsive-cards table-hover align-middle rounded-2">
-		<thead class="table-danger">
-			<tr>
-				<th>Image</th>
-				<th>Tournoi</th>
-				<th>Organisateur</th>
-				<th>Email</th>
-				<th>Date création</th>
-				<th>Actions</th>
-			</tr>
-		</thead>
+			<!-- section demande joueur pour passer orga -->
+			<section class="bg-beige rounded-2 px-2 py-1 mb-2" aria-labelledby="demande-orga">
+				<h3 class="bg-lightBlue text-center text-clair2 border border-greenFluo" id="demande-orga">Demande de Joueur -> Organisateur</h3>
+				<section class="card bg-clair2 rounded-2 text-description text-center text-lightBlue gap-2 gap-lg-0 mx-auto mb-2" aria-labelledby="demandes-orga-attente">
+					<h4 class="bg-beige text-center text-darkBlue" id="demandes-orga-attente">Demandes en attente</h4>
+					{% if playerRequestsPending is not empty %}
+						<table class="table table-responsive-cards table-hover align-middle rounded-2">
+							<thead class="table-info">
+								<tr>
+									<th>Joueur</th>
+									<th>Email</th>
+									<th>Date de la demande</th>
+									<th>Actions</th>
+								</tr>
+							</thead>
 
-		<tbody>
-			{% for t in requestsRefused %}
-				<tr>
-					<td data-label="Image">
-						{% if t.imageUrl %}
-							<img src="{{ asset(t.imageUrl) }}" class="img-fluid rounded" style="max-height: 120px; object-fit: cover;">
-						{% else %}
-							<span class="text-muted small">Aucune image</span>
-						{% endif %}
-					</td>
+							<tbody>
+								{% for m in playerRequestsPending %}
+									<tr>
+										<td data-label="Joueur">
+											<strong>{{ m.pseudo }}</strong>
+										</td>
 
-					<td data-label="Titre">
-						<strong>{{ t.title }}</strong><br>
-					</td>
+										<td data-label="Email">
+											<strong>{{ m.email }}</strong>
+										</td>
 
-					<td data-label="Pseudo">
-						<strong>{{ t.pseudo }}</strong><br>
-					</td>
+										<td data-label="Créé le">
+											{% if m['createdAt'] %}
+												{{ m['createdAt']|date('d/m/Y H:i') }}
+											{% else %}
+												—
+											{% endif %}
+										</td>
 
-					<td data-label="Email">
-						<strong>{{ t.organizerEmail }}</strong>
-					</td>
+										<td data-label="Actions">
+											<form action="{{ path('admin_organizer_request_validate', { member_id: m['member'] }) }}" method="POST" onsubmit="return confirm('Valider cette demande ?');">
+												<input type="hidden" name="_token" value="{{ csrf_token('validate-request-player') }}">
+												<button type="submit" class="btn btn-success btn-sm my-1 mx-1">Valider</button>
+											</form>
+											<form action="{{ path('admin_organizer_request_refuse', { member_id: m['member'] }) }}" method="POST" onsubmit="return confirm('Refuser cette demande ?');">
+												<input type="hidden" name="_token" value="{{ csrf_token('refuse-request-player') }}">
+												<button type="submit" class="btn btn-danger btn-sm my-1 mx-1">Refuser</button>
+											</form>
+										</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					{% else %}
+						<p class="text-info">Aucune demande en attente</p>
+					{% endif %}
+				</section>
+				<section class="card bg-clair2 rounded-2 text-description text-center text-lightBlue gap-2 gap-lg-0 mx-auto mb-2" aria-labelledby="demandes-orga-valide">
+					<h4 class="bg-beige text-center text-darkBlue" id="demandes-orga-valide">Demandes validées</h4>
+					{% if playerRequestsValide is not empty %}
+						<table class="table table-responsive-cards table-hover align-middle rounded-2">
+							<thead class="table-success">
+								<tr>
+									<th>Joueur</th>
+									<th>Email</th>
+									<th>Date de la validation</th>
+									<th>Validé par</th>
+									<th>Actions</th>
+								</tr>
+							</thead>
 
-					<td data-label="Créé le">
-						{% if t['createdAt'] %}
-							{{ t['createdAt']|date('d/m/Y H:i') }}
-						{% else %}
-							—
-						{% endif %}
-					</td>
+							<tbody>
+								{% for m in playerRequestsValide %}
+									<tr>
+										<td data-label="Joueur">
+											<strong>{{ m.pseudo }}</strong>
+										</td>
 
-					<td data-label="Actions">
-						<a href="{{ path('admin_tournament_show', { id: t['tournamentId'] }) }}" class="btn btn-info btn-sm">Voir</a>
-						<button class="btn btn-success btn-sm" disabled>Validé</button>
-						<button class="btn btn-danger btn-sm" disabled>Refusé</button>
-					</td>
-				</tr>
-			{% endfor %}
-		</tbody>
-	</table>
-{% else %}
-	<p class="text-danger">Aucune demande refusée.</p>
-{% endif %}</section>
-</section>
-</section>
-<!-- Section gestion évènements -->
-{# <section class="container-lg my-2 my-lg-2py-2py-lg-3" aria-labelledby="section-messagerie">
+										<td data-label="Email">
+											<strong>{{ m.email }}</strong>
+										</td>
 
-			<h2 class="bg-greenFluo text-center text-darkBlue" id="section-messagerie">Boite de réception ✉️</h2>
-      <!-- messagerie -->
-			<section class="card bg-clair2 rounded-2 text_description text-center text-lightBlue gap-2 gap-lg-0 mx-auto" aria-labelledby="messagerie"> #}
-<section class="container-lg  my-2 my-lg-2 py-2 py-lg-3" aria-labelledby="section-evenements">
-  <h2 class="text-center text-lightBlue mb-3" id="section-evenements">Tous les Evènements</h2>
-  <div class="bg-clair2 rounded-2 justify-content-center p-3 mx-auto">
-    <div class="row g-4">
-	    {% for tournament in tournaments %}
-		    <div class="col-12 col-md-6 col-lg-4">
-			    <div class="card align-items-center mx-auto">
-				    <div class="ratio ratio-4x3 overflow-hidden">
-					    <img class="card-img-top object-fit-cover" src="{{ asset(tournament.getImagePath() ?: 'uploads/tournaments/default-tournament.jpg') }}" alt="Image de {{ tournament.title }}">
-				    </div>
-				    <div class="card-body">
-					    <h3 class="card-title text-center text-lightBlue">{{ tournament.title }}</h3>
-					    <p class="text-description text-center text-darkBlue p-0 m-0">Démarre le
-						    <span>{{ tournament.startAt|date('d/m/Y H:i', 'Europe/Paris') }}</span>
-					    </p>
-					    <p class="text-description text-center text-darkBlue p-0 mb-3">Se termine le
-						    <span>{{ tournament.endAt|date('d/m/Y H:i', 'Europe/Paris') }}</span>
-					    </p>
+										<td data-label="Validé le">
+											{% if m['createdAt'] %}
+												{{ m['createdAt']|date('d/m/Y H:i') }}
+											{% else %}
+												—
+											{% endif %}
+										</td>
+                    <td data-label="Validé par">
+											<strong>{{ t.treatedBy }}</strong>
+										</td>
+										<td data-label="Actions">
+											<form action="{{ path('admin_organizer_request_validate', { member_id: m['member'] }) }}" method="POST" onsubmit="return confirm('Valider cette demande ?');">
+												<input type="hidden" name="_token" value="{{ csrf_token('validate-request-player') }}">
+												<button type="submit" class="btn btn-success btn-sm my-1 mx-1" disabled>Valider</button>
+											</form>
+											<form action="{{ path('admin_organizer_request_refuse', { member_id: m['member'] }) }}" method="POST" onsubmit="return confirm('Refuser cette demande ?');">
+												<input type="hidden" name="_token" value="{{ csrf_token('refuse-request-player') }}">
+												<button type="submit" class="btn btn-danger btn-sm my-1 mx-1">Refuser</button>
+											</form>
+										</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					{% else %}
+						<p class="text-success">Aucune demande validées</p>
+					{% endif %}
+				</section>
+				<section class="card bg-clair2 rounded-2 text-description text-center text-lightBlue gap-2 gap-lg-0 mx-auto mb-2" aria-labelledby="demandes-orga-refuse">
+					<h4 class="bg-beige text-center text-darkBlue" id="demandes-orga-refuse">Demandes Refusées</h4>
+					{% if playerRequestsRefuse is not empty %}
+						<table class="table table-responsive-cards table-hover align-middle rounded-2">
+							<thead class="table-danger">
+								<tr>
+									<th>Joueur</th>
+									<th>Email</th>
+									<th>Date de refus</th>
+									<th>Refusé par</th>
+									<th>Actions</th>
+								</tr>
+							</thead>
 
-					{# BADGE DE STATUT #}
-					<span class="badge rounded-pill d-block mx-auto w-50 p-2 mb-3
-																																																																				{% if tournament.currentStatus.value == 'En Attente' %} bg-warning text-dark
-																																																																				{% elseif tournament.currentStatus.value == 'Validé' %} bg-success
-																																																																				{% elseif tournament.currentStatus.value == 'En Cours' %} bg-primary
-																																																																				{% elseif tournament.currentStatus.value == 'Terminé' %} bg-secondary
-																																																																				{% elseif tournament.currentStatus.value == 'Refusé' %} bg-danger
-																																																																				{% endif %}">
-						{{ tournament.currentStatus.value }}
-					</span>
+							<tbody>
+								{% for m in playerRequestsRefuse %}
+									<tr>
+										<td data-label="Joueur">
+											<strong>{{ m.pseudo }}</strong>
+										</td>
+										<td data-label="Email">
+											<strong>{{ m.email }}</strong>
+										</td>
+										<td data-label="Créé le">
+											{% if m['createdAt'] %}
+												{{ m['createdAt']|date('d/m/Y H:i') }}
+											{% else %}
+												—
+											{% endif %}
+										</td>
+                    <td data-label="Refusé par">
+											<strong>{{ t.treatedBy }}</strong>
+										</td>
+										<td data-label="Actions">
+											<form action="{{ path('admin_organizer_request_validate', { member_id: m['member'] }) }}" method="POST" onsubmit="return confirm('Valider cette demande ?');">
+												<input type="hidden" name="_token" value="{{ csrf_token('validate-request-player') }}">
+												<button type="submit" class="btn btn-success btn-sm my-1 mx-1">Valider</button>
+											</form>
+											<form action="{{ path('admin_organizer_request_refuse', { member_id: m['member'] }) }}" method="POST" onsubmit="return confirm('Refuser cette demande ?');">
+												<input type="hidden" name="_token" value="{{ csrf_token('refuse-request-player') }}">
+												<button type="submit" class="btn btn-danger btn-sm my-1 mx-1" disabled>Refuser</button>
+											</form>
+										</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					{% else %}
+						<p class="text-danger">Aucune demande refusées</p>
+					{% endif %}
+				</section>
+			</section>
+		</section>
 
-					<div class="d-flex justify-content-between ">
-						<a class="btn btn-beige rounded-pill text-lightBlue" href="#">
-							<span class="d-inline-block" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-trigger="hover" data-bs-content="Liste des Inscrits">
-								<i class="fa-solid fa-people-group fa-2xl"></i>
-							</span>
-						</a>
-						<a class="btn btn-beige rounded-pill text-lightBlue" href="#">
-							<span class="d-inline-block" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-trigger="hover" data-bs-content="Modifier l'event">
-								<i class="fa-solid fa-file-pen fa-xl"></i>
-							</span>
-						</a>
-						{# Bouton démarrer : affiché seulement si tournoi validé et dans les 30 min avant #}
-						{% set now = "now"|date("U") %}
-						{% set start = tournament.startAt|date("U") %}
-						{% set diff = start - now %}
-						{% if tournament.currentStatus.value == 'Validé' and diff <= 1800 and diff >= 0 %}
-							<a class="btn btn-greenFluo rounded-pill text-lightBlue" href="#">
-								<span class="d-inline-block" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-trigger="hover" data-bs-content="Démarrer l'event">
-									<i class="fa-solid fa-play fa-xl"></i>
-								</span>
-							</a>
-						{% endif %}
+		<!-- Section gestion évènements -->
+		<section class="container-lg  my-2 my-lg-2 py-2 py-lg-3" aria-labelledby="section-evenements">
+			<h2 class="bg-greenFluo text-center text-darkBlue" id="section-evenements">Evènements 🎉</h2>
+
+			<section class="bg-beige rounded-2 px-2 py-1 mb-2" aria-labelledby="all-event">
+				<h3 class="bg-lightBlue text-center text-clair2 border border-beige rounded-2" id="all-event">Tous les évènements</h3>
+
+				<section class="card bg-clair2 rounded-2 text_description text-center text-lightBlue mx-auto">
+					<div class="row g-4">
+						{% for tournament in tournaments %}
+							<div class="col-12 col-md-6 col-lg-4">
+								<div class="card align-items-center mx-auto">
+									<div class="ratio ratio-4x3 overflow-hidden">
+										<img class="card-img-top object-fit-cover" src="{{ asset(tournament.getImagePath() ?: 'uploads/tournaments/default-tournament.jpg') }}" alt="Image de {{ tournament.title }}">
+									</div>
+									<div class="card-body">
+										<h3 class="card-title text-center text-lightBlue">{{ tournament.title }}</h3>
+										<p class="text-description text-center text-darkBlue p-0 m-0">Démarre le
+											<span>{{ tournament.startAt|date('d/m/Y H:i', 'Europe/Paris') }}</span>
+										</p>
+										<p class="text-description text-center text-darkBlue p-0 mb-3">Se termine le
+											<span>{{ tournament.endAt|date('d/m/Y H:i', 'Europe/Paris') }}</span>
+										</p>
+
+										{# BADGE DE STATUT #}
+										<span class="badge rounded-pill d-block mx-auto w-50 p-2 mb-3
+											{% if tournament.currentStatus.value == 'En Attente' %} bg-warning text-dark
+											{% elseif tournament.currentStatus.value == 'Validé' %} bg-success
+											{% elseif tournament.currentStatus.value == 'En Cours' %} bg-primary
+											{% elseif tournament.currentStatus.value == 'Terminé' %} bg-secondary
+											{% elseif tournament.currentStatus.value == 'Refusé' %} bg-danger
+											{% endif %}">
+											{{ tournament.currentStatus.value }}
+										</span>
+
+										<div class="d-flex justify-content-between ">
+											<a class="btn btn-beige rounded-pill text-lightBlue" href="#">
+												<span class="d-inline-block" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-trigger="hover" data-bs-content="Liste des Inscrits">
+													<i class="fa-solid fa-people-group fa-2xl"></i>
+												</span>
+											</a>
+											<a class="btn btn-beige rounded-pill text-lightBlue" href="#">
+												<span class="d-inline-block" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-trigger="hover" data-bs-content="Modifier l'event">
+													<i class="fa-solid fa-file-pen fa-xl"></i>
+												</span>
+											</a>
+											{# Bouton démarrer : affiché seulement si tournoi validé et dans les 30 min avant #}
+											{% set now = "now"|date("U") %}
+											{% set start = tournament.startAt|date("U") %}
+											{% set diff = start - now %}
+											{% if tournament.currentStatus.value == 'Validé' and diff <= 1800 and diff >= 0 %}
+												<a class="btn btn-greenFluo rounded-pill text-lightBlue" href="#">
+													<span class="d-inline-block" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-trigger="hover" data-bs-content="Démarrer l'event">
+														<i class="fa-solid fa-play fa-xl"></i>
+													</span>
+												</a>
+											{% endif %}
+										</div>
+
+									</div>
+								</div>
+							</div>
+						{% endfor %}
 					</div>
 
+					<!-- pagination -->
+					{% if totalPages > 1 %}
+						<nav aria-label="Navigation tournois" class="d-flex justify-content-center mt-4">
+							<ul class="pagination mb-0">
+								{% if currentPage > 1 %}
+									<li class="page-item">
+										<a class="page-link bg-clair2 text-lightBlue border-0 rounded-start-pill" href="{{ path('admin_dashboard', {page: currentPage - 1}) }}">&laquo;</a>
+									</li>
+								{% endif %}
+								{% for p in 1..totalPages %}
+									<li class="page-item">
+										<a class="page-link border-0 {{ p == currentPage ? 'bg-greenFluo text-darkBlue fw-bold' : 'bg-clair2 text-lightBlue' }}" href="{{ path('admin_dashboard', {page: p}) }}">{{ p }}</a>
+									</li>
+								{% endfor %}
+								{% if currentPage < totalPages %}
+									<li class="page-item">
+										<a class="page-link bg-clair2 text-lightBlue border-0 rounded-end-pill" href="{{ path('admin_dashboard', {page: currentPage + 1}) }}">&raquo;</a>
+									</li>
+								{% endif %}
+							</ul>
+						</nav>
+					{% endif %}
+				</section>
+
+			</section>
+
+			<!-- events crées -->
+			<section class="bg-beige rounded-2 px-2 py-1" aria-labelledby="my-event">
+				<h3 class="bg-lightBlue text-center text-clair2 border border-beige rounded-2" id="my-event">Mes évènements</h3>
+				<div class="text-center my-2">
+				{% if myTournaments is defined and myTournaments is not empty %}
+					<div class="row g-4">
+					{% for tournament in myTournaments %}
+					<div class="col-12 col-md-6 col-lg-4">
+						<div class="card align-items-center mx-auto">
+							<div class="ratio ratio-4x3 overflow-hidden">
+								<img class="card-img-top object-fit-cover" src="{{ asset(tournament.getImagePath() ?: 'uploads/tournaments/default-tournament.jpg') }}" alt="Image de {{ tournament.title }}">
+							</div>
+							<div class="card-body">
+								<h3 class="card-title text-center text-lightBlue">{{ tournament.title }}</h3>
+								<p class="text-description text-center text-darkBlue p-0 m-0">Démarre le
+									<span>{{ tournament.startAt|date('d/m/Y H:i', 'Europe/Paris') }}</span>
+								</p>
+								<p class="text-description text-center text-darkBlue p-0 mb-3">Se termine le
+									<span>{{ tournament.endAt|date('d/m/Y H:i', 'Europe/Paris') }}</span>
+								</p>
+
+								{# BADGE DE STATUT #}
+								<span class="badge rounded-pill d-block mx-auto w-50 p-2 mb-3
+																														{% if tournament.currentStatus.value == 'En Attente' %} bg-warning text-dark
+																														{% elseif tournament.currentStatus.value == 'Validé' %} bg-success
+																														{% elseif tournament.currentStatus.value == 'En Cours' %} bg-primary
+																														{% elseif tournament.currentStatus.value == 'Terminé' %} bg-secondary
+																														{% elseif tournament.currentStatus.value == 'Refusé' %} bg-danger
+																														{% endif %}">
+									{{ tournament.currentStatus.value }}
+								</span>
+
+								<div class="d-flex justify-content-between ">
+									<a class="btn btn-beige rounded-pill text-lightBlue" href="#">
+										<span class="d-inline-block" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-trigger="hover" data-bs-content="Liste des Inscrits">
+											<i class="fa-solid fa-people-group fa-2xl"></i>
+										</span>
+									</a>
+									<a class="btn btn-beige rounded-pill text-lightBlue" href="#">
+										<span class="d-inline-block" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-trigger="hover" data-bs-content="Modifier l'event">
+											<i class="fa-solid fa-file-pen fa-xl"></i>
+										</span>
+									</a>
+									{# Bouton démarrer : affiché seulement si tournoi validé et dans les 30 min avant #}
+									{% set now = "now"|date("U") %}
+									{% set start = tournament.startAt|date("U") %}
+									{% set diff = start - now %}
+								{% if tournament.currentStatus.value == 'Validé' and diff <= 1800 and diff >= 0 %}
+										<a class="btn btn-greenFluo rounded-pill text-lightBlue" href="#">
+											<span class="d-inline-block" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-trigger="hover" data-bs-content="Démarrer l'event">
+												<i class="fa-solid fa-play fa-xl"></i>
+											</span>
+										</a>
+								{% endif %}
+							</div>
+
+							</div>
+						</div>
+					</div>
+					{% endfor %}
+					</div>
+				{% else %}
+					<p class="text-center text-lightBlue">Aucun évènement créé pour le moment.</p>
+				{% endif %}
+					<button type="button" class="btn-custom-lg-green btn btn-greenFluo" data-bs-toggle="modal" data-bs-target="#createTournamentModal">
+						Créer un tournoi
+					</button>
 				</div>
-			</div>
-		</div>
-	{% else %}
-		<p class="text-center text-lightBlue">Aucun évènement créé pour le moment.</p>
-	{% endfor %}
-</div>
-{% if totalPages > 1 %}
-	<nav aria-label="Navigation tournois" class="d-flex justify-content-center mt-4">
-		<ul class="pagination mb-0">
-			{% if currentPage > 1 %}
-				<li class="page-item">
-					<a class="page-link bg-clair2 text-lightBlue border-0 rounded-start-pill" href="{{ path('admin_dashboard', {page: currentPage - 1}) }}">&laquo;</a>
-				</li>
-			{% endif %}
-			{% for p in 1..totalPages %}
-				<li class="page-item">
-					<a class="page-link border-0 {{ p == currentPage ? 'bg-greenFluo text-darkBlue fw-bold' : 'bg-clair2 text-lightBlue' }}" href="{{ path('admin_dashboard', {page: p}) }}">{{ p }}</a>
-				</li>
-			{% endfor %}
-			{% if currentPage < totalPages %}
-				<li class="page-item">
-					<a class="page-link bg-clair2 text-lightBlue border-0 rounded-end-pill" href="{{ path('admin_dashboard', {page: currentPage + 1}) }}">&raquo;</a>
-				</li>
-			{% endif %}
-		</ul>
-	</nav>
-{% endif %}
-<div class="bg-beige rounded-2 border border-lightBlue justify-content-center p-3 mx-auto my-2">
-	<h2 class="text-center text-lightBlue fs-3 my-3">Créer un évenement 🎉</h2>
-	<!-- Formulaire de Création -->
-	{% if tournamentForm is defined %}
-		{{ form_start(tournamentForm, {'attr': {'class': 'form_contact bg-clair2 rounded-2 border border-lightBlue text_description text-lightBlue px-5 pt-4 pb-2', 'id': 'searchForm'}}) }}
-		<div class="mx-auto">
-			{{ form_label(tournamentForm.title, 'Titre de l\'évènement :') }}
+			</section>
+
+		</section>
+
+	{# Modale création tournoi #}
+	<div class="modal fade" id="createTournamentModal" tabindex="-1" aria-labelledby="createTournamentModalLabel" aria-modal="true" role="dialog">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content text-lightBlue">
+				<div class="modal-header">
+					<h5 class="modal-title text-center w-100" id="createTournamentModalLabel">Créer un tournoi</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+				</div>
+				<div class="modal-body">
+					{{ form_start(tournamentForm, {'action': path('event_create'), 'method': 'POST', 'attr': {'class': 'form_contact bg-clair2 rounded-2 border border-lightBlue text_description text-lightBlue px-4 pt-3 pb-2'}}) }}
+					<div class="mx-auto">
+						{{ form_label(tournamentForm.title, 'Titre de l\'évènement :') }}
 						{{ form_widget(tournamentForm.title, {'attr': {'class': 'form-control input_filter mb-3'}}) }}
 					</div>
 					<div class="mx-auto">
@@ -426,75 +670,89 @@
 					</div>
 					<div class="mx-auto">
 						{{ form_label(tournamentForm.tournamentImage, 'Image ou photo de l\'évènement :') }}
-			{{ form_widget(tournamentForm.tournamentImage, {'attr': {'class': 'form-control input_filter mb-3'}}) }}
+						{{ form_widget(tournamentForm.tournamentImage, {'attr': {'class': 'form-control input_filter mb-3'}}) }}
+					</div>
+					<div class="d-flex justify-content-center">
+						<button class="btn-custom-sm-green btn btn-greenFluo" type="submit">Créer</button>
+					</div>
+					{{ form_end(tournamentForm) }}
+				</div>
+			</div>
 		</div>
-		<div class="d-flex justify-content-center">
-			<button class="btn-custom-sm-green btn btn-greenFluo" type="submit">Créer</button>
+	</div>
+
+    <!-- Section gestion infos perso -->
+	  <section class="container-lg my-2 my-lg-2 py-2 py-lg-3" aria-labelledby="infos-perso">
+			<h2 class="bg-greenFluo text-center text-darkBlue" id="infos-perso">Mes informations personnelles ✏️</h2>
+		  <section class="bg-beige rounded-2 text-lightBlue text-center mx-auto p-3">
+        <!-- Formulaire d'Inscription -->
+        <form action="#" method="POST" class="form_contact bg-clair2 rounded-2 border border-lightBlue text_description text-lightBlue px-5 pt-4 pb-2">
+				<!-- Informations personnelles -->
+				  <div class="w-75 mx-auto">
+					  <label class="" for="name">Nom :</label>
+					  <input class="form-control input_filter mb-3" id="name" name="name" type="text" minlength="2" maxlength="50" value="{{ app.user.lastName }}" disabled autocomplete required>
+				  </div>
+				  <div class="w-75 mx-auto">
+					  <label class="" for="surname">Prénom :  </label>
+					  <input class="form-control input_filter mb-3" id="surname" name="surname" type="text" minlength="2" maxlength="50" value="{{ app.user.firstName }}" disabled required>
+				  </div>
+				  <div class="w-75 mx-auto">
+					  <label class="" for="pseudo">Pseudo :</label>
+					  <input class="form-control input_filter mb-3" id="pseudo" name="pseudo" type="text" minlength="2" maxlength="50" value="{{ app.user.pseudo }}" disabled required>
+				  </div>
+				  <div class="w-75 mx-auto">
+					  <label class="" for="mail">Email :</label>
+					  <input class="form-control input_filter mb-3" id="mail" name="mail" type="email" value="{{ app.user.email }}" disabled required>
+				  </div>
+				  <div class="w-75 mx-auto">
+					  <label class="" for="password">Mot de Passe :</label>
+					  <input class="form-control input_filter mb-3" id="password" name="password" type="password" placeholder="*********" disabled required>
+				  </div>
+        
+				  <div class="text-center">
+					<a class="btn-custom-md-green btn btn-greenFluo align-self-center my-2" href="{{ path('modifProfile') }}">Modifier ⚙️</a>
+				</div>
+			  </form>
+		  </section>
+	  </section>
+
+	  <div class="text-center mt-4">
+		  <a class="btn-custom-lg-clair btn btn-clair2 mb-4" href="{{ path('app_home') }}">Retour à l'accueil</a>
+	  </div>
+
+  </div> <!-- fermeture container-fluid -->
+
+{% if tournament is defined %}
+{# Modale détail event's pending #}
+<div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.6)">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content text-lightBlue">
+			<div class="modal-header">
+				<h4 class="modal-title text-center w-100 ">{{ tournament.title }}</h4>
+				<a href="{{ path('admin_dashboard') }}" class="btn-close"></a>
+			</div>
+			<div class="modal-body text-center">
+				<img src="{{ asset(tournament.getImagePath() ?: 'uploads/tournaments/default-tournament.jpg') }}" class="img-fluid mb-3"/>
+
+				<p>
+					<strong>Description :</strong>
+					{{ tournament.description }}</p>
+				<p>
+					<strong>Slogan :</strong>
+					{{ tournament.tagline }}</p>
+				<p>
+					<strong>Début :</strong>
+					{{ tournament.startAt|date('d/m/Y H:i') }}</p>
+				<p>
+					<strong>Fin :</strong>
+					{{ tournament.endAt|date('d/m/Y H:i') }}</p>
+				<p>
+					<strong>Places :</strong>
+					{{ tournament.capacityGauge }}</p>
+				<p>
+					<strong>Statut :</strong>
+					{{ tournament.currentStatus.value }}</p>
+			</div>
 		</div>
-		{{ form_end(tournamentForm) }}
-	{% else %}
-		<p class="text-center text-lightBlue">
-			<a href="{{ path('event_create') }}" class="btn-custom-lg-green btn btn-greenFluo">Créer un tournoi</a>
-		</p>
-	{% endif %}
-</div></div></section><!-- Section gestion infos perso --><section class="container-lg my-3 my-lg-3 py-2 py-lg-3"><div class="bg-clair2 rounded-2 text-lightBlue text-center mx-auto p-3">
-<h2>Mes informations personnelles ✏️</h2><!-- Formulaire d'Inscription --><form
-	action="#" method="POST" class="form_contact bg-beige rounded-2 border border-lightBlue text_description text-lightBlue px-5 pt-4 pb-2">
-
-	<!-- Informations personnelles -->
-	<div class="w-75 mx-auto">
-		<label class="" for="name">Nom :
-		</label>
-		<input class="form-control input_filter mb-3" id="name" name="name" type="text" minlength="2" maxlength="50" value="{{ app.user.lastName }}" disabled autocomplete required>
 	</div>
-	<div class="w-75 mx-auto">
-		<label class="" for="surname">Prénom :
-		</label>
-		<input class="form-control input_filter mb-3" id="surname" name="surname" type="text" minlength="2" maxlength="50" value="{{ app.user.firstName }}" disabled required>
-	</div>
-	<div class="w-75 mx-auto">
-		<label class="" for="pseudo">Pseudo :
-		</label>
-		<input class="form-control input_filter mb-3" id="pseudo" name="pseudo" type="text" minlength="2" maxlength="50" value="{{ app.user.pseudo }}" disabled required>
-	</div>
-	<div class="w-75 mx-auto">
-		<label class="" for="mail">Email :
-		</label>
-		<input class="form-control input_filter mb-3" id="mail" name="mail" type="email" value="{{ app.user.email }}" disabled required>
-	</div>
-	<div class="w-75 mx-auto">
-		<label class="" for="password">Mot de Passe :
-		</label>
-		<input class="form-control input_filter mb-3" id="password" name="password" type="password" placeholder="*********" disabled required>
-	</div>
-
-	<div class="text-center">
-		<a class="btn-custom-md-green btn btn-greenFluo align-self-center my-2" href="{{ path('modifProfile') }}">Modifier ⚙️</a>
-	</div>
-</form></div></section><div class="text-center mt-4"><a class="btn-custom-lg-clair btn btn-clair2 mb-4" href="{{ path('app_home') }}">Retour à l'accueil</a></div></section></div>{% if tournament is defined %}{# Modale détail event's pending #}<div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.6)"><div class="modal-dialog modal-lg"><div class="modal-content text-lightBlue">
-<div class="modal-header">
-	<h5 class="modal-title ">{{ tournament.title }}</h5>
-	<a href="{{ path('admin_dashboard') }}" class="btn-close"></a>
-</div>
-<div class="modal-body text-center">
-	<img src="{{ asset(tournament.getImagePath() ?: 'uploads/tournaments/default-tournament.jpg') }}" class="img-fluid mb-3"/>
-
-	<p>
-		<strong>Description :</strong>
-		{{ tournament.description }}</p>
-	<p>
-		<strong>Slogan :</strong>
-		{{ tournament.tagline }}</p>
-	<p>
-		<strong>Début :</strong>
-		{{ tournament.startAt|date('d/m/Y H:i') }}</p>
-	<p>
-		<strong>Fin :</strong>
-		{{ tournament.endAt|date('d/m/Y H:i') }}</p>
-	<p>
-		<strong>Places :</strong>
-		{{ tournament.capacityGauge }}</p>
-	<p>
-		<strong>Statut :</strong>
-		{{ tournament.currentStatus.value }}</p>
-</div></div></div></div>{% endif %}{% endblock %}
+</div>{% endif %}{% endblock %}

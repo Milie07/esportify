@@ -40,6 +40,11 @@ event_create:
   controller: App\Controller\CreateEventController::create
   methods: [GET, POST]
 
+player_request_organizer:
+  path: /player/request
+  controller: App\Controller\OrganizerRequestsController::createRequest
+  methods: [POST]
+
 # Connexion et Déconnexion
 app_login:
   path: /login
@@ -82,6 +87,16 @@ admin_tournament_validate:
 admin_tournament_refuse:
   path: /admin/tournament/refuse/{id}
   controller: App\Controller\AdminTournamentRequestController::refuse
+  methods: [POST]
+
+admin_organizer_request_validate:
+  path: /admin/organizer/validate/{member_id}
+  controller: App\Controller\AdminOrganizerRequestController::validate
+  methods: [POST]
+
+admin_organizer_request_refuse:
+  path: /admin/organizer/refuse/{member_id}
+  controller: App\Controller\AdminOrganizerRequestController::refuse
   methods: [POST]
 
 # Espaces à venir

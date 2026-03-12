@@ -51,6 +51,16 @@ class FavoriteEventService
       $this->entityManager->remove($removingFavorite);
       $this->entityManager->flush();
     }
+
+    /**
+     * Retire un tournoi des favoris de tous les membres (ex: tournoi refusé)
+     */
+    public function cleanFavoritesForTournament(\App\Entity\Tournament $tournament): void
+    {
+      $this->entityManager->createQuery(
+        'DELETE FROM App\Entity\MemberAddFavoritesTournament f WHERE f.tournament = :t'
+      )->setParameter('t', $tournament)->execute();
+    }
   }
   
 

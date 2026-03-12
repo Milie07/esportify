@@ -4,21 +4,14 @@
 {% endblock %}
 
 {% block body %}
-	<div
-		class="container-fluid mx-auto">
+	<div class="container-fluid mx-auto">
 		<!-- Logo Esportify  -->
 		<div class="container-lg text-center">
 			<img class="img-logo img-fluid" src="{{ asset('build/images/logo/logo-modifie.png') }}" alt="logo esportify">
 		</div>
 		<!-- Titre de la page -->
 		<h1 class="text-clair2 text-center pt-2">Connexion</h1>
-		{% for type, messages in app.flashes %}
-			{% for message in messages %}
-				<div class="alert alert-{{ type }} text-center my-3">
-					{{ message }}
-				</div>
-			{% endfor %}
-		{% endfor %}
+	</div>
 		<!-- Formulaire de Connexion -->
 		<section class="container-lg section_contact d-flex text_description justify-content-center my-4 mt-4">
 			<form class="form_contact bg-clair1 rounded-4 text-lightBlue px-5 py-4" id="loginForm" action="{{ path('app_login') }}" method="post">
@@ -65,6 +58,9 @@
 				</a>
 			</div>
 		</section>
+    <div class="text-center mt-4">
+			<a class="btn-custom-lg-clair btn btn-clair2 mb-4" href="{{ path('app_home') }}">Retour à l'accueil</a>
+		</div>
 	</div>
 
 {% endblock %}

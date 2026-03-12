@@ -16,7 +16,8 @@ class ContactService
         string $role,
         string $email,
         string $subject,
-        string $message
+        string $message,
+        string $treatedBy
     ): void {
         $collection = $this->mongoDBService->getCollection('contact_messages');
         $collection->insertOne([
@@ -25,6 +26,7 @@ class ContactService
             'email' => $email,
             'subject' => $subject,
             'message' => $message,
+            'treatedBy' => $treatedBy,
             'createdAt' => new \MongoDB\BSON\UTCDateTime(),
             'status' => 'new'
         ]);

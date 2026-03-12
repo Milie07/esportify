@@ -89,7 +89,7 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
   #[Assert\NotNull(message: "Le rôle de l'utilisateur est obligatoire.")]
   private ?MemberRoles $memberRole = null;
 
-  // MEMBER_MODERATE_ROLES à venir
+  // MEMBER_MODERATE_ROLES à venir 
   #[ORM\OneToMany(mappedBy: "member", targetEntity: MemberModerateRoles::class, orphanRemoval: true)]
   private Collection $memberModerate;
   public function getMemberModerate(): Collection
@@ -113,7 +113,7 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     return $this->memberParticipate;
   }
 
-  // ADD_FAVORITES à venir
+  // ADD_FAVORITES
   #[ORM\OneToMany(mappedBy: "member", targetEntity: MemberAddFavoritesTournament::class, orphanRemoval: true)]
   private Collection $memberAddFavorites;
   public function getMemberAddFavorites(): Collection
@@ -259,38 +259,39 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     return $this;
   }
 
-  /** 
-   * @return Collection<int, 
-   * TournamentHistory> 
-   * */
-  public function getTournamentHistories(): Collection
-  {
-    return $this->tournamentHistories;
-  }
+  // /** 
+  //  * @return Collection<int, 
+  //  * TournamentHistory> 
+  //  * */
+  // public function getTournamentHistories(): Collection
+  // {
+  //   return $this->tournamentHistories;
+  // }
 
-  public function addTournamentHistory(TournamentHistory $history): static
-  {
-    if (!$this->tournamentHistories->contains($history)) {
-      $this->tournamentHistories->add($history);
-      $history->setMember($this);
-    }
-    return $this;
-  }
+  // public function addTournamentHistory(TournamentHistory $history): static
+  // {
+  //   if (!$this->tournamentHistories->contains($history)) {
+  //     $this->tournamentHistories->add($history);
+  //     $history->setMember($this);
+  //   }
+  //   return $this;
+  // }
 
-  public function removeTournamentHistory(TournamentHistory $history): static
-  {
-    if ($this->tournamentHistories->removeElement($history)) {
-      if ($history->getMember() === $this) {
-        $history->setMember(null);
-      }
-    }
-    return $this;
-  }
+  // public function removeTournamentHistory(TournamentHistory $history): static
+  // {
+  //   if ($this->tournamentHistories->removeElement($history)) {
+  //     if ($history->getMember() === $this) {
+  //       $history->setMember(null);
+  //     }
+  //   }
+  //   return $this;
+  // }
 
   public function getUsername(): string
   {
     return $this->getUserIdentifier();
   }
+  
   public function getSalt(): ?string
   {
     return null;

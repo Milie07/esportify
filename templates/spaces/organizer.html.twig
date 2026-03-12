@@ -4,13 +4,6 @@
 {% endblock %}
 {% block body %}
 <div class="container-fluid mx-auto">
-	{% for type, flashes in app.flashes() %}
-		{% for msg in flashes %}
-			<div class="alert alert-{{ type }} text-center">
-				{{ msg }}
-			</div>
-		{% endfor %}
-	{% endfor %}
 	<!-- Avatar Joueur -->
 	{% block img %}
 		<img class="avatar avatar_player d-block mx-auto" src="{{ asset(avatarUrl) }}" alt="avatar">
@@ -83,7 +76,7 @@
 					<div class="col-12 col-md-6 col-lg-4">
 						<div class="card align-items-center mx-auto">
 							<div class="ratio ratio-4x3 overflow-hidden">
-								<img class="card-img-top object-fit-cover" src="{{ asset(tournament.getImagePath()) }}" alt="Image de {{ tournament.title }}">
+								<img class="card-img-top object-fit-cover" src="{{ asset(tournament.getImagePath() ?: 'uploads/tournaments/default-tournament.jpg') }}" alt="Image de {{ tournament.title }}">
 							</div>
 							<div class="card-body">
 								<h3 class="card-title text-center text-lightBlue">{{ tournament.title }}</h3>

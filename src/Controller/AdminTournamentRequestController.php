@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Tournament;
 use App\Enum\CurrentStatus;
+use App\Form\TournamentType;
+use App\Service\OrganizerRequestsService;
 use App\Service\TournamentService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
@@ -15,8 +17,9 @@ use Symfony\Component\HttpFoundation\Response;
 class AdminTournamentRequestController extends AbstractController
 {
     public function __construct(
-        private TournamentService $tournamentService,
-        private CsrfTokenManagerInterface $csrfTokenManager
+      private TournamentService $tournamentService,
+      private OrganizerRequestsService $organizerRequestsService,
+      private CsrfTokenManagerInterface $csrfTokenManager
     ) {
     }
 
@@ -37,21 +40,29 @@ class AdminTournamentRequestController extends AbstractController
             $limit,
             ($page - 1) * $limit
         );
-
         try {
             $messages = $this->tournamentService->getContactMessages();
             $requests = $this->tournamentService->getAllRequestsGroupedByStatus();
+            $playerRequests = $this->organizerRequestsService->getAllRequestsGroupByStatus();
         } catch (\Throwable $e) {
             // Si MongoDB échoue, on affiche quand même la page
             $this->addFlash('warning', 'Erreur MongoDB : ' . $e->getMessage());
             $messages = [];
             $requests = ['pending' => [], 'validated' => [], 'refused' => [], 'stopped' => []];
+            $playerRequests = ['pending' => [], 'validé' => [], 'refusé' => []];
         }
 
         /** @var \App\Entity\Member $user */
         $user = $this->getUser();
         $favoritesCollection = $user->getMemberAddFavorites();
         $avatarPath = $user->getAvatarPath() ?: 'uploads/avatars/default-avatar.jpg';
+
+        $tournamentForm = $this->createForm(TournamentType::class, new Tournament())->createView();
+
+        $myTournaments = $em->getRepository(Tournament::class)->findBy(
+            ['organizer' => $user],
+            ['createdAt' => 'DESC']
+        );
 
         $response = $this->render('spaces/admin.html.twig', [
             'tournaments' => $tournaments,
@@ -60,10 +71,15 @@ class AdminTournamentRequestController extends AbstractController
             'requestsValidated' => $requests['validated'],
             'requestsRefused' => $requests['refused'],
             'requestsStopped' => $requests['stopped'],
+            'playerRequestsPending' => $playerRequests['pending'],
+            'playerRequestsValide' => $playerRequests['validé'],
+            'playerRequestsRefuse' => $playerRequests['refusé'],
             'favorites' => $favoritesCollection,
             'avatarUrl' => $avatarPath,
             'currentPage' => $page,
             'totalPages' => $totalPages,
+            'tournamentForm' => $tournamentForm,
+            'myTournaments' => $myTournaments,
         ]);
 
         $response->headers->set('Cache-Control', 'no-store');
@@ -75,28 +91,38 @@ class AdminTournamentRequestController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
+        /** @var \App\Entity\Member $user */
         $user = $this->getUser();
-        $tournaments = $em->getRepository(Tournament::class)->findBy(
-            ['organizer' => $user],
-            ['createdAt' => 'DESC']
-        );
 
         $tournament = $em->getRepository(Tournament::class)->find($id);
         if (!$tournament) {
             throw $this->createNotFoundException("Tournoi introuvable.");
         }
 
+        $myTournaments = $em->getRepository(Tournament::class)->findBy(
+            ['organizer' => $user],
+            ['createdAt' => 'DESC']
+        );
+
         $messages = $this->tournamentService->getContactMessages();
         $requests = $this->tournamentService->getAllRequestsGroupedByStatus();
+        $playerRequests = $this->organizerRequestsService->getAllRequestsGroupByStatus();
 
         return $this->render('spaces/admin.html.twig', [
-            'tournaments' => $tournaments,
+            'tournaments' => $myTournaments,
             'tournament' => $tournament,
             'messages' => $messages,
             'requestsPending' => $requests['pending'],
             'requestsValidated' => $requests['validated'],
             'requestsRefused' => $requests['refused'],
             'requestsStopped' => $requests['stopped'],
+            'playerRequestsPending' => $playerRequests['pending'],
+            'playerRequestsValide' => $playerRequests['validé'],
+            'playerRequestsRefuse' => $playerRequests['refusé'],
+            'favorites' => $user->getMemberAddFavorites(),
+            'avatarUrl' => $user->getAvatarPath() ?: 'uploads/avatars/default-avatar.jpg',
+            'tournamentForm' => $this->createForm(TournamentType::class, new Tournament())->createView(),
+            'myTournaments' => $myTournaments,
         ]);
     }
 
@@ -117,11 +143,12 @@ class AdminTournamentRequestController extends AbstractController
             throw $this->createNotFoundException("Tournoi introuvable.");
         }
 
-        // Utiliser la méthode validateTournament qui gère le déplacement de l'image
+        /** @var \App\Entity\Member $admin */
+        $admin = $this->getUser();
         $publicDirectory = $this->getParameter('kernel.project_dir') . '/public';
-        $this->tournamentService->validateTournament($tournament, $publicDirectory);
+        $this->tournamentService->validateTournament($tournament, $publicDirectory, $admin->getPseudo());
 
-        $this->addFlash('success', 'Tournoi validé ! L\'image a été déplacée vers le dossier permanent.');
+        $this->addFlash('success', 'Tournoi validé !');
         return $this->redirectToRoute('admin_dashboard');
     }
 
@@ -142,11 +169,12 @@ class AdminTournamentRequestController extends AbstractController
             throw $this->createNotFoundException("Tournoi introuvable.");
         }
 
-        // Utiliser la méthode refuseTournament qui gère la suppression de l'image
+        /** @var \App\Entity\Member $admin */
+        $admin = $this->getUser();
         $publicDirectory = $this->getParameter('kernel.project_dir') . '/public';
-        $this->tournamentService->refuseTournament($tournament, $publicDirectory);
+        $this->tournamentService->refuseTournament($tournament, $publicDirectory, $admin->getPseudo());
 
-        $this->addFlash('danger', 'Tournoi refusé et image supprimée.');
+        $this->addFlash('danger', 'Tournoi refusé');
         return $this->redirectToRoute('admin_dashboard');
     }
 

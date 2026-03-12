@@ -146,6 +146,10 @@ class AppFixtures extends Fixture
       $manager->persist($tournament);
     }
 
+
+
+
+    
     $manager->flush();
     echo "Fixtures exécutées.\n";
   }

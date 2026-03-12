@@ -27,9 +27,9 @@ security:
         check_path: app_login
         username_parameter: pseudo
         password_parameter: password
-        enable_csrf: true          # ← manquant
-        csrf_parameter: _csrf_token  # ← nom du champ dans le form (optionnel, c'est la valeur par défaut)
-        csrf_token_id: authenticate  # ← doit correspondre à csrf_token('authenticate') dans le twig
+        enable_csrf: true        
+        csrf_parameter: _csrf_token  
+        csrf_token_id: authenticate 
 
       logout:
         path: app_logout

@@ -49,7 +49,6 @@ final class CreateEventController extends AbstractController
             } catch (\Throwable $e) {
                 $this->addFlash('danger', 'Erreur lors de la création du tournoi : ' . $e->getMessage());
             }
-
             return $this->isGranted('ROLE_ADMIN')
                 ? $this->redirectToRoute('admin_dashboard')
                 : $this->redirectToRoute('organizer_space');

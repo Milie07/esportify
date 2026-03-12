@@ -199,6 +199,38 @@ class FileUploadService
   }
 
   /**
+   * Déplace une image du dossier permanent vers le dossier pending (ex: lors d'un refus)
+   *
+   * @param string $currentPath Chemin relatif actuel (ex: "uploads/tournaments/xxx.jpg")
+   * @param string $baseDirectory Répertoire de base absolu (ex: "/var/www/html/public")
+   * @return string Le nouveau chemin relatif (ex: "uploads/tournaments/pending/xxx.jpg")
+   */
+  public function moveToPending(string $currentPath, string $baseDirectory): string
+  {
+    $absoluteCurrentPath = $baseDirectory . '/' . $currentPath;
+
+    if (!file_exists($absoluteCurrentPath)) {
+      throw new \RuntimeException("Le fichier n'existe pas: {$currentPath}");
+    }
+
+    $filename = basename($currentPath);
+    $pendingDir = $baseDirectory . '/uploads/tournaments/pending';
+
+    if (!is_dir($pendingDir)) {
+      mkdir($pendingDir, 0775, true);
+    }
+
+    $newRelativePath = 'uploads/tournaments/pending/' . $filename;
+    $absoluteNewPath = $baseDirectory . '/' . $newRelativePath;
+
+    if (!rename($absoluteCurrentPath, $absoluteNewPath)) {
+      throw new \RuntimeException("Impossible de déplacer l'image vers le dossier pending");
+    }
+
+    return $newRelativePath;
+  }
+
+  /**
    * Supprime une image de tournoi
    *
    * @param string $imagePath Chemin relatif de l'image (ex: "uploads/tournaments/pending/xxx.jpg")
