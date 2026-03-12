@@ -44,13 +44,13 @@ class OrganizerRequestsService
   /*
   * Retourne les différents status organisés en tableau gropé
   */
-  public function getAllRequestsGroupByStatus() 
+  public function getAllRequestsGroupByStatus()
   {
     return [
-            'pending' => $this->getRequestsByStatus('pending'),
-            'validé' => $this->getRequestsByStatus('validé'),
-            'refusé' => $this->getRequestsByStatus('refusé'),
-        ];
+      'pending' => $this->getRequestsByStatus('pending'),
+      'validé' => $this->getRequestsByStatus('validé'),
+      'refusé' => $this->getRequestsByStatus('refusé'),
+    ];
   }
 
   /*
@@ -67,6 +67,9 @@ class OrganizerRequestsService
       } else {
         $row['createdAt'] = null;
       }
+      if (isset($row['member'])) {
+        $row['member'] = (int) $row['member'];
+      }
       $playerRequests[] = $row;
     }
     return $playerRequests;
@@ -76,12 +79,9 @@ class OrganizerRequestsService
   * Valide le changement de rôle -> Mets à jour SQL
   * Mets à jour MongoDB
   */
-  public function validateRequest(int $memberId): void 
+  public function validateRequest(Member $member, ?string $treatedBy = null): void
   {
-    $member = $this->entity_manager->getRepository(Member::class)->find($memberId);
-    if (!$member) {
-    throw new \RuntimeException("Utilisateur introuvable.");
-    }
+    $memberId = $member->getId();
     $organizerRole = $this->entity_manager->getRepository(MemberRoles::class)->findOneBy(['code' => 'ROLE_ORGANIZER']);
 
     $collection = $this->mongoDBService->getCollection('organizer_requests');
@@ -90,29 +90,30 @@ class OrganizerRequestsService
     // valide le changement de status
     $member->setMemberRole($organizerRole);
     $this->entity_manager->flush();
-    
+    $fields = ['status' => 'validé', 'updatedAt' => new UTCDateTime()];
+    if ($treatedBy !== null) {
+      $fields['treatedBy'] = $treatedBy;
+    }
     $collection->updateOne(
       ['member' => $memberId, 'status' => 'pending'],
-      ['$set' => [
-        'status' => 'validé',
-        'updatedAt' => new \MongoDB\BSON\UTCDateTime()
-        ]
-      ]);
+      ['$set' => $fields]
+    );
   }
 
   /*
   * Refuse le changement de rôle
   * Mets à jour MongoDB
   */
-  public function refuseRequest(int $memberId): void 
+  public function refuseRequest(int $memberId, ?string $treatedBy = null): void
   {
     $collection = $this->mongoDBService->getCollection('organizer_requests');
+    $fields = ['status' => 'refusé', 'updatedAt' => new UTCDateTime()];
+    if ($treatedBy !== null) {
+      $fields['treatedBy'] = $treatedBy;
+    }
     $collection->updateOne(
-      ['member' => $memberId, 'status' => 'pending'],
-      ['$set' => [
-        'status' => 'refusé',
-        'updatedAt' => new \MongoDB\BSON\UTCDateTime()
-        ]
-      ]);
+      ['member' => $memberId],
+      ['$set' => $fields]
+    );
   }
 }

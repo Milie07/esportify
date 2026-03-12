@@ -397,7 +397,7 @@
 											{% endif %}
 										</td>
                     <td data-label="Validé par">
-											<strong>{{ t.treatedBy }}</strong>
+											<strong>{{ m.treatedBy }}</strong>
 										</td>
 										<td data-label="Actions">
 											<form action="{{ path('admin_organizer_request_validate', { member_id: m['member'] }) }}" method="POST" onsubmit="return confirm('Valider cette demande ?');">
@@ -448,7 +448,7 @@
 											{% endif %}
 										</td>
                     <td data-label="Refusé par">
-											<strong>{{ t.treatedBy }}</strong>
+											<strong>{{ m.treatedBy }}</strong>
 										</td>
 										<td data-label="Actions">
 											<form action="{{ path('admin_organizer_request_validate', { member_id: m['member'] }) }}" method="POST" onsubmit="return confirm('Valider cette demande ?');">
@@ -626,7 +626,7 @@
 				{% else %}
 					<p class="text-center text-lightBlue">Aucun évènement créé pour le moment.</p>
 				{% endif %}
-					<button type="button" class="btn-custom-lg-green btn btn-greenFluo" data-bs-toggle="modal" data-bs-target="#createTournamentModal">
+					<button type="button" class="btn-custom-lg-green btn btn-greenFluo mt-3" data-bs-toggle="modal" data-bs-target="#createTournamentModal">
 						Créer un tournoi
 					</button>
 				</div>

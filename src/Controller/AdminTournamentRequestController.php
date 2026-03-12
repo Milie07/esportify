@@ -27,7 +27,7 @@ class AdminTournamentRequestController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        $limit = 10;
+        $limit = 9;
         $page = max(1, $request->query->getInt('page', 1));
         $total = $em->getRepository(Tournament::class)->count([]);
         $totalPages = max(1, (int) ceil($total / $limit));
