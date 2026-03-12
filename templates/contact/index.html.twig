@@ -4,7 +4,8 @@
 {% endblock %}
 
 {% block body %}
-	<div class="container-fluid mx-auto">
+	<div
+		class="container-fluid mx-auto">
 		<!-- Logo Esportify  -->
 		<div class="container-lg text-center">
 			<img class="img-logo img-fluid" src="{{ asset('build/images/logo/logo-modifie.png') }}" alt="logo esportify">
@@ -16,37 +17,51 @@
 		<section class="section_contact d-flex text_description justify-content-center my-4 mt-4">
 			{{ form_start(contactForm, {'attr': {'class': 'form_contact needs-validation bg-clair1 rounded-4 text-lightBlue px-5 py-4', 'id': 'searchForm'}}) }}
 
-				<!-- Informations personnelles -->
-				{{ form_row(contactForm.name, {'label': false}) }}
-				{{ form_row(contactForm.surname, {'label': false}) }}
-				{{ form_row(contactForm.pseudo, {'label': false}) }}
-				{{ form_row(contactForm.email, {'label': false}) }}
+			<!-- Informations personnelles -->
+			{{ form_row(contactForm.name, {'label': false}) }}
+			{{ form_row(contactForm.surname, {'label': false}) }}
+			{{ form_row(contactForm.pseudo, {'label': false}) }}
+			{{ form_row(contactForm.email, {'label': false}) }}
 
-				<!-- Rôle de l'utilisateur -->
-				<div class="role_user d-flex flex-column">
-					<p class="text-center text-decoration-underline mb-2">Qui êtes-vous ? :</p>
-					{{ form_widget(contactForm.role) }}
+			<!-- Rôle de l'utilisateur -->
+			<div class="role_user d-flex flex-column">
+				<p class="text-center text-decoration-underline mb-2">Qui êtes-vous ? :</p>
+				<div class="d-flex flex-row flex-wrap justify-content-center gap-3">
+					{% for child in contactForm.role %}
+						<div class="form-check">
+							{{ form_widget(child) }}
+							{{ form_label(child) }}
+						</div>
+					{% endfor %}
 				</div>
+			</div>
 
-				<!-- Type de question -->
-				<div class="question_type d-flex flex-column mt-3">
-					<p class="text-center text-decoration-underline mb-2">Votre message concerne :</p>
-					{{ form_widget(contactForm.subject) }}
+			<!-- Type de question -->
+			<div class="question_type d-flex flex-column mt-3">
+				<p class="text-center text-decoration-underline mb-2">Votre message concerne :</p>
+				<div class="d-flex flex-row flex-wrap justify-content-center gap-3">
+					{% for child in contactForm.subject %}
+						<div class="form-check">
+							{{ form_widget(child) }}
+							{{ form_label(child) }}
+						</div>
+					{% endfor %}
 				</div>
+			</div>
 
-				<!-- Message -->
-				<div class="mt-3">
-					{{ form_row(contactForm.message, {'label': false}) }}
-				</div>
+			<!-- Message -->
+			<div class="mt-3">
+				{{ form_row(contactForm.message, {'label': false}) }}
+			</div>
 
-				<!-- Bouton d'envoi -->
-				<div class="d-flex justify-content-center mt-4 mb-2">
-					<button class="btn-custom-lg-green btn btn-greenFluo" type="submit">Envoyer le message</button>
-				</div>
+			<!-- Bouton d'envoi -->
+			<div class="d-flex justify-content-center mt-4 mb-2">
+				<button class="btn-custom-lg-green btn btn-greenFluo" type="submit">Envoyer le message</button>
+			</div>
 
 			{{ form_end(contactForm) }}
 		</section>
-    <div class="text-center mt-4">
+		<div class="text-center mt-4">
 			<a class="btn-custom-lg-clair btn btn-clair2 mb-4" href="{{ path('app_home') }}">Retour à l'accueil</a>
 		</div>
 	</div>
