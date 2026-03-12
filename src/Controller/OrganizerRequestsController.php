@@ -12,12 +12,12 @@ final class OrganizerRequestsController extends AbstractController
   public function __construct(
     private OrganizerRequestsService $organizerRequestsService,
   ) {}
-  #[Route('/player/request', name: 'player_request_organizer')]
+  #[Route('/player/request', name: 'player_request_organizer', methods: ['POST'])]
   public function createRequest(): Response
   {
-    if (!$this->isGranted('ROLE_PLAYER')) {
-      throw $this->createAccessDeniedException();
-    }
+    if (!$this->isGranted('ROLE_PLAYER') || $this->isGranted('ROLE_ORGANIZER')) {
+    throw $this->createAccessDeniedException();
+}
       // Envoyé la demande du joueur connecté
     /** @var \App\Entity\Member|null $user */
     // au cas ou j'oublie getUser() retourne l'utilisateur connecté depuis la session Symfony

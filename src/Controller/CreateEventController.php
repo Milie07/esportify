@@ -88,6 +88,7 @@ final class CreateEventController extends AbstractController
                 ['createdAt' => 'DESC']
             );
             $data['avatarUrl'] = $user->getAvatarPath() ?: 'uploads/avatars/default-avatar.jpg';
+            $data['favorites'] = $user->getMemberAddFavorites();
         }
 
         return $this->render($template, $data);

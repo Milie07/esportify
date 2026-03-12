@@ -22,16 +22,15 @@ class RegisterControllerTest extends WebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        // Remplir le formulaire
-        $form = $crawler->selectButton('Valider l\'inscription')->form([
-            'registration_form_type[firstName]' => 'Test',
-            'registration_form_type[lastName]' => 'User',
-            'registration_form_type[pseudo]' => 'testuser' . time(),
-            'registration_form_type[email]' => 'test' . time() . '@example.com',
-            'registration_form_type[plainPassword][first]' => 'Password123',
-            'registration_form_type[plainPassword][second]' => 'Password123',
-            'registration_form_type[avatar]' => '1',
-            'registration_form_type[conditions]' => '1',
+        $form = $crawler->selectButton("Valider l'inscription")->form([
+            'firstName'        => 'Test',
+            'lastName'         => 'User',
+            'pseudo'           => 'testuser' . time(),
+            'email'            => 'test' . time() . '@example.com',
+            'password'         => 'Password123',
+            'confirm_password' => 'Password123',
+            'avatar'           => '1',
+            'conditions'       => '1',
         ]);
 
         $client->submit($form);
@@ -45,19 +44,18 @@ class RegisterControllerTest extends WebTestCase
         $client = static::createClient();
         $crawler = $client->request('GET', '/signup');
 
-        $form = $crawler->selectButton('Valider l\'inscription')->form([
-            'registration_form_type[firstName]' => 'T', // Trop court
-            'registration_form_type[lastName]' => 'U',
-            'registration_form_type[pseudo]' => 'ab', // Trop court
-            'registration_form_type[email]' => 'invalid-email',
-            'registration_form_type[plainPassword][first]' => 'weak',
-            'registration_form_type[plainPassword][second]' => 'weak',
-            'registration_form_type[conditions]' => '1',
+        $form = $crawler->selectButton("Valider l'inscription")->form([
+            'firstName'        => 'T',
+            'lastName'         => 'U',
+            'pseudo'           => 'ab',
+            'email'            => 'invalid-email',
+            'password'         => 'weak',
+            'confirm_password' => 'weak',
+            'conditions'       => '1',
         ]);
 
         $client->submit($form);
-
-        $this->assertResponseStatusCodeSame(422);
+        $this->assertResponseRedirects('/signup');
     }
 
     public function testRegistrationWithMismatchedPasswords(): void
@@ -65,19 +63,18 @@ class RegisterControllerTest extends WebTestCase
         $client = static::createClient();
         $crawler = $client->request('GET', '/signup');
 
-        $form = $crawler->selectButton('Valider l\'inscription')->form([
-            'registration_form_type[firstName]' => 'Test',
-            'registration_form_type[lastName]' => 'User',
-            'registration_form_type[pseudo]' => 'testuser',
-            'registration_form_type[email]' => 'test@example.com',
-            'registration_form_type[plainPassword][first]' => 'Password123',
-            'registration_form_type[plainPassword][second]' => 'DifferentPassword123',
-            'registration_form_type[conditions]' => '1',
+        $form = $crawler->selectButton("Valider l'inscription")->form([
+            'firstName'        => 'Test',
+            'lastName'         => 'User',
+            'pseudo'           => 'testuser',
+            'email'            => 'test@example.com',
+            'password'         => 'Password123',
+            'confirm_password' => 'DifferentPassword123',
+            'conditions'       => '1',
         ]);
 
         $client->submit($form);
-
-        $this->assertResponseStatusCodeSame(422);
+        $this->assertResponseRedirects('/signup');
     }
 
     public function testRegistrationWithoutAcceptingConditions(): void
@@ -85,18 +82,16 @@ class RegisterControllerTest extends WebTestCase
         $client = static::createClient();
         $crawler = $client->request('GET', '/signup');
 
-        $form = $crawler->selectButton('Valider l\'inscription')->form([
-            'registration_form_type[firstName]' => 'Test',
-            'registration_form_type[lastName]' => 'User',
-            'registration_form_type[pseudo]' => 'testuser',
-            'registration_form_type[email]' => 'test@example.com',
-            'registration_form_type[plainPassword][first]' => 'Password123',
-            'registration_form_type[plainPassword][second]' => 'Password123',
-            'registration_form_type[conditions]' => '0', // Non accepté
+        $form = $crawler->selectButton("Valider l'inscription")->form([
+            'firstName'        => 'Test',
+            'lastName'         => 'User',
+            'pseudo'           => 'testuser',
+            'email'            => 'test@example.com',
+            'password'         => 'Password123',
+            'confirm_password' => 'Password123',
         ]);
 
         $client->submit($form);
-
-        $this->assertResponseStatusCodeSame(422);
+        $this->assertResponseRedirects('/signup');
     }
 }
