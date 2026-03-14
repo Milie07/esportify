@@ -116,4 +116,10 @@ class OrganizerRequestsService
       ['$set' => $fields]
     );
   }
+
+  public function hasPendingRequest(int $memberId): bool
+  {
+    $collection = $this->mongoDBService->getCollection('organizer_requests');
+    return $collection->countDocuments(['member' => $memberId, 'status' => 'pending']) > 0;
+  }
 }

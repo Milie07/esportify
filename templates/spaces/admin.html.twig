@@ -102,7 +102,15 @@
 											—
 										{% endif %}
 									</td>
-									<td data-label="Actions"></td>
+									<td data-label="Actions">
+                    <form action="{{ path('admin_contact_message_delete', { 'id': m._id }) }}" method="POST" onsubmit="return confirm('Supprimer ce message ?');">
+											<input type="hidden" name="_token" value="{{ csrf_token('delete-message') }}">
+											<button type="submit" class="btn btn-danger btn-sm my-1 mx-1">
+                        <i class="fa-solid fa-trash-can fa-lg text-red"></i>
+                      </button>
+										</form>
+                  
+                  </td>
 								</tr>
 							{% endfor %}
 						</tbody>

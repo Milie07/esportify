@@ -72,7 +72,7 @@ admin_dashboard:
   controller: App\Controller\AdminTournamentRequestController::index
   methods: [GET]
 
-# Demandes Utilisateurs et validation
+# Demandes Utilisateurs Validation et Messages
 
 admin_tournament_show:
   path: /admin/tournament/show/{id}
@@ -97,6 +97,11 @@ admin_organizer_request_validate:
 admin_organizer_request_refuse:
   path: /admin/organizer/refuse/{member_id}
   controller: App\Controller\AdminOrganizerRequestController::refuse
+  methods: [POST]
+
+admin_contact_message_delete:
+  path: /admin/contact/{id}/delete
+  controller: App\Controller\AdminContactController::delete
   methods: [POST]
 
 # Espaces à venir

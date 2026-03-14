@@ -37,30 +37,30 @@
 				</div>
 				<div class="w-75 mx-auto py-1">
           <label class="visually-hidden" for="pseudo">Pseudo :</label>
-					<input class="form-control input_filter" id="pseudo" name="pseudo" type="text" minlength="3" maxlength="20" placeholder="Votre pseudo" required>
+					<input class="form-control input_filter" aria-labelledby="error-pseudo" id="pseudo" name="pseudo" type="text" minlength="3" maxlength="20" placeholder="Votre pseudo" required>
 					{% if errors.pseudo is defined %}
-						<div class="text-danger small mt-1">{{ errors.pseudo }}</div>
+						<div class="text-danger small mt-1" id="error-pseudo">{{ errors.pseudo }}</div>
 					{% endif %}
 				</div>
 				<div class="w-75 mx-auto py-1">
           <label class="visually-hidden" for="email">Email :</label>
-					<input class="form-control input_filter" id="email" name="email" type="email" value="{{ old.email|default('') }}" placeholder="example@example.fr" required>
+					<input class="form-control input_filter" aria-labelledby="error-email" id="email" name="email" type="email" value="{{ old.email|default('') }}" placeholder="example@example.fr" required>
 					{% if errors.email is defined %}
-						<div class="text-danger small mt-1">{{ errors.email }}</div>
+						<div class="text-danger small mt-1" id="error-email">{{ errors.email }}</div>
 					{% endif %}
 				</div>
 				<div class="w-75 mx-auto py-1">
           <label class="visually-hidden" for="password">Mot de passe :</label>
-					<input class="form-control input_filter" id="password" name="password" type="password" placeholder="Votre mot de passe" required>
+					<input class="form-control input_filter" aria-labelledby="error-password" id="password" name="password" type="password" placeholder="Votre mot de passe" required>
 					{% if errors.password is defined %}
-						<div class="text-danger small mt-1">{{ errors.password }}</div>
+						<div class="text-danger small mt-1" id="error-password">{{ errors.password }}</div>
 					{% endif %}
 				</div>
 				<div class="w-75 mx-auto py-1">
           <label class="visually-hidden" for="confirmPassword">Confirmer le mot de passe :</label>
-					<input class="form-control input_filter" id="confirmPassword" name="confirm_password" type="password" placeholder="Confirmer votre mot de passe" required>
+					<input class="form-control input_filter" aria-labelledby="error-confirm-pwd" id="confirmPassword" name="confirm_password" type="password" placeholder="Confirmer votre mot de passe" required>
 					{% if errors.confirm_password is defined %}
-						<div class="text-danger small mt-1">{{ errors.confirm_password }}</div>
+						<div class="text-danger small mt-1" id="error-confirm-pwd">{{ errors.confirm_password }}</div>
 					{% endif %}
 				</div>
 
@@ -86,12 +86,12 @@
 				</div>
 
 				<div class="mx-1 my-1">
-					<input type="checkbox" id="conditions" name="conditions" value="1" required>
+					<input type="checkbox" aria-labelledby="error-conditions" id="conditions" name="conditions" value="1" required>
 					{% if errors.conditions is defined %}
-						<div class="text-danger small mt-1">{{ errors.conditions }}</div>
+						<div class="text-danger small mt-1" id="error-conditions">{{ errors.conditions }}</div>
 					{% endif %}
 					<label for="conditions">J’accepte les
-						<a href="{{ path(‘cgu’) }}" target="_blank" rel="noopener noreferrer">Conditions Générales d’Utilisation</a>
+						<a href="{{ path('cgu') }}" target="_blank" rel="noopener noreferrer">Conditions Générales d’Utilisation</a>
 					</label>
 				</div>
 

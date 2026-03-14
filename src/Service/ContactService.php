@@ -17,7 +17,6 @@ class ContactService
         string $email,
         string $subject,
         string $message,
-        string $treatedBy
     ): void {
         $collection = $this->mongoDBService->getCollection('contact_messages');
         $collection->insertOne([
@@ -26,9 +25,13 @@ class ContactService
             'email' => $email,
             'subject' => $subject,
             'message' => $message,
-            'treatedBy' => $treatedBy,
             'createdAt' => new \MongoDB\BSON\UTCDateTime(),
             'status' => 'new'
         ]);
     }
+    public function deleteContactMessage(string $id): void
+  {
+    $collection = $this->mongoDBService->getCollection('contact_messages');
+    $collection->deleteOne(['_id' => new \MongoDB\BSON\ObjectId($id)]);
+  }
 }

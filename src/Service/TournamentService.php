@@ -144,6 +144,7 @@ class TournamentService
 
         foreach ($cursor as $doc) {
             $row = iterator_to_array($doc);
+            $row['_id'] = (string) $row['_id'];
 
             if (isset($row['createdAt']) && $row['createdAt'] instanceof UTCDateTime) {
                 $row['createdAt'] = $row['createdAt']->toDateTime();

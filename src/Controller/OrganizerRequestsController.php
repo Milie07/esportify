@@ -16,14 +16,18 @@ final class OrganizerRequestsController extends AbstractController
   public function createRequest(): Response
   {
     if (!$this->isGranted('ROLE_PLAYER') || $this->isGranted('ROLE_ORGANIZER')) {
-    throw $this->createAccessDeniedException();
-}
+      throw $this->createAccessDeniedException();
+    }
       // Envoyé la demande du joueur connecté
     /** @var \App\Entity\Member|null $user */
     // au cas ou j'oublie getUser() retourne l'utilisateur connecté depuis la session Symfony
     $user = $this->getUser();
 
     if ($user) {
+      if ($this->organizerRequestsService->hasPendingRequest($user->getId())) {
+        $this->addFlash('warning', 'Votre demande est déjà en attente de validation.');
+        return $this->redirectToRoute('player_space');
+      }
       try {
         $this->organizerRequestsService->saveRequests($user->getId(), $user->getPseudo(), $user->getEmail());
         $this->addFlash('success', 'Votre demande a été envoyé, elle sera traitée dans les plus brefs délais !');

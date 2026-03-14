@@ -106,6 +106,8 @@ h3 {
 	&:focus {
 		border: 3px solid $greenFluo;
 		box-shadow: 1px 1px 10px $greenFluo;
+    outline: 2px solid #027a5a; 
+    outline-offset: 2px;
 	}
 	&:-webkit-autofill {
 		// pour outrepasser le style par défaut
@@ -118,7 +120,7 @@ h3 {
 }
 .input_filter::placeholder {
 	color: $lightBlue;
-	opacity: 0.5;
+	opacity: 0.65;
 }
 
 // THUMBNAILS FOR SPACES
