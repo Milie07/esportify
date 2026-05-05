@@ -44,7 +44,6 @@ $theme-colors: map.merge($theme-colors, $custom-theme-colors);
   @include btn-hover($lightBlue, $beige);
 }
 
-
 // HEADER
 .navbar .navbar-collapse {
 	flex-grow: 0;
@@ -227,8 +226,6 @@ $theme-colors: map.merge($theme-colors, $custom-theme-colors);
 textarea {
 	min-height: 150px !important;
 }
-
-
 
 // MAIN - USER SPACE
 .avatar_player {

@@ -2,6 +2,7 @@
 namespace App\Service;
 
 use App\Entity\Member;
+use App\Entity\Tournament;
 use App\Entity\MemberAddFavoritesTournament;
 use App\Repository\MemberAddFavoritesTournamentRepository;
 use App\Repository\TournamentRepository;
@@ -55,13 +56,10 @@ class FavoriteEventService
     /**
      * Retire un tournoi des favoris de tous les membres (ex: tournoi refusé)
      */
-    public function cleanFavoritesForTournament(\App\Entity\Tournament $tournament): void
+    public function cleanFavoritesForTournament(Tournament $tournament): void
     {
-      $this->entityManager->createQuery(
-        'DELETE FROM App\Entity\MemberAddFavoritesTournament f WHERE f.tournament = :t'
-      )->setParameter('t', $tournament)->execute();
+      $this->memberAddFavoritesTournamentRepository->cleanFavoritesForTournament($tournament);
     }
-  }
-  
+}
 
 
